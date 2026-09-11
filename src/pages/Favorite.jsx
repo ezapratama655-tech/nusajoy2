@@ -15,8 +15,8 @@ import {
   Compass,
 } from 'lucide-react'
 
-import { supabase } from '../../../utils/supabaseClient'
-import { getFavorites } from '../../../utils/favorites'
+import { supabase } from '../utils/supabaseClient'
+import { getFavorites } from '../utils/favorites'
 
 import '../styles/Favorite.css'
 

@@ -6,7 +6,7 @@ import {
   useRef,
 } from 'react'
 
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from '../utils/supabaseClient'
 
 // =====================================================
 // CONSTANT

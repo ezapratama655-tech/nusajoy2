@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { supabase } from '../../../utils/supabaseClient'
-import { isFavorite, toggleFavorite } from '../../../utils/favorites'
+import { supabase } from '../utils/supabaseClient'
+import { isFavorite, toggleFavorite } from '../utils/favorites'
 import '../styles/DestinationDetail.css'
 
 
