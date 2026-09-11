@@ -17,6 +17,7 @@ import Nav from './components/Nav'
 // =====================================================
 // GLOBAL / SHARED STYLES
 // =====================================================
+// test ubah folder
 
 import './components/Nav.css'
 
