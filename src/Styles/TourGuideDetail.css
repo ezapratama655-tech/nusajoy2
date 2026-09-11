@@ -1,0 +1,627 @@
+/* =====================================================
+   TOUR GUIDE DETAIL - MOBILE FIRST
+===================================================== */
+
+.tour-guide-detail-page {
+  min-height: 100vh;
+  background: #f7f9fb;
+  color: #172033;
+  padding-bottom: 110px;
+}
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.detail-topbar {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 16px;
+}
+
+.detail-back-link,
+.detail-favorite-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-back-link {
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.94);
+  color: #172033;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 5px 18px rgba(0,0,0,.12);
+}
+
+.detail-favorite-button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.94);
+  color: #64748b;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(0,0,0,.12);
+}
+
+.detail-favorite-button.active {
+  color: #ef4444;
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.detail-hero {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  background: #dfe5e8;
+}
+
+.detail-hero-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.detail-hero-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.2),
+      transparent 38%,
+      rgba(0,0,0,.76)
+    );
+}
+
+.detail-hero-content {
+  position: absolute;
+  z-index: 3;
+  left: 20px;
+  right: 20px;
+  bottom: 25px;
+  color: #fff;
+}
+
+.detail-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-bottom: 10px;
+  padding: 7px 10px;
+
+  border-radius: 999px;
+  background: rgba(0,0,0,.38);
+  backdrop-filter: blur(8px);
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.detail-status span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #39dc9f;
+}
+
+.detail-hero-content h1 {
+  margin: 0;
+  font-size: 31px;
+  line-height: 1.1;
+  letter-spacing: -.7px;
+}
+
+.detail-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+
+  color: rgba(255,255,255,.88);
+  font-size: 13px;
+}
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.detail-content {
+  position: relative;
+  max-width: 820px;
+  margin: -18px auto 0;
+  padding: 0 15px;
+  z-index: 5;
+}
+
+/* =====================================================
+   PROFILE CARD
+===================================================== */
+
+.detail-profile-card {
+  background: #fff;
+  border: 1px solid #edf0f3;
+  border-radius: 20px;
+  padding: 17px;
+  box-shadow: 0 10px 30px rgba(20, 35, 52, .08);
+}
+
+.detail-profile-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.detail-rating-box,
+.detail-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  text-align: center;
+}
+
+.detail-rating-box {
+  color: #d99a19;
+}
+
+.detail-rating-box svg {
+  margin: 0 auto 3px;
+}
+
+.detail-rating-box strong,
+.detail-stat strong {
+  color: #172033;
+  font-size: 16px;
+}
+
+.detail-rating-box span,
+.detail-stat span {
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.detail-stat + .detail-stat {
+  border-left: 1px solid #edf0f4;
+}
+
+/* =====================================================
+   VERIFIED
+===================================================== */
+
+.detail-verified-box {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+
+  margin-top: 17px;
+  padding: 12px;
+
+  border-radius: 13px;
+  background: #effaf7;
+  color: #08745f;
+}
+
+.detail-verified-box svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.detail-verified-box div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-verified-box strong {
+  font-size: 11px;
+}
+
+.detail-verified-box span {
+  color: #64827d;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+.detail-section {
+  margin-top: 27px;
+}
+
+.detail-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 11px;
+}
+
+.detail-section-heading h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 17px;
+  letter-spacing: -.2px;
+}
+
+.detail-bio {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+/* =====================================================
+   SPECIALTY
+===================================================== */
+
+.specialty-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.specialty-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 8px 10px;
+
+  border: 1px solid #d9eee8;
+  border-radius: 999px;
+
+  background: #f0faf7;
+  color: #08745f;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* =====================================================
+   LANGUAGE
+===================================================== */
+
+.language-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.language-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px;
+
+  border: 1px solid #e9edf1;
+  border-radius: 12px;
+  background: #fff;
+
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.language-item svg {
+  color: #08745f;
+}
+
+/* =====================================================
+   SERVICE
+===================================================== */
+
+.service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 12px;
+
+  border: 1px solid #e9edf1;
+  border-radius: 13px;
+  background: #fff;
+}
+
+.service-icon {
+  display: grid;
+  place-items: center;
+
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+
+  border-radius: 10px;
+  background: #eff9f6;
+  color: #08745f;
+}
+
+.service-item div:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+
+.service-item span {
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.service-item strong {
+  overflow: hidden;
+  color: #334155;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   BOOKING
+===================================================== */
+
+.detail-booking-card {
+  position: sticky;
+  bottom: 12px;
+  z-index: 30;
+
+  margin-top: 30px;
+  padding: 15px;
+
+  border: 1px solid #dfe8e6;
+  border-radius: 19px;
+
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(15px);
+
+  box-shadow:
+    0 14px 40px rgba(16, 35, 49, .15);
+}
+
+.booking-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.booking-price span {
+  width: 100%;
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.booking-price strong {
+  color: #075e54;
+  font-size: 20px;
+}
+
+.booking-price small {
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.booking-actions {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.contact-guide-button,
+.booking-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  min-height: 44px;
+
+  border-radius: 12px;
+
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.contact-guide-button {
+  border: 1px solid #cfe5df;
+  background: #eff9f6;
+  color: #075e54;
+}
+
+.booking-button {
+  border: 0;
+  background: #075e54;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(7,94,84,.22);
+}
+
+.contact-guide-button:active,
+.booking-button:active {
+  transform: scale(.97);
+}
+
+.booking-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  margin: 10px 0 0;
+
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.booking-note svg {
+  color: #08745f;
+}
+
+/* =====================================================
+   LOADING / ERROR
+===================================================== */
+
+.guide-detail-state {
+  min-height: 70vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+  text-align: center;
+}
+
+.guide-detail-state h2,
+.guide-detail-state h3 {
+  margin: 0;
+  color: #172033;
+}
+
+.guide-detail-state p {
+  max-width: 350px;
+  margin: 8px 0 20px;
+
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.detail-loader {
+  width: 38px;
+  height: 38px;
+
+  margin-bottom: 17px;
+
+  border: 4px solid #dceee9;
+  border-top-color: #08745f;
+  border-radius: 50%;
+
+  animation: detailSpin 1s linear infinite;
+}
+
+@keyframes detailSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.detail-error-icon {
+  display: grid;
+  place-items: center;
+
+  width: 55px;
+  height: 55px;
+
+  margin-bottom: 17px;
+
+  border-radius: 17px;
+
+  background: #fff1f2;
+  color: #e11d48;
+
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.detail-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 11px 15px;
+
+  border-radius: 11px;
+
+  background: #075e54;
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (min-width: 600px) {
+
+  .detail-hero {
+    height: 470px;
+  }
+
+  .detail-content {
+    padding: 0 24px;
+  }
+
+  .detail-hero-content {
+    max-width: 820px;
+    margin: auto;
+    left: 24px;
+    right: 24px;
+  }
+
+}
+
+/* =====================================================
+   DESKTOP
+===================================================== */
+
+@media (min-width: 900px) {
+
+  .tour-guide-detail-page {
+    padding-bottom: 50px;
+  }
+
+  .detail-topbar {
+    max-width: 900px;
+    margin: auto;
+  }
+
+  .detail-hero {
+    height: 500px;
+  }
+
+  .detail-content {
+    margin-top: -25px;
+  }
+
+  .detail-booking-card {
+    position: relative;
+    bottom: auto;
+  }
+
+}

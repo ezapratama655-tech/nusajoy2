@@ -1,0 +1,589 @@
+/* =========================================================
+   NUSAJOY HOME — ENHANCEMENTS
+   Bagian tambahan: Statistik, Testimoni, Newsletter/Footer,
+   Skeleton Loading, Dark Mode.
+   Menggunakan token yang sama persis dengan Home.css supaya
+   konsisten (warna, radius, shadow, transition).
+   Import file ini SETELAH Home.css di App.jsx.
+   ========================================================= */
+
+
+/* =========================================================
+   31. STATS / ACHIEVEMENTS
+   Ditaruh setelah Hero, sebelum Categories.
+   Markup yang diharapkan:
+
+   <section className="nj-stats-section">
+     <div className="nj-container nj-stats-grid">
+       <div className="nj-stat-item">
+         <strong>1.200+</strong>
+         <span>Pemandu Terverifikasi</span>
+       </div>
+       ...
+     </div>
+   </section>
+   ========================================================= */
+
+.nj-stats-section {
+  padding: 22px 0;
+}
+
+.nj-stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+
+  padding: 22px 18px;
+
+  border: 1px solid var(--nj-border);
+  border-radius: var(--nj-radius-lg);
+
+  background: var(--nj-white);
+
+  box-shadow: var(--nj-shadow-sm);
+}
+
+.nj-stat-item {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  padding: 6px 0;
+
+  text-align: center;
+
+  border-right: 1px solid var(--nj-border-soft);
+}
+
+.nj-stat-item:nth-child(2n) {
+  border-right: 0;
+}
+
+.nj-stat-item strong {
+  color: var(--nj-primary);
+
+  font-size: clamp(1.35rem, 5vw, 2rem);
+  font-weight: 800;
+
+  letter-spacing: -0.02em;
+}
+
+.nj-stat-item span {
+  color: var(--nj-text-muted);
+
+  font-size: 0.68rem;
+  font-weight: 650;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   32. TESTIMONIALS
+   Markup yang diharapkan:
+
+   <section className="nj-testimonial-section">
+     <div className="nj-container">
+       <div className="nj-section-header">...</div>
+       <div className="nj-testimonial-track">
+         <article className="nj-testimonial-card">
+           <div className="nj-testimonial-quote">"..."</div>
+           <div className="nj-testimonial-person">
+             <span className="nj-testimonial-avatar">AR</span>
+             <div>
+               <strong>Nama</strong>
+               <small>Asal kota</small>
+             </div>
+           </div>
+         </article>
+       </div>
+     </div>
+   </section>
+   ========================================================= */
+
+.nj-testimonial-section {
+  padding: 36px 0;
+}
+
+.nj-testimonial-track {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr);
+
+  gap: 14px;
+
+  margin-top: 24px;
+}
+
+.nj-testimonial-card {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  min-width: 0;
+
+  padding: 20px;
+
+  border: 1px solid var(--nj-border);
+  border-radius: var(--nj-radius-lg);
+
+  background: var(--nj-white);
+
+  box-shadow: var(--nj-shadow-sm);
+
+  transition:
+    transform var(--nj-transition),
+    box-shadow var(--nj-transition),
+    border-color var(--nj-transition);
+}
+
+.nj-testimonial-card:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(15, 84, 73, 0.18);
+
+  box-shadow: var(--nj-shadow-md);
+}
+
+.nj-testimonial-quote {
+  position: relative;
+
+  color: var(--nj-text);
+
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.nj-testimonial-quote::before {
+  content: "\201C";
+
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--nj-primary);
+
+  font-size: 1.8rem;
+  font-weight: 800;
+
+  line-height: 1;
+}
+
+.nj-testimonial-person {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding-top: 14px;
+
+  border-top: 1px solid var(--nj-border-soft);
+}
+
+.nj-testimonial-avatar {
+  display: grid;
+  place-items: center;
+
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: var(--nj-primary-soft);
+
+  color: var(--nj-primary);
+
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.nj-testimonial-person strong {
+  display: block;
+
+  color: var(--nj-text);
+
+  font-size: 0.78rem;
+}
+
+.nj-testimonial-person small {
+  display: block;
+
+  margin-top: 1px;
+
+  color: var(--nj-text-muted);
+
+  font-size: 0.68rem;
+}
+
+
+/* =========================================================
+   33. NEWSLETTER
+   ========================================================= */
+
+.nj-newsletter-section {
+  padding: 36px 0;
+}
+
+.nj-newsletter {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  padding: 26px 20px;
+
+  border-radius: var(--nj-radius-xl);
+
+  background: var(--nj-bg-soft);
+
+  border: 1px solid var(--nj-border);
+}
+
+.nj-newsletter-content h3 {
+  margin: 0;
+
+  color: var(--nj-text);
+
+  font-size: clamp(1.15rem, 4vw, 1.5rem);
+
+  letter-spacing: -0.02em;
+}
+
+.nj-newsletter-content p {
+  max-width: 480px;
+
+  margin: 8px 0 0;
+
+  color: var(--nj-text-muted);
+
+  font-size: 0.8rem;
+
+  line-height: 1.6;
+}
+
+.nj-newsletter-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.nj-newsletter-form input {
+  min-height: 46px;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--nj-border);
+  border-radius: 12px;
+
+  background: var(--nj-white);
+
+  font-size: 0.85rem;
+
+  color: var(--nj-text);
+}
+
+.nj-newsletter-form input:focus {
+  outline: 0;
+
+  border-color: rgba(15, 84, 73, 0.35);
+
+  box-shadow: 0 0 0 3px rgba(15, 84, 73, 0.1);
+}
+
+.nj-newsletter-form button {
+  min-height: 46px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: var(--nj-primary);
+
+  color: var(--nj-white);
+
+  font-size: 0.84rem;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition: background var(--nj-transition);
+}
+
+.nj-newsletter-form button:hover {
+  background: var(--nj-primary-dark);
+}
+
+
+/* =========================================================
+   34. FOOTER
+   ========================================================= */
+
+.nj-footer {
+  padding: 32px 0 calc(28px + env(safe-area-inset-bottom));
+
+  border-top: 1px solid var(--nj-border);
+
+  background: var(--nj-white);
+}
+
+.nj-footer-grid {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr);
+
+  gap: 26px;
+}
+
+.nj-footer-brand h4 {
+  margin: 0;
+
+  color: var(--nj-primary);
+
+  font-size: 1.05rem;
+
+  letter-spacing: -0.02em;
+}
+
+.nj-footer-brand p {
+  max-width: 320px;
+
+  margin: 8px 0 0;
+
+  color: var(--nj-text-muted);
+
+  font-size: 0.78rem;
+
+  line-height: 1.6;
+}
+
+.nj-footer-col h5 {
+  margin: 0 0 10px;
+
+  color: var(--nj-text);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.nj-footer-col ul {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.nj-footer-col a {
+  color: var(--nj-text-muted);
+
+  font-size: 0.79rem;
+  text-decoration: none;
+
+  transition: color var(--nj-transition);
+}
+
+.nj-footer-col a:hover {
+  color: var(--nj-primary);
+}
+
+.nj-footer-bottom {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 26px;
+  padding-top: 18px;
+
+  border-top: 1px solid var(--nj-border-soft);
+
+  color: var(--nj-text-light);
+
+  font-size: 0.7rem;
+}
+
+
+/* =========================================================
+   35. SKELETON LOADING
+   Dipakai saat data destinasi / pemandu sedang di-fetch.
+   Markup: <div className="nj-skeleton nj-skeleton-card" />
+   ========================================================= */
+
+.nj-skeleton {
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: var(--nj-radius-md);
+
+  background: var(--nj-bg-soft);
+}
+
+.nj-skeleton::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  transform: translateX(-100%);
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+
+  animation: nj-skeleton-shimmer 1.4s infinite;
+}
+
+.nj-skeleton-card {
+  height: 250px;
+}
+
+.nj-skeleton-line {
+  height: 12px;
+
+  margin-top: 8px;
+
+  border-radius: 999px;
+}
+
+@keyframes nj-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nj-skeleton::after {
+    animation: none;
+  }
+}
+
+
+/* =========================================================
+   36. TABLET / DESKTOP FOR NEW SECTIONS
+   ========================================================= */
+
+@media (min-width: 600px) {
+
+  .nj-testimonial-track {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+  }
+
+  .nj-newsletter {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 24px;
+  }
+
+  .nj-newsletter-form {
+    flex-direction: row;
+
+    flex-shrink: 0;
+
+    width: auto;
+    min-width: 340px;
+  }
+
+  .nj-newsletter-form input {
+    flex: 1;
+  }
+
+  .nj-newsletter-form button {
+    padding: 0 22px;
+  }
+
+  .nj-footer-grid {
+    grid-template-columns:
+      1.4fr repeat(3, 1fr);
+
+    gap: 20px;
+  }
+
+  .nj-footer-bottom {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 900px) {
+
+  .nj-stats-grid {
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+  }
+
+  .nj-stat-item {
+    border-right: 1px solid var(--nj-border-soft);
+  }
+
+  .nj-stat-item:last-child {
+    border-right: 0;
+  }
+
+  .nj-testimonial-track {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+/* =========================================================
+   37. DARK MODE (opsional, mengikuti preferensi sistem)
+   Cukup tambahkan atribut ini di <html> lewat JS kalau mau
+   toggle manual: document.documentElement.dataset.theme = 'dark'
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --nj-text: #eaf3f0;
+    --nj-text-muted: #a9bdb7;
+    --nj-text-light: #7c8f89;
+
+    --nj-white: #14201d;
+    --nj-bg: #0e1613;
+    --nj-bg-soft: #17221f;
+
+    --nj-border: #24322e;
+    --nj-border-soft: rgba(36, 50, 46, 0.65);
+
+    --nj-primary-soft: rgba(53, 196, 168, 0.14);
+  }
+}
+
+[data-theme="dark"] {
+  --nj-text: #eaf3f0;
+  --nj-text-muted: #a9bdb7;
+  --nj-text-light: #7c8f89;
+
+  --nj-white: #14201d;
+  --nj-bg: #0e1613;
+  --nj-bg-soft: #17221f;
+
+  --nj-border: #24322e;
+  --nj-border-soft: rgba(36, 50, 46, 0.65);
+
+  --nj-primary-soft: rgba(53, 196, 168, 0.14);
+}

@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --color-bg: #F6F5EF;
+  --color-surface: #FFFFFF;
+  --color-ink: #1B2B29;
+  --color-muted: #6B7280;
+  --color-primary: #0E4F4F;
+  --color-primary-light: #DCEEEA;
+  --color-accent: #E8622C;
+  --color-gold: #E3A008;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --nav-height: 64px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  margin: 0;
+}
+
+a { text-decoration: none; color: inherit; }
+
+.app-shell {
+  min-height: 100vh;
+  padding-bottom: calc(var(--nav-height) + 12px);
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .container { max-width: 960px; padding: 1.5rem 2rem; }
+  .app-shell { padding-bottom: 2rem; }
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  background: var(--color-surface);
+  border-top: 1px solid #ECEAE2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 50;
+}
+
+.bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.bottom-nav a.active {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav { display: none; }
+}
+
+.top-nav { display: none; }
+
+@media (min-width: 768px) {
+  .top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid #ECEAE2;
+  }
+  .top-nav .links { display: flex; gap: 1.5rem; }
+  .top-nav a.active { color: var(--color-primary); font-weight: 600; }
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.badge-gem {
+  display: inline-block;
+  background: #FBEBC2;
+  color: #8A5A00;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.5rem;
+}

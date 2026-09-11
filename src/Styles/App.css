@@ -1,0 +1,881 @@
+/* =========================================================
+   NUSAJOY APP — GLOBAL SYSTEM
+   =========================================================
+   Digunakan oleh App.jsx
+
+   Fungsi:
+   - Global application container
+   - Main content
+   - Page loading
+   - Loading spinner
+   - Error Boundary
+   - 404 page
+   - Global transitions
+   - Responsive behavior
+   - Accessibility
+   - Dark mode
+   ========================================================= */
+
+
+/* =========================================================
+   1. ROOT VARIABLES
+   ========================================================= */
+
+:root {
+  --nj-primary: #0f7c6d;
+  --nj-primary-dark: #095f54;
+  --nj-primary-light: #2fa897;
+
+  --nj-primary-soft: rgba(15, 124, 109, 0.10);
+
+  --nj-text: #10201c;
+  --nj-text-muted: #6e807a;
+  --nj-text-light: #9aaba6;
+
+  --nj-white: #ffffff;
+
+  --nj-bg: #f7faf9;
+  --nj-bg-soft: #eef5f3;
+
+  --nj-border: #dfe9e6;
+  --nj-border-soft: rgba(223, 233, 230, 0.7);
+
+  --nj-danger: #d94c4c;
+
+  --nj-radius-sm: 8px;
+  --nj-radius-md: 12px;
+  --nj-radius-lg: 18px;
+  --nj-radius-xl: 24px;
+
+  --nj-shadow-sm:
+    0 4px 14px rgba(16, 32, 28, 0.06);
+
+  --nj-shadow-md:
+    0 10px 30px rgba(16, 32, 28, 0.09);
+
+  --nj-shadow-lg:
+    0 20px 50px rgba(16, 32, 28, 0.12);
+
+  --nj-transition:
+    180ms ease;
+
+  --nj-page-max-width: 1200px;
+}
+
+
+/* =========================================================
+   2. GLOBAL RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+body {
+  margin: 0;
+
+  min-width: 320px;
+
+  background: var(--nj-bg);
+
+  color: var(--nj-text);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+button {
+  cursor: pointer;
+}
+
+
+a {
+  color: inherit;
+}
+
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+
+/* =========================================================
+   3. APP CONTAINER
+   ========================================================= */
+
+.app-container {
+  position: relative;
+
+  min-height: 100vh;
+
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--nj-bg);
+
+  color: var(--nj-text);
+}
+
+
+/* =========================================================
+   4. MAIN CONTENT
+   ========================================================= */
+
+.main-content {
+  position: relative;
+
+  flex: 1;
+
+  width: 100%;
+
+  min-height: calc(100vh - 64px);
+
+  overflow-x: hidden;
+}
+
+
+/*
+   Setiap halaman dapat mengatur container-nya sendiri.
+*/
+
+.main-content > * {
+  width: 100%;
+}
+
+
+/* =========================================================
+   5. PAGE TRANSITION
+   ========================================================= */
+
+.main-content {
+  animation: nj-page-enter 260ms ease both;
+}
+
+
+@keyframes nj-page-enter {
+
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+
+/* =========================================================
+   6. ROUTE LOADING
+   ========================================================= */
+
+.route-loading {
+  min-height: 60vh;
+
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 14px;
+
+  padding: 40px 20px;
+
+  color: var(--nj-text-muted);
+
+  font-size: 0.86rem;
+
+  font-weight: 650;
+}
+
+
+.route-loading p {
+  margin: 0;
+}
+
+
+/* =========================================================
+   7. LOADING SPINNER
+   ========================================================= */
+
+.route-loading-spinner {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  border: 3px solid var(--nj-border);
+
+  border-top-color: var(--nj-primary);
+
+  animation: nj-spin 750ms linear infinite;
+}
+
+
+@keyframes nj-spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   8. ERROR / 404 PAGE
+   ========================================================= */
+
+.not-found-page {
+  min-height: calc(100vh - 64px);
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 60px 20px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      var(--nj-primary-soft),
+      transparent 45%
+    ),
+    var(--nj-bg);
+}
+
+
+.not-found-content {
+  width: 100%;
+
+  max-width: 520px;
+
+  padding: 40px 24px;
+
+  text-align: center;
+
+  border:
+    1px solid var(--nj-border);
+
+  border-radius:
+    var(--nj-radius-xl);
+
+  background:
+    var(--nj-white);
+
+  box-shadow:
+    var(--nj-shadow-lg);
+
+  animation:
+    nj-error-enter 350ms ease both;
+}
+
+
+@keyframes nj-error-enter {
+
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+
+/* =========================================================
+   9. ERROR CODE
+   ========================================================= */
+
+.not-found-code {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 74px;
+
+  min-height: 36px;
+
+  padding: 7px 14px;
+
+  border-radius: 999px;
+
+  background: var(--nj-primary-soft);
+
+  color: var(--nj-primary);
+
+  font-size: 0.72rem;
+
+  font-weight: 850;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   10. ERROR TITLE
+   ========================================================= */
+
+.not-found-content h1 {
+  margin: 18px 0 10px;
+
+  color: var(--nj-text);
+
+  font-size:
+    clamp(1.5rem, 5vw, 2.15rem);
+
+  font-weight: 850;
+
+  line-height: 1.15;
+
+  letter-spacing: -0.035em;
+}
+
+
+/* =========================================================
+   11. ERROR DESCRIPTION
+   ========================================================= */
+
+.not-found-content p {
+  max-width: 430px;
+
+  margin: 0 auto;
+
+  color: var(--nj-text-muted);
+
+  font-size: 0.86rem;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   12. ERROR BUTTON
+   ========================================================= */
+
+.not-found-button {
+  min-height: 44px;
+
+  margin-top: 22px;
+
+  padding:
+    0 18px;
+
+  border: 0;
+
+  border-radius:
+    var(--nj-radius-md);
+
+  background:
+    var(--nj-primary);
+
+  color:
+    var(--nj-white);
+
+  font-size: 0.82rem;
+
+  font-weight: 750;
+
+  transition:
+    transform var(--nj-transition),
+    background var(--nj-transition),
+    box-shadow var(--nj-transition);
+}
+
+
+.not-found-button:hover {
+  background:
+    var(--nj-primary-dark);
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    var(--nj-shadow-sm);
+}
+
+
+.not-found-button:active {
+  transform:
+    translateY(0)
+    scale(0.97);
+}
+
+
+.not-found-button:focus-visible {
+  outline: 3px solid
+    rgba(15, 124, 109, 0.25);
+
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   13. GLOBAL FOCUS
+   ========================================================= */
+
+:focus-visible {
+  outline:
+    3px solid
+    rgba(15, 124, 109, 0.25);
+
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   14. PAGE CONTAINER UTILITY
+   ========================================================= */
+
+.nj-container {
+  width: min(
+    calc(100% - 32px),
+    var(--nj-page-max-width)
+  );
+
+  margin-inline: auto;
+}
+
+
+/* =========================================================
+   15. GLOBAL CARD
+   ========================================================= */
+
+.nj-card {
+  border:
+    1px solid var(--nj-border);
+
+  border-radius:
+    var(--nj-radius-lg);
+
+  background:
+    var(--nj-white);
+
+  box-shadow:
+    var(--nj-shadow-sm);
+
+  transition:
+    transform var(--nj-transition),
+    box-shadow var(--nj-transition),
+    border-color var(--nj-transition);
+}
+
+
+.nj-card:hover {
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    var(--nj-shadow-md);
+
+  border-color:
+    rgba(15, 124, 109, 0.20);
+}
+
+
+/* =========================================================
+   16. GLOBAL BUTTON SYSTEM
+   ========================================================= */
+
+.nj-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  min-height: 44px;
+
+  padding:
+    0 16px;
+
+  border-radius:
+    var(--nj-radius-md);
+
+  border:
+    1px solid transparent;
+
+  font-size: 0.82rem;
+
+  font-weight: 750;
+
+  text-decoration: none;
+
+  transition:
+    transform var(--nj-transition),
+    background var(--nj-transition),
+    color var(--nj-transition),
+    border-color var(--nj-transition),
+    box-shadow var(--nj-transition);
+}
+
+
+.nj-button-primary {
+  background:
+    var(--nj-primary);
+
+  color:
+    var(--nj-white);
+}
+
+
+.nj-button-primary:hover {
+  background:
+    var(--nj-primary-dark);
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    var(--nj-shadow-sm);
+}
+
+
+.nj-button-secondary {
+  background:
+    var(--nj-white);
+
+  color:
+    var(--nj-primary);
+
+  border-color:
+    var(--nj-border);
+}
+
+
+.nj-button-secondary:hover {
+  border-color:
+    var(--nj-primary);
+
+  background:
+    var(--nj-primary-soft);
+
+  transform:
+    translateY(-2px);
+}
+
+
+/* =========================================================
+   17. GLOBAL EMPTY STATE
+   ========================================================= */
+
+.nj-empty-state {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 260px;
+
+  padding: 30px 20px;
+
+  text-align: center;
+
+  border:
+    1px dashed var(--nj-border);
+
+  border-radius:
+    var(--nj-radius-lg);
+
+  background:
+    var(--nj-bg-soft);
+}
+
+
+.nj-empty-state h3 {
+  margin: 12px 0 6px;
+
+  font-size: 1rem;
+
+  font-weight: 800;
+}
+
+
+.nj-empty-state p {
+  max-width: 400px;
+
+  margin: 0;
+
+  color: var(--nj-text-muted);
+
+  font-size: 0.8rem;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   18. GLOBAL SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+
+::-webkit-scrollbar-track {
+  background:
+    var(--nj-bg);
+}
+
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    var(--nj-border);
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    var(--nj-text-light);
+}
+
+
+/* =========================================================
+   19. MOBILE
+   ========================================================= */
+
+@media (max-width: 599px) {
+
+  .main-content {
+    min-height:
+      calc(100vh - 58px);
+  }
+
+
+  .not-found-page {
+    min-height:
+      calc(100vh - 58px);
+
+    padding:
+      40px 16px;
+  }
+
+
+  .not-found-content {
+    padding:
+      32px 20px;
+  }
+
+
+  .not-found-content h1 {
+    font-size:
+      1.45rem;
+  }
+
+
+  .route-loading {
+    min-height:
+      55vh;
+  }
+
+}
+
+
+/* =========================================================
+   20. TABLET
+   ========================================================= */
+
+@media (min-width: 600px) {
+
+  .nj-container {
+    width:
+      min(
+        calc(100% - 48px),
+        var(--nj-page-max-width)
+      );
+  }
+
+
+  .not-found-content {
+    padding:
+      46px 36px;
+  }
+
+}
+
+
+/* =========================================================
+   21. DESKTOP
+   ========================================================= */
+
+@media (min-width: 900px) {
+
+  .main-content {
+    min-height:
+      calc(100vh - 68px);
+  }
+
+
+  .not-found-page {
+    min-height:
+      calc(100vh - 68px);
+  }
+
+
+  .nj-container {
+    width:
+      min(
+        calc(100% - 64px),
+        var(--nj-page-max-width)
+      );
+  }
+
+}
+
+
+/* =========================================================
+   22. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+  }
+
+}
+
+
+/* =========================================================
+   23. DARK MODE
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+
+  :root:not([data-theme="light"]) {
+
+    --nj-text:
+      #eaf3f0;
+
+    --nj-text-muted:
+      #a9bdb7;
+
+    --nj-text-light:
+      #7c8f89;
+
+    --nj-white:
+      #14201d;
+
+    --nj-bg:
+      #0e1613;
+
+    --nj-bg-soft:
+      #17221f;
+
+    --nj-border:
+      #24322e;
+
+    --nj-border-soft:
+      rgba(36, 50, 46, 0.65);
+
+    --nj-primary-soft:
+      rgba(53, 196, 168, 0.14);
+  }
+
+}
+
+
+/* =========================================================
+   24. MANUAL DARK MODE
+   ========================================================= */
+
+[data-theme="dark"] {
+
+  --nj-text:
+    #eaf3f0;
+
+  --nj-text-muted:
+    #a9bdb7;
+
+  --nj-text-light:
+    #7c8f89;
+
+  --nj-white:
+    #14201d;
+
+  --nj-bg:
+    #0e1613;
+
+  --nj-bg-soft:
+    #17221f;
+
+  --nj-border:
+    #24322e;
+
+  --nj-border-soft:
+    rgba(36, 50, 46, 0.65);
+
+  --nj-primary-soft:
+    rgba(53, 196, 168, 0.14);
+}
+
+
+/* =========================================================
+   END APP.CSS
+   ========================================================= */
