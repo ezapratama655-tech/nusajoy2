@@ -44,7 +44,7 @@ const Explore = lazy(() =>
 )
 
 const Recommendation = lazy(() =>
-  import('./pages/recommendation')
+  import('./pages/Recommendation')
 )
 
 const DestinationDetail = lazy(() =>
