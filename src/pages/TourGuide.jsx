@@ -25,7 +25,7 @@ import useGeolocation, {
   formatDistance,
 } from '../hooks/useGeolocation'
 
-import { getRecommendedGuides } from "../utils/Recommendation";
+import { getRecommendedGuides } from "../utils/recommendation";
 
 import {
   isFavorite,
