@@ -1,0 +1,160 @@
+/**
+ * src/styles/NuSaJoyLogo.css
+ * Styling sistem logo NuSaJoy. Semua kelas berawalan .nsj- agar tidak bentrok
+ * dengan CSS halaman lain.
+ *
+ * Struktur:
+ *   1. Token brand
+ *   2. Tema (light / dark / mono)  -> hanya mengatur variabel warna
+ *   3. Simbol
+ *   4. Layout logo (primary / stacked / symbol)
+ *   5. Wordmark & tagline
+ *
+ * Font: Outfit (wordmark) dan Plus Jakarta Sans (tagline). Pastikan keduanya
+ * sudah di-import di index.html atau App.css.
+ */
+
+/* ==========================================================================
+   1. TOKEN BRAND (samakan dengan BRAND_COLORS di NuSaJoyLogo.jsx)
+   ========================================================================== */
+:root {
+  --nsj-green: #174d36;
+  --nsj-gold: #c69a3a;
+  --nsj-gold-text: #a47b22; /* emas tua untuk teks, kontras lebih baik */
+  --nsj-mint: #cfeacb;
+  --nsj-ink: #17251e;
+
+  --nsj-font-display: 'Outfit', system-ui, sans-serif;
+  --nsj-font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* ==========================================================================
+   2. TEMA
+   Default = light. Kelas tema menimpa variabel, sisanya tinggal memakai var().
+   Urutan penting: tema harus setelah aturan default.
+   ========================================================================== */
+.nsj-logo,
+.nsj-symbol,
+.nsj-theme-light {
+  --nsj-primary: var(--nsj-green);
+  --nsj-accent: var(--nsj-gold);
+  --nsj-bg: rgba(23, 77, 54, 0.08);
+  --nsj-nusa: var(--nsj-green);
+  --nsj-joy: var(--nsj-gold-text);
+  --nsj-tagline: #68736d;
+}
+
+/* Untuk latar hijau/gelap (Footer, hero gelap) */
+.nsj-theme-dark {
+  --nsj-primary: #ffffff;
+  --nsj-accent: var(--nsj-mint);
+  --nsj-bg: rgba(255, 255, 255, 0.12);
+  --nsj-nusa: #ffffff;
+  --nsj-joy: var(--nsj-mint);
+  --nsj-tagline: #8fa88c;
+}
+
+/* Satu warna: ikut `color` elemen induk (cocok untuk cetak / watermark) */
+.nsj-theme-mono {
+  --nsj-primary: currentColor;
+  --nsj-accent: currentColor;
+  --nsj-bg: transparent;
+  --nsj-nusa: currentColor;
+  --nsj-joy: currentColor;
+  --nsj-tagline: currentColor;
+}
+
+/* ==========================================================================
+   3. SIMBOL
+   ========================================================================== */
+.nsj-symbol {
+  display: block;
+  flex-shrink: 0;
+}
+
+.nsj-symbol__bg {
+  fill: var(--nsj-bg);
+}
+
+.nsj-shape--primary {
+  --nsj-shape-color: var(--nsj-primary);
+}
+.nsj-shape--accent {
+  --nsj-shape-color: var(--nsj-accent);
+}
+.nsj-shape--fill {
+  fill: var(--nsj-shape-color);
+}
+.nsj-shape--stroke {
+  stroke: var(--nsj-shape-color);
+}
+
+/* ==========================================================================
+   4. LAYOUT LOGO
+   Ukuran dikirim dari JSX lewat --nsj-symbol-size dan --nsj-text-size,
+   jadi jarak antar elemen ikut proporsional di semua ukuran.
+   ========================================================================== */
+.nsj-logo {
+  --nsj-symbol-size: 32px;
+  --nsj-text-size: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--nsj-symbol-size) * 0.3);
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.nsj-logo--stacked {
+  flex-direction: column;
+  gap: calc(var(--nsj-symbol-size) * 0.25);
+  text-align: center;
+}
+
+.nsj-logo--symbol {
+  justify-content: center;
+}
+
+/* Bila logo dibungkus <a>/<Link>, jangan tampilkan garis bawah atau warna tautan */
+a .nsj-logo {
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   5. WORDMARK & TAGLINE
+   ========================================================================== */
+.nsj-wordmark {
+  font-family: var(--nsj-font-display);
+  font-size: var(--nsj-text-size);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: var(--nsj-nusa);
+}
+
+.nsj-wordmark__joy {
+  color: var(--nsj-joy);
+}
+
+/* Konsep 3: ritme ketebalan Nu (tebal) - Sa (sedang) - Joy (ringan) */
+.nsj-wordmark--rhythm .nsj-wordmark__nu {
+  font-weight: 800;
+}
+.nsj-wordmark--rhythm .nsj-wordmark__sa {
+  font-weight: 600;
+}
+.nsj-wordmark--rhythm .nsj-wordmark__joy {
+  font-weight: 400;
+}
+
+.nsj-tagline {
+  font-family: var(--nsj-font-body);
+  /* proporsional dengan teks, tapi tidak lebih kecil dari 9px */
+  font-size: max(9px, calc(var(--nsj-text-size) * 0.45));
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--nsj-tagline);
+  opacity: 0.85;
+}

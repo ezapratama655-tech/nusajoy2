@@ -1,0 +1,663 @@
+/**
+ * src/styles/BrandIdentityModal.css
+ * Styling modal Sistem Identitas Brand NuSaJoy. Semua kelas berawalan .bim-
+ *
+ * Struktur:
+ *   1. Token
+ *   2. Backdrop & dialog
+ *   3. Header
+ *   4. Body & tipografi section
+ *   5. Pemilih konsep
+ *   6. Kartu filosofi
+ *   7. Panggung uji varian
+ *   8. Unduh, palet, audit
+ *   9. Footer & tombol
+ *  10. Utilitas & preferensi pengguna
+ *
+ * Bergantung pada token brand di NuSaJoyLogo.css (--nsj-*), dengan nilai cadangan.
+ */
+
+/* ==========================================================================
+   1. TOKEN
+   ========================================================================== */
+.bim-backdrop {
+  --bim-green: var(--nsj-green, #174d36);
+  --bim-green-deep: #0f3524;
+  --bim-gold: var(--nsj-gold, #c69a3a);
+  --bim-mint: var(--nsj-mint, #cfeacb);
+  --bim-ink: var(--nsj-ink, #17251e);
+  --bim-muted: #68736d;
+  --bim-terracotta: #b5653a;
+  --bim-surface: #fffdf7;
+  --bim-cream: #faf4dd;
+  --bim-sand: #f4eed8;
+  --bim-line: #dde2d9;
+
+  --bim-radius-lg: 28px;
+  --bim-radius-md: 22px;
+  --bim-radius-sm: 14px;
+  --bim-font-display: var(--nsj-font-display, 'Outfit', system-ui, sans-serif);
+  --bim-font-body: var(--nsj-font-body, 'Plus Jakarta Sans', system-ui, sans-serif);
+}
+
+/* ==========================================================================
+   2. BACKDROP & DIALOG
+   ========================================================================== */
+.bim-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  font-family: var(--bim-font-body);
+}
+
+.bim-dialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 56rem;
+  max-height: 92vh;
+  max-height: 92dvh;
+  overflow: hidden;
+  background: var(--bim-surface);
+  color: var(--bim-ink);
+  border: 1px solid var(--bim-line);
+  border-radius: var(--bim-radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+}
+
+/* ==========================================================================
+   3. HEADER
+   ========================================================================== */
+.bim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--bim-green);
+  color: #fff;
+}
+
+.bim-header__text {
+  min-width: 0;
+}
+
+.bim-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bim-header__icon {
+  font-size: 1.5rem;
+  color: var(--bim-gold);
+}
+
+.bim-header__title {
+  margin: 0;
+  font-family: var(--bim-font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.bim-header__desc {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--bim-mint) 80%, transparent);
+}
+
+.bim-close {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0.375rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.bim-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* ==========================================================================
+   4. BODY & TIPOGRAFI SECTION
+   ========================================================================== */
+.bim-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1.25rem;
+}
+
+.bim-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.bim-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--bim-terracotta);
+}
+
+.bim-heading {
+  margin: 0;
+  font-family: var(--bim-font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--bim-ink);
+}
+
+.bim-hint {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: var(--bim-muted);
+}
+
+/* ==========================================================================
+   5. PEMILIH KONSEP
+   ========================================================================== */
+.bim-concepts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.bim-concept {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 8rem;
+  padding: 1rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid var(--bim-line);
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.bim-concept:hover {
+  background: color-mix(in srgb, var(--bim-cream) 40%, #fff);
+}
+
+.bim-concept--selected,
+.bim-concept--selected:hover {
+  background: var(--bim-cream);
+  border-color: var(--bim-green);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bim-green) 30%, transparent);
+}
+
+.bim-concept__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bim-concept__badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--bim-green);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.bim-concept__title {
+  display: block;
+  font-family: var(--bim-font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.bim-concept__approach {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.6875rem;
+  color: var(--bim-muted);
+}
+
+/* ==========================================================================
+   6. KARTU FILOSOFI
+   ========================================================================== */
+.bim-philosophy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: var(--bim-cream);
+  border: 1px solid var(--bim-line);
+  border-radius: var(--bim-radius-md);
+}
+
+.bim-philosophy__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--bim-green);
+}
+
+.bim-philosophy__quote {
+  margin: 0;
+  font-family: var(--bim-font-display);
+  font-size: 1.0625rem;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.bim-philosophy__note {
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--bim-line) 70%, transparent);
+  font-size: 0.8125rem;
+  color: var(--bim-muted);
+}
+
+.bim-philosophy__note strong {
+  color: var(--bim-green);
+}
+
+/* ==========================================================================
+   7. PANGGUNG UJI VARIAN
+   ========================================================================== */
+.bim-showcase-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bim-segmented {
+  align-self: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding: 0.25rem;
+  background: var(--bim-cream);
+  border: 1px solid var(--bim-line);
+  border-radius: 0.75rem;
+}
+
+.bim-segmented__btn {
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--bim-muted);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.bim-segmented__btn[aria-checked='true'] {
+  background: #fff;
+  color: var(--bim-green);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Latar uji: hanya mengatur warna teks, keterangan, dan garis */
+.bim-stage {
+  --bim-stage-caption: var(--bim-muted);
+  padding: 1.25rem;
+  border: 1px solid var(--bim-line);
+  border-radius: 1.5rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.bim-stage--sand {
+  background: var(--bim-sand);
+  color: var(--bim-ink);
+}
+
+.bim-stage--dark {
+  --bim-stage-caption: var(--bim-mint);
+  background: var(--bim-green);
+  border-color: var(--bim-green-deep);
+  color: #fff;
+}
+
+.bim-stage--white {
+  background: var(--bim-surface);
+  color: var(--bim-ink);
+}
+
+.bim-variants {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.bim-variant {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.bim-variant__caption {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--bim-stage-caption);
+}
+
+.bim-variant__box {
+  flex: 1;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px dashed color-mix(in srgb, currentColor 25%, transparent);
+  border-radius: 0.75rem;
+}
+
+.bim-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.bim-size {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.bim-size__label {
+  font-size: 0.625rem;
+  opacity: 0.7;
+}
+
+/* Tab browser tiruan: selalu terang agar kontras dengan favicon terlihat realistis */
+.bim-tab-mock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  padding: 0.375rem 0.75rem;
+  background: #fff;
+  color: var(--bim-ink);
+  border-radius: 0.5rem 0.5rem 0 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  font-size: 0.6875rem;
+}
+
+.bim-tab-mock__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   8. UNDUH, PALET, AUDIT
+   ========================================================================== */
+.bim-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bim-palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bim-swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.625rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid var(--bim-line);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.bim-swatch:hover {
+  border-color: var(--bim-green);
+  background: var(--bim-cream);
+}
+
+.bim-swatch__chip {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.bim-swatch__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bim-swatch__name {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.bim-swatch__hex {
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--bim-green);
+}
+
+.bim-swatch__usage {
+  font-size: 0.625rem;
+  color: var(--bim-muted);
+  line-height: 1.3;
+}
+
+.bim-audit {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+
+.bim-audit__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.875rem;
+  background: #fff;
+  border: 1px solid var(--bim-line);
+  border-radius: 0.75rem;
+}
+
+.bim-audit__icon {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  font-size: 1rem;
+  color: var(--bim-green);
+}
+
+/* ==========================================================================
+   9. FOOTER & TOMBOL
+   ========================================================================== */
+.bim-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: var(--bim-cream);
+  border-top: 1px solid var(--bim-line);
+}
+
+.bim-footer__note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--bim-muted);
+}
+
+.bim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--bim-radius-sm);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.bim-btn .material-symbols-outlined {
+  font-size: 1.125rem;
+}
+
+.bim-btn--primary {
+  width: 100%;
+  padding-inline: 1.5rem;
+  background: var(--bim-green);
+  color: #fff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
+}
+
+.bim-btn--primary:hover {
+  background: var(--bim-green-deep);
+}
+
+.bim-btn--ghost {
+  background: #fff;
+  color: var(--bim-green);
+  border-color: var(--bim-line);
+}
+
+.bim-btn--ghost:hover {
+  background: var(--bim-cream);
+  border-color: var(--bim-green);
+}
+
+/* ==========================================================================
+   10. UTILITAS & PREFERENSI PENGGUNA
+   ========================================================================== */
+.bim-backdrop :focus-visible {
+  outline: 2px solid var(--bim-green);
+  outline-offset: 2px;
+}
+
+.bim-header :focus-visible,
+.bim-stage--dark :focus-visible {
+  outline-color: var(--bim-mint);
+}
+
+.bim-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 640px) {
+  .bim-backdrop {
+    padding: 1.25rem;
+  }
+  .bim-header {
+    padding: 1.5rem;
+  }
+  .bim-header__title {
+    font-size: 1.25rem;
+  }
+  .bim-body {
+    padding: 2rem;
+  }
+  .bim-philosophy__quote {
+    font-size: 1.1875rem;
+  }
+  .bim-stage {
+    padding: 2rem;
+  }
+  .bim-showcase-head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .bim-audit {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bim-footer {
+    flex-direction: row;
+  }
+  .bim-btn--primary {
+    width: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .bim-concepts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .bim-variants {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bim-variants {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bim-backdrop *,
+  .bim-backdrop *::before,
+  .bim-backdrop *::after {
+    transition: none !important;
+  }
+}

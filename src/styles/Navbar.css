@@ -1,0 +1,974 @@
+/* ==========================================================================
+   NuSaJoy — Navigation System
+   ========================================================================== */
+
+:root {
+  --nj-nav-surface: #fffdf7;
+  --nj-nav-surface-soft: #faf4dd;
+  --nj-nav-surface-hover: #f0ecdc;
+
+  --nj-nav-primary: #0f7c6d;
+  --nj-nav-primary-dark: #095f54;
+  --nj-nav-primary-soft: rgba(15, 124, 109, 0.09);
+
+  --nj-nav-forest: #174d36;
+  --nj-nav-accent: #b5653a;
+  --nj-nav-gold: #c69a3a;
+
+  --nj-nav-text: #17251e;
+  --nj-nav-muted: #68736d;
+  --nj-nav-border: #dde5df;
+
+  --nj-nav-header-height: 80px;
+  --nj-nav-mobile-height: 74px;
+
+  --nj-nav-radius-sm: 9px;
+  --nj-nav-radius-md: 12px;
+  --nj-nav-radius-lg: 16px;
+
+  /* Very subtle shadow: keeps the header grounded instead of floating. */
+  --nj-nav-shadow:
+    0 1px 0 rgba(23, 37, 30, 0.045);
+
+  --nj-nav-shadow-mobile:
+    0 -8px 25px rgba(23, 37, 30, 0.07);
+
+  --nj-nav-transition: 180ms ease;
+}
+
+
+/* ==========================================================================
+   ROOT
+   ========================================================================== */
+
+.nj-nav {
+  font-family:
+    'Plus Jakarta Sans',
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+}
+
+
+/* ==========================================================================
+   DESKTOP HEADER
+   ========================================================================== */
+
+.nj-nav-header {
+  /*
+   * Desktop navigation stays in the document flow.
+   * This prevents the navbar from sitting on top of the hero content.
+   * `sticky` still lets it remain accessible while scrolling.
+   */
+  position: sticky;
+  top: 0;
+
+  width: 100%;
+  height: var(--nj-nav-header-height);
+
+  z-index: 1000;
+
+  background:
+    rgba(255, 253, 247, 0.97);
+
+  border-bottom:
+    1px solid rgba(221, 229, 223, 0.82);
+
+  box-shadow:
+    var(--nj-nav-shadow);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  isolation: isolate;
+}
+
+
+.nj-nav-header-inner {
+  width:
+    min(
+      calc(100% - 64px),
+      1440px
+    );
+
+  height: 100%;
+
+  margin-inline: auto;
+  padding-inline: 2px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 22px;
+}
+
+
+/* ==========================================================================
+   BRAND
+   ========================================================================== */
+
+.nj-nav-brand-area {
+  display: flex;
+
+  align-items: center;
+
+  flex-shrink: 0;
+
+  gap: 14px;
+
+  min-width: 0;
+}
+
+
+.nj-nav-brand {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  border-radius: var(--nj-nav-radius-sm);
+
+  transition:
+    transform var(--nj-nav-transition),
+    opacity var(--nj-nav-transition);
+}
+
+
+.nj-nav-brand:hover {
+  transform: scale(1.015);
+}
+
+
+.nj-nav-brand:active {
+  transform: scale(0.97);
+}
+
+
+.nj-brand-concept-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  height: 28px;
+
+  padding: 0 10px;
+
+  border:
+    1px solid var(--nj-nav-border);
+
+  border-radius: 999px;
+
+  background:
+    var(--nj-nav-surface-soft);
+
+  color:
+    var(--nj-nav-forest);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background var(--nj-nav-transition),
+    border-color var(--nj-nav-transition),
+    transform var(--nj-nav-transition);
+}
+
+
+.nj-brand-concept-button:hover {
+  background:
+    var(--nj-nav-surface-hover);
+
+  border-color:
+    #cfd9d2;
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* ==========================================================================
+   SEARCH
+   ========================================================================== */
+
+.nj-nav-search {
+  display: flex;
+
+  align-items: center;
+
+  width: 275px;
+
+  height: 42px;
+
+  padding: 0 13px;
+
+  gap: 9px;
+
+  border:
+    1px solid var(--nj-nav-border);
+
+  border-radius:
+    var(--nj-nav-radius-md);
+
+  background:
+    var(--nj-nav-surface-soft);
+
+  transition:
+    background var(--nj-nav-transition),
+    border-color var(--nj-nav-transition),
+    box-shadow var(--nj-nav-transition);
+}
+
+
+.nj-nav-search:focus-within {
+  background: #ffffff;
+
+  border-color:
+    var(--nj-nav-primary);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(15, 124, 109, 0.08);
+}
+
+
+.nj-nav-search-icon {
+  flex-shrink: 0;
+
+  color:
+    var(--nj-nav-muted);
+}
+
+
+.nj-nav-search input {
+  width: 100%;
+
+  min-width: 0;
+
+  padding: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  background: transparent;
+
+  color:
+    var(--nj-nav-text);
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+.nj-nav-search input::placeholder {
+  color:
+    #8b9690;
+}
+
+
+/* ==========================================================================
+   MAIN NAVIGATION
+   ========================================================================== */
+
+.nj-nav-main {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex: 1;
+
+  align-self: stretch;
+
+  gap: 26px;
+
+  min-width: 0;
+}
+
+
+.nj-nav-item {
+  position: relative;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  align-self: stretch;
+
+  gap: 6px;
+
+  padding: 0 2px;
+
+  border: 0;
+  border-bottom: 2px solid transparent;
+
+  background: transparent;
+
+  color:
+    var(--nj-nav-muted);
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    color var(--nj-nav-transition),
+    border-color var(--nj-nav-transition);
+}
+
+
+.nj-nav-item:hover {
+  color:
+    var(--nj-nav-primary);
+}
+
+
+.nj-nav-item.is-active {
+  color:
+    var(--nj-nav-primary);
+
+  font-weight: 750;
+
+  border-bottom-color:
+    var(--nj-nav-primary);
+}
+
+
+/* ==========================================================================
+   ICON
+   ========================================================================== */
+
+.nj-nav-icon {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+
+/* ==========================================================================
+   BADGE
+   ========================================================================== */
+
+.nj-nav-badge {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 19px;
+
+  height: 19px;
+
+  padding: 0 5px;
+
+  border-radius: 999px;
+
+  background:
+    var(--nj-nav-forest);
+
+  color: #ffffff;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  line-height: 1;
+}
+
+
+.nj-nav-badge--mobile {
+  position: absolute;
+
+  top: 3px;
+
+  right: 17%;
+
+  min-width: 16px;
+
+  height: 16px;
+
+  font-size: 8px;
+
+  background:
+    var(--nj-nav-accent);
+
+  border:
+    2px solid var(--nj-nav-surface);
+}
+
+
+/* ==========================================================================
+   ACTIONS
+   ========================================================================== */
+
+.nj-nav-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+
+.nj-action-button {
+  position: relative;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius:
+    var(--nj-nav-radius-md);
+
+  background: transparent;
+
+  color:
+    var(--nj-nav-muted);
+
+  cursor: pointer;
+
+  transition:
+    background var(--nj-nav-transition),
+    color var(--nj-nav-transition),
+    transform 150ms ease;
+}
+
+
+.nj-action-button:hover {
+  background:
+    var(--nj-nav-surface-hover);
+
+  color:
+    var(--nj-nav-primary);
+}
+
+
+.nj-action-button:active {
+  transform: scale(0.94);
+}
+
+
+.nj-action-button.has-value {
+  color:
+    var(--nj-nav-accent);
+}
+
+
+.nj-action-badge {
+  position: absolute;
+
+  top: -3px;
+  right: -3px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 17px;
+  height: 17px;
+
+  padding: 0 4px;
+
+  border-radius: 999px;
+
+  background:
+    var(--nj-nav-accent);
+
+  color: #ffffff;
+
+  border:
+    2px solid var(--nj-nav-surface);
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+
+/* ==========================================================================
+   CREATE TRIP
+   ========================================================================== */
+
+.nj-create-trip-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  height: 40px;
+
+  padding: 0 15px;
+
+  border: 0;
+
+  border-radius:
+    var(--nj-nav-radius-md);
+
+  background:
+    var(--nj-nav-forest);
+
+  color: #ffffff;
+
+  font-size: 12px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 16px
+    rgba(23, 77, 54, 0.12);
+
+  transition:
+    background var(--nj-nav-transition),
+    transform 150ms ease,
+    box-shadow var(--nj-nav-transition);
+}
+
+
+.nj-create-trip-button:hover {
+  background:
+    #0f3524;
+
+  box-shadow:
+    0 7px 19px
+    rgba(23, 77, 54, 0.16);
+}
+
+
+.nj-create-trip-button:active {
+  transform: scale(0.97);
+}
+
+
+/* ==========================================================================
+   DIVIDER
+   ========================================================================== */
+
+.nj-nav-divider {
+  width: 1px;
+
+  height: 28px;
+
+  margin-inline: 2px;
+
+  background:
+    var(--nj-nav-border);
+}
+
+
+/* ==========================================================================
+   PROFILE
+   ========================================================================== */
+
+.nj-profile-button {
+  position: relative;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 2px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.28);
+
+  border-radius: 999px;
+
+  background:
+    var(--nj-nav-surface);
+
+  cursor: pointer;
+
+  transition:
+    border-color var(--nj-nav-transition),
+    transform var(--nj-nav-transition);
+}
+
+
+.nj-profile-button:hover {
+  border-color:
+    var(--nj-nav-forest);
+
+  transform:
+    scale(1.04);
+}
+
+
+.nj-profile-button img {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 999px;
+
+  object-fit: cover;
+  object-position: top;
+
+  border:
+    1px solid
+    var(--nj-nav-forest);
+}
+
+
+.nj-profile-status {
+  position: absolute;
+
+  right: 0;
+  bottom: 0;
+
+  width: 10px;
+  height: 10px;
+
+  border-radius: 999px;
+
+  background:
+    #8fa88c;
+
+  border:
+    2px solid
+    var(--nj-nav-surface);
+}
+
+
+/* ==========================================================================
+   MOBILE NAVIGATION
+   ========================================================================== */
+
+.nj-nav-mobile {
+  display: none;
+}
+
+
+/* ==========================================================================
+   FOCUS
+   ========================================================================== */
+
+.nj-nav button:focus-visible {
+  outline:
+    3px solid
+    rgba(15, 124, 109, 0.22);
+
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   TABLET & MOBILE
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .nj-nav-header {
+    display: none;
+  }
+
+  .nj-nav-mobile {
+    position: fixed;
+
+    inset: auto 0 0 0;
+
+    z-index: 1000;
+
+    display: block;
+
+    min-height:
+      var(--nj-nav-mobile-height);
+
+    padding:
+      5px 8px
+      max(5px, env(safe-area-inset-bottom));
+
+    background:
+      rgba(255, 253, 247, 0.96);
+
+    border-top:
+      1px solid var(--nj-nav-border);
+
+    box-shadow:
+      var(--nj-nav-shadow-mobile);
+
+    backdrop-filter:
+      blur(18px);
+
+    -webkit-backdrop-filter:
+      blur(18px);
+  }
+
+  .nj-nav-mobile-inner {
+    width:
+      min(100%, 600px);
+
+    min-height:
+      64px;
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(5, minmax(0, 1fr));
+
+    align-items: center;
+
+    gap: 3px;
+  }
+
+  .nj-nav-mobile-item {
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    height: 58px;
+
+    min-width: 0;
+
+    padding: 4px 2px;
+
+    border: 0;
+
+    border-radius:
+      var(--nj-nav-radius-md);
+
+    background: transparent;
+
+    color:
+      var(--nj-nav-muted);
+
+    cursor: pointer;
+
+    transition:
+      color var(--nj-nav-transition),
+      background var(--nj-nav-transition),
+      transform 150ms ease;
+  }
+
+  .nj-nav-mobile-item:hover {
+    color:
+      var(--nj-nav-primary);
+  }
+
+  .nj-nav-mobile-item:active {
+    transform: scale(0.94);
+  }
+
+  .nj-nav-mobile-item.is-active {
+    color:
+      var(--nj-nav-primary);
+
+    background:
+      var(--nj-nav-primary-soft);
+  }
+
+  .nj-nav-mobile-item.is-active::before {
+    content: '';
+
+    position: absolute;
+
+    top: 3px;
+    left: 50%;
+
+    width: 20px;
+    height: 3px;
+
+    border-radius: 999px;
+
+    background:
+      var(--nj-nav-primary);
+
+    transform:
+      translateX(-50%);
+  }
+
+  .nj-nav-mobile-item .nj-nav-icon {
+    height: 24px;
+
+    transition:
+      transform var(--nj-nav-transition);
+  }
+
+  .nj-nav-mobile-item.is-active
+  .nj-nav-icon {
+    transform:
+      translateY(-1px)
+      scale(1.05);
+  }
+
+  .nj-nav-mobile-item .nj-nav-label {
+    max-width: 76px;
+
+    margin-top: 4px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 9px;
+
+    line-height: 1.1;
+
+    font-weight: 650;
+  }
+}
+
+
+/* ==========================================================================
+   SMALL MOBILE
+   ========================================================================== */
+
+@media (max-width: 380px) {
+  .nj-nav-mobile {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .nj-nav-mobile-item .nj-nav-label {
+    font-size: 8px;
+  }
+
+  .nj-nav-mobile-item .nj-nav-icon {
+    transform-origin: center;
+  }
+}
+
+
+/* ==========================================================================
+   INTERMEDIATE DESKTOP
+   ========================================================================== */
+
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .nj-nav-header-inner {
+    width: min(calc(100% - 40px), 1120px);
+    gap: 16px;
+  }
+
+  .nj-nav-search {
+    width: 220px;
+  }
+
+  .nj-nav-main {
+    gap: 18px;
+  }
+
+  .nj-nav-item {
+    font-size: 12px;
+  }
+
+  .nj-create-trip-button {
+    padding-inline: 12px;
+  }
+}
+
+
+/* ==========================================================================
+   LARGE DESKTOP
+   ========================================================================== */
+
+@media (min-width: 1280px) {
+  .nj-nav-header-inner {
+    width:
+      min(
+        calc(100% - 80px),
+        1440px
+      );
+  }
+
+  .nj-nav-main {
+    gap: 30px;
+  }
+
+  .nj-nav-search {
+    width: 300px;
+  }
+}
+
+
+/* ==========================================================================
+   EXTRA LARGE DESKTOP
+   ========================================================================== */
+
+@media (min-width: 1440px) {
+  .nj-nav-header-inner {
+    width:
+      min(
+        calc(100% - 112px),
+        1440px
+      );
+  }
+}
+
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .nj-nav *,
+  .nj-nav *::before,
+  .nj-nav *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* ==========================================================================
+   LAYOUT NOTE
+   ==========================================================================
+
+   The desktop header is intentionally `position: sticky` so it remains part
+   of the page flow and cannot overlap the hero section.
+
+   Avoid placing `.nj-nav-header` inside a parent with:
+     overflow: hidden;
+     overflow: auto;
+     overflow: scroll;
+
+   unless that scrolling container is intentional.
+   ========================================================================== */

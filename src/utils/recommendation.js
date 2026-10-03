@@ -1,283 +1,221 @@
-// =====================================================
-// NUSAJOY GUIDE RECOMMENDATION ENGINE
-// =====================================================
-
 /**
- * Menghitung skor rekomendasi sederhana untuk
- * pemandu wisata NuSaJoy.
+ * Menghitung skor kecocokan pengalaman
+ * dengan preferensi pengguna.
  *
- * Faktor:
- * - Rating
- * - Jumlah perjalanan
- * - Kategori
- * - Lokasi pengguna jika tersedia
+ * Bobot:
+ * - minat/tag       : 50%
+ * - budget          : 30%
+ * - lokasi          : 20%
+ *
+ * Fungsi dibuat fleksibel agar bisa menerima
+ * beberapa bentuk data yang berbeda dari
+ * mockData NuSaJoy.
  */
-
-
-function calculateDistance(
-  lat1,
-  lng1,
-  lat2,
-  lng2
-) {
-  if (
-    lat1 == null ||
-    lng1 == null ||
-    lat2 == null ||
-    lng2 == null
-  ) {
-    return null
-  }
-
-  const R = 6371
-
-  const dLat =
-    ((lat2 - lat1) * Math.PI) / 180
-
-  const dLng =
-    ((lng2 - lng1) * Math.PI) / 180
-
-  const a =
-    Math.sin(dLat / 2) *
-      Math.sin(dLat / 2) +
-    Math.cos(
-      (lat1 * Math.PI) / 180
-    ) *
-      Math.cos(
-        (lat2 * Math.PI) / 180
-      ) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2)
-
-  const c =
-    2 *
-    Math.atan2(
-      Math.sqrt(a),
-      Math.sqrt(1 - a)
-    )
-
-  return R * c
-}
-
-
-/**
- * Membuat daftar pemandu yang telah diberi
- * match score dan distance.
- */
-export function getRecommendedGuides(
-  guides = [],
+export const calculateMatchScore = (
+  item,
   preferences = {},
-  userLocation = null
-) {
+) => {
+  if (
+    !item ||
+    typeof item !== 'object'
+  ) {
+    return 0;
+  }
 
-  if (!Array.isArray(guides)) {
-    return []
+  const {
+    interests = [],
+    selectedInterests = [],
+    budget = 0,
+    location = 'semua',
+  } = preferences;
+
+
+  /* =====================================================
+     INTEREST SCORE
+  ===================================================== */
+
+  const userInterests = [
+    ...(Array.isArray(interests)
+      ? interests
+      : []),
+
+    ...(Array.isArray(
+      selectedInterests,
+    )
+      ? selectedInterests
+      : []),
+  ]
+    .map((value) =>
+      String(value)
+        .trim()
+        .toLowerCase(),
+    )
+    .filter(Boolean);
+
+  const itemTags = [
+    ...(Array.isArray(item.tags)
+      ? item.tags
+      : []),
+
+    ...(Array.isArray(
+      item.interestTags,
+    )
+      ? item.interestTags
+      : []),
+
+    ...(Array.isArray(
+      item.interests,
+    )
+      ? item.interests
+      : []),
+  ]
+    .map((value) =>
+      String(value)
+        .trim()
+        .toLowerCase(),
+    )
+    .filter(Boolean);
+
+  let interestScore = 0;
+
+  if (
+    userInterests.length > 0 &&
+    itemTags.length > 0
+  ) {
+    const matched =
+      userInterests.filter(
+        (interest) =>
+          itemTags.includes(
+            interest,
+          ),
+      ).length;
+
+    interestScore =
+      Math.min(
+        1,
+        matched /
+          userInterests.length,
+      );
   }
 
 
-  return guides
-    .map((guide) => {
+  /* =====================================================
+     BUDGET SCORE
+  ===================================================== */
 
-      let score = 0
+  const itemPrice =
+    Number(
+      item.pricePerPerson ??
+      item.price ??
+      item.pricePerDay ??
+      item.startingPrice ??
+      0,
+    );
 
+  const userBudget =
+    Number(budget);
 
-      // =================================================
-      // RATING
-      // =================================================
+  let budgetScore;
 
-      const rating =
-        Number(guide.rating) || 0
+  if (
+    Number.isFinite(
+      userBudget,
+    ) &&
+    userBudget > 0 &&
+    itemPrice > 0
+  ) {
+    if (
+      itemPrice <= userBudget
+    ) {
+      budgetScore = 1;
+    } else {
+      /**
+       * Semakin jauh dari budget,
+       * skor semakin turun.
+       */
+      const difference =
+        itemPrice -
+        userBudget;
 
-      score += rating * 12
-
-
-      // =================================================
-      // TRIPS
-      // =================================================
-
-      const trips =
-        Number(
-          guide.trips ??
-          guide.total_trips ??
-          0
-        )
-
-      score += Math.min(
-        trips / 10,
-        15
-      )
-
-
-      // =================================================
-      // VERIFIED
-      // =================================================
-
-      if (guide.verified) {
-        score += 10
-      }
-
-
-      // =================================================
-      // AVAILABLE
-      // =================================================
-
-      if (
-        guide.status !== 'offline'
-      ) {
-        score += 5
-      }
-
-
-      // =================================================
-      // CATEGORY MATCH
-      // =================================================
-
-      const selectedCategory =
-        preferences.category
-
-      if (
-        selectedCategory &&
-        selectedCategory !== 'Semua'
-      ) {
-
-        const guideCategories = [
-          ...(Array.isArray(
-            guide.specialties
-          )
-            ? guide.specialties
-            : []),
-
-          ...(Array.isArray(
-            guide.categories
-          )
-            ? guide.categories
-            : []),
-
-          ...(guide.category
-            ? [guide.category]
-            : []),
-        ]
-          .map((item) =>
-            String(item).toLowerCase()
-          )
+      budgetScore =
+        Math.max(
+          0,
+          1 -
+            difference /
+              userBudget,
+        );
+    }
+  } else {
+    /**
+     * Bila budget belum dipilih,
+     * jangan menghukum skor.
+     */
+    budgetScore = 1;
+  }
 
 
-        if (
-          guideCategories.includes(
-            String(
-              selectedCategory
-            ).toLowerCase()
-          )
-        ) {
-          score += 20
-        }
-      }
+  /* =====================================================
+     LOCATION SCORE
+  ===================================================== */
 
-
-      // =================================================
-      // DISTANCE
-      // =================================================
-
-      let distanceKm = null
-
-
-      const userLat =
-        userLocation?.lat
-
-      const userLng =
-        userLocation?.lng
-
-
-      const guideLat =
-        guide.latitude ??
-        guide.lat ??
-        guide.location_lat
-
-      const guideLng =
-        guide.longitude ??
-        guide.lng ??
-        guide.location_lng
-
-
-      if (
-        userLat != null &&
-        userLng != null &&
-        guideLat != null &&
-        guideLng != null
-      ) {
-
-        distanceKm =
-          calculateDistance(
-            Number(userLat),
-            Number(userLng),
-            Number(guideLat),
-            Number(guideLng)
-          )
-
-
-        if (
-          distanceKm != null
-        ) {
-
-          if (distanceKm < 10) {
-            score += 20
-          }
-
-          else if (
-            distanceKm < 50
-          ) {
-            score += 15
-          }
-
-          else if (
-            distanceKm < 100
-          ) {
-            score += 10
-          }
-
-          else if (
-            distanceKm < 300
-          ) {
-            score += 5
-          }
-        }
-      }
-
-
-      // =================================================
-      // MATCH SCORE
-      // =================================================
-
-      const matchScore =
-        Math.min(
-          100,
-          Math.max(
-            0,
-            Math.round(score)
-          )
-        )
-
-
-      return {
-        ...guide,
-        matchScore,
-        distanceKm,
-      }
-
-    })
-
-
-    // =================================================
-    // SORT RECOMMENDATION
-    // =================================================
-
-    .sort(
-      (a, b) =>
-        Number(
-          b.matchScore || 0
-        ) -
-        Number(
-          a.matchScore || 0
-        )
+  const requestedLocation =
+    String(
+      location || 'semua',
     )
-}
+      .trim()
+      .toLowerCase();
+
+  const itemLocation =
+    String(
+      item.location ??
+      item.address ??
+      item.city ??
+      '',
+    )
+      .trim()
+      .toLowerCase();
+
+  let locationScore = 1;
+
+  if (
+    requestedLocation !==
+      'semua' &&
+    requestedLocation
+  ) {
+    const normalizedLocation =
+      requestedLocation
+        .replace(
+          /[^a-z0-9]+/g,
+          ' ',
+        )
+        .trim();
+
+    locationScore =
+      itemLocation.includes(
+        normalizedLocation,
+      ) ||
+      normalizedLocation.includes(
+        itemLocation,
+      )
+        ? 1
+        : 0;
+  }
+
+
+  /* =====================================================
+     FINAL SCORE
+  ===================================================== */
+
+  const score =
+    interestScore * 0.5 +
+    budgetScore * 0.3 +
+    locationScore * 0.2;
+
+
+  /**
+   * Kembalikan 0–100.
+   */
+  return Math.round(
+    score * 100,
+  );
+};
