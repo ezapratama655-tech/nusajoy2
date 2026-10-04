@@ -1,30 +1,239 @@
-/**
- * @file src/components/DetailPemanduModal.jsx
- * NuSaJoy Detail Pemandu Wisata Lokal
- *
- * Aturan Bagian 3 & 6:
- * - "Tambah ke Perjalanan" terhubung nyata ke My Trip, dengan konfirmasi + "Buka My Trip".
- * - Memakai Booking Summary universal yang sama (onOpenBookingSummary).
- * - Desktop: kartu booking sticky di kanan. Mobile: bar sticky di bawah.
- *
- * Perbaikan: hooks di atas early return, banner sukses reset saat pemandu berganti,
- * duplikasi handler desktop/mobile dijadikan satu, kontainer scroll di dalam modal
- * (bar atas/bawah selalu terlihat di mobile), tombol berubah jadi "Buka My Trip"
- * bila pemandu sudah ada di trip.
- */
+import { useMemo, useState } from 'react'
+import useModalBehavior, {
+  getBackdropProps,
+} from '../hooks/useModalBehavior.js'
+import {
+  formatGuidePrice,
+  getGuidePrice,
+} from '../utils/guide.js'
+import '../styles/DetailPemanduModal.css'
 
-import { useEffect, useState } from 'react';
-import useModalBehavior, { getBackdropProps } from '../hooks/useModalBehavior.js';
-import { getItemPrice, getItemPriceLabel, guideToTripItem } from '../utils/format.js';
 
-// PLACEHOLDER: ganti dengan ulasan asli lewat `guide.featuredReview = { text, author }`.
-const buildFallbackReview = (guide) => ({
-  text: `Menjelajah bersama ${guide.name} terasa seperti diajak berkeliling oleh sahabat lama di kampung halaman. Beliau menceritakan filosofi arsitektur dan mengajak kami mencicipi jajanan yang tidak ada di Google Maps!`,
-  author: 'Rian S. (Wisatawan dari Jakarta, Agustus 2026)',
-});
+// =====================================================
+// CONSTANT
+// =====================================================
+
+const FALLBACK_GUIDE_IMAGE =
+  'data:image/svg+xml;charset=UTF-8,' +
+  encodeURIComponent(`
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="200"
+      height="200"
+      viewBox="0 0 200 200"
+    >
+      <rect width="200" height="200" rx="100" fill="#CFEACB"/>
+      <circle cx="100" cy="76" r="34" fill="#174D36"/>
+      <path
+        d="M40 170c8-37 30-55 60-55s52 18 60 55"
+        fill="#174D36"
+      />
+    </svg>
+  `)
+
+
+// =====================================================
+// HELPERS
+// =====================================================
+
+const toNumber = (value, fallback = 0) => {
+  const number = Number(value)
+
+  return Number.isFinite(number)
+    ? number
+    : fallback
+}
+
+
+const normalizeList = (value) => {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean)
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+  }
+
+  return []
+}
+
+
+const normalizeGuide = (rawGuide) => {
+  if (!rawGuide) return null
+
+  return {
+    ...rawGuide,
+
+    id:
+      rawGuide.id ??
+      rawGuide.guide_id ??
+      rawGuide.slug ??
+      `guide-${Date.now()}`,
+
+    name:
+      rawGuide.name ||
+      rawGuide.full_name ||
+      rawGuide.fullName ||
+      'Pemandu Lokal',
+
+    role:
+      rawGuide.role ||
+      rawGuide.position ||
+      'Local Travel Guide',
+
+    city:
+      rawGuide.city ||
+      rawGuide.location_city ||
+      rawGuide.location ||
+      'Indonesia',
+
+    location:
+      rawGuide.location ||
+      rawGuide.city ||
+      'Lokasi belum tersedia',
+
+    avatar:
+      rawGuide.avatar ||
+      rawGuide.avatar_url ||
+      rawGuide.image_url ||
+      FALLBACK_GUIDE_IMAGE,
+
+    rating: toNumber(rawGuide.rating, 0),
+
+    reviewCount: toNumber(
+      rawGuide.reviewCount ??
+        rawGuide.review_count ??
+        rawGuide.reviews_count,
+      0
+    ),
+
+    trips: toNumber(
+      rawGuide.trips ??
+        rawGuide.trip_count ??
+        rawGuide.total_trips,
+      0
+    ),
+
+    experience:
+      rawGuide.experience ??
+      rawGuide.experience_years ??
+      rawGuide.years_of_experience ??
+      '—',
+
+    status:
+      rawGuide.status ||
+      rawGuide.availability ||
+      'active',
+
+    bio:
+      rawGuide.bio ||
+      rawGuide.description ||
+      `Kenali ${rawGuide.name || 'pemandu lokal'} lebih dekat dan nikmati perjalanan dengan perspektif lokal.`,
+
+    specialties: normalizeList(
+      rawGuide.specialties ??
+      rawGuide.specialization ??
+      rawGuide.skills
+    ),
+
+    languages: normalizeList(
+      rawGuide.languages ??
+      rawGuide.language
+    ),
+
+    certified:
+      rawGuide.certified ??
+      rawGuide.is_certified ??
+      rawGuide.isCertified ??
+      true,
+
+    featuredReview:
+      rawGuide.featuredReview ??
+      rawGuide.featured_review ??
+      null,
+  }
+}
+
+
+const fallbackReview = (guide) => ({
+  text:
+    `Menjelajah bersama ${guide.name} terasa seperti diajak berkeliling oleh sahabat lama di kampung halaman.`,
+  author: 'Traveler NuSaJoy',
+})
+
+
+// =====================================================
+// COMPONENT WRAPPER
+// =====================================================
 
 export default function DetailPemanduModal({
   isOpen,
+  onClose,
+  guide: rawGuide,
+  onAddToTrip,
+  onOpenBookingSummary,
+  onGoToMyTrip,
+  isFavorited = false,
+  onToggleFavorite,
+  isInTrip = false,
+}) {
+  const guide = useMemo(
+    () => normalizeGuide(rawGuide),
+    [rawGuide]
+  )
+
+  useModalBehavior(
+    isOpen && Boolean(guide),
+    onClose
+  )
+
+
+  // ===================================================
+  // GUARD
+  // ===================================================
+
+  if (!isOpen || !guide) {
+    return null
+  }
+
+
+  // ===================================================
+  // KEYED CONTENT
+  // ===================================================
+  //
+  // Ketika:
+  // - modal ditutup -> component di-unmount
+  // - modal dibuka lagi -> state baru
+  // - guide berubah -> component dibuat ulang
+  //
+  // Dengan cara ini addedSuccess tetap reset tanpa
+  // memanggil setState() secara synchronous di useEffect.
+  //
+
+  return (
+    <DetailPemanduModalContent
+      key={String(guide.id)}
+      onClose={onClose}
+      guide={guide}
+      onAddToTrip={onAddToTrip}
+      onOpenBookingSummary={onOpenBookingSummary}
+      onGoToMyTrip={onGoToMyTrip}
+      isFavorited={isFavorited}
+      onToggleFavorite={onToggleFavorite}
+      isInTrip={isInTrip}
+    />
+  )
+}
+
+
+// =====================================================
+// MODAL CONTENT
+// =====================================================
+
+function DetailPemanduModalContent({
   onClose,
   guide,
   onAddToTrip,
@@ -34,245 +243,785 @@ export default function DetailPemanduModal({
   onToggleFavorite,
   isInTrip = false,
 }) {
-  const [addedSuccess, setAddedSuccess] = useState(false);
+  // ===================================================
+  // SUCCESS STATE
+  // ===================================================
 
-  useModalBehavior(isOpen && Boolean(guide), onClose);
+  const [addedSuccess, setAddedSuccess] =
+    useState(false)
 
-  useEffect(() => {
-    setAddedSuccess(false);
-  }, [guide?.id, isOpen]);
 
-  if (!isOpen || !guide) return null;
+  // ===================================================
+  // DERIVED DATA
+  // ===================================================
 
-  const inTrip = isInTrip || addedSuccess;
-  const priceLabel = getItemPriceLabel(guide);
-  const review = guide.featuredReview || buildFallbackReview(guide);
+  const inTrip =
+    isInTrip ||
+    addedSuccess
+
+  const priceLabel =
+    formatGuidePrice(guide)
+
+  const price =
+    getGuidePrice(guide)
+
+  const review =
+    guide.featuredReview ||
+    fallbackReview(guide)
+
+  const isOffline =
+    String(guide.status).toLowerCase() === 'offline'
+
+  const availabilityLabel =
+    isOffline
+      ? 'Sedang Offline'
+      : 'Sedang Aktif'
+
+
+  // ===================================================
+  // HANDLERS
+  // ===================================================
 
   const handleAddTrip = () => {
-    onAddToTrip?.(guideToTripItem(guide));
-    setAddedSuccess(true);
-  };
+    onAddToTrip?.({
+      ...guide,
 
-  const handleGoToMyTrip = () => {
-    onClose?.();
-    onGoToMyTrip?.();
-  };
-
-  const handleBook = () =>
-    onOpenBookingSummary?.({
-      title: `Pendampingan Wisata bersama ${guide.name}`,
-      location: guide.location,
-      price: getItemPrice(guide),
-      guide,
-      name: guide.name,
       type: 'guide',
-      meetingPoint: `Dikoordinasikan langsung bersama ${guide.name}`,
-    });
+      title: guide.name,
+      price,
+      guide,
+    })
+
+    setAddedSuccess(true)
+  }
+
+
+  const handleMyTrip = () => {
+    onClose?.()
+    onGoToMyTrip?.()
+  }
+
+
+  const handleBook = () => {
+    onOpenBookingSummary?.({
+      title:
+        `Pendampingan Wisata bersama ${guide.name}`,
+
+      location: guide.location,
+
+      price,
+
+      guide,
+
+      name: guide.name,
+
+      type: 'guide',
+
+      meetingPoint:
+        `Dikoordinasikan langsung bersama ${guide.name}`,
+    })
+  }
+
+
+  const handleFavorite = () => {
+    onToggleFavorite?.(guide)
+  }
+
+
+  // ===================================================
+  // RENDER
+  // ===================================================
 
   return (
     <div
+      className="guide-modal"
       role="dialog"
       aria-modal="true"
-      aria-label={`Detail pemandu ${guide.name}`}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-0 sm:p-4"
+      aria-labelledby="guide-modal-title"
       {...getBackdropProps(onClose)}
     >
-      <div className="bg-[#FFFDF7] h-dvh sm:h-auto sm:max-h-[92vh] sm:rounded-[28px] max-w-4xl w-full overflow-hidden shadow-2xl border border-[#DDE2D9] flex flex-col">
-        {/* Bar atas */}
-        <div className="bg-[#FFFDF7] px-5 py-3.5 border-b border-[#DDE2D9] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[13px] font-bold text-[#174D36] font-['Plus_Jakarta_Sans']">Pemandu Wisata Budaya</span>
-            <span className="text-[#68736D] text-xs">·</span>
-            <span className="text-[13px] font-medium text-[#68736D] truncate">{guide.city}</span>
+
+      <div className="guide-modal__panel">
+
+
+        {/* =================================================
+            HEADER
+        ================================================= */}
+
+        <header className="guide-modal__header">
+
+          <div className="guide-modal__header-info">
+
+            <span className="guide-modal__eyebrow">
+              PEMANDU LOKAL
+            </span>
+
+            <span className="guide-modal__separator">
+              ·
+            </span>
+
+            <span className="guide-modal__city">
+              {guide.city}
+            </span>
+
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+
+          <div className="guide-modal__header-actions">
+
             <button
               type="button"
-              onClick={() => onToggleFavorite?.(guide)}
+              className={`guide-icon-button ${
+                isFavorited
+                  ? 'guide-icon-button--favorite'
+                  : ''
+              }`}
+              onClick={handleFavorite}
               aria-pressed={isFavorited}
-              className="p-2 rounded-xl text-[#68736D] hover:text-[#B5653A] hover:bg-[#FAF4DD] transition-colors cursor-pointer"
-              title={isFavorited ? 'Hapus dari Favorit' : 'Simpan ke Favorit'}
-              aria-label={isFavorited ? 'Hapus dari Favorit' : 'Simpan ke Favorit'}
+              aria-label={
+                isFavorited
+                  ? 'Hapus pemandu dari favorit'
+                  : 'Simpan pemandu ke favorit'
+              }
+              title={
+                isFavorited
+                  ? 'Hapus favorit'
+                  : 'Tambah favorit'
+              }
             >
-              <span className={`material-symbols-outlined text-xl ${isFavorited ? 'icon-fill text-[#B5653A]' : ''}`}>
+
+              <span className="material-symbols-outlined">
                 favorite
               </span>
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="p-2 rounded-xl text-[#68736D] hover:text-[#17251E] hover:bg-[#EEE8D2] transition-colors cursor-pointer"
-              title="Tutup"
-              aria-label="Tutup"
-            >
-              <span className="material-symbols-outlined text-xl">close</span>
-            </button>
-          </div>
-        </div>
 
-        {/* Banner sukses */}
-        {addedSuccess && (
-          <div
-            role="status"
-            className="bg-[#CFEACB] border-b border-[#8FA88C] px-5 py-3 flex items-center justify-between gap-3 text-[#174D36] text-[13px] font-medium shrink-0"
-          >
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-xl">task_alt</span>
-              <span>
-                Pemandu <strong>{guide.name}</strong> ditambahkan ke My Trip.
-              </span>
-            </div>
+            </button>
+
+
             <button
               type="button"
-              onClick={handleGoToMyTrip}
-              className="px-3 py-1 bg-[#174D36] text-white rounded-lg text-xs font-semibold hover:bg-[#0F3524] transition-colors cursor-pointer shrink-0"
+              className="guide-icon-button"
+              onClick={onClose}
+              aria-label="Tutup detail pemandu"
+              title="Tutup"
+            >
+
+              <span className="material-symbols-outlined">
+                close
+              </span>
+
+            </button>
+
+          </div>
+
+        </header>
+
+
+        {/* =================================================
+            SUCCESS NOTICE
+        ================================================= */}
+
+        {addedSuccess && (
+          <div className="guide-success">
+
+            <div className="guide-success__content">
+
+              <div className="guide-success__icon">
+
+                <span className="material-symbols-outlined">
+                  task_alt
+                </span>
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Pemandu ditambahkan
+                </strong>
+
+                <span>
+                  {guide.name} sudah masuk ke My Trip.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="button"
+              className="guide-success__button"
+              onClick={handleMyTrip}
             >
               Buka My Trip
             </button>
+
           </div>
         )}
 
-        {/* Isi yang bisa di-scroll */}
-        <div className="overflow-y-auto flex-1 min-h-0 p-5 sm:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Kiri */}
-            <div className="lg:col-span-8 space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 p-6 bg-[#FAF4DD] rounded-[22px] border border-[#DDE2D9]">
-                <img
-                  src={guide.avatar}
-                  alt={guide.name}
-                  className="w-20 h-20 rounded-full object-cover ring-4 ring-[#174D36] shrink-0"
-                />
-                <div className="space-y-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="font-['Outfit'] text-[22px] font-bold text-[#17251E]">{guide.name}</h1>
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#CFEACB] text-[#174D36] text-[11px] font-bold">
-                      <span className="material-symbols-outlined text-xs">verified</span>
-                      Terverifikasi
-                    </span>
-                  </div>
-                  <p className="text-[14px] text-[#68736D]">{guide.role}</p>
-                  <p className="text-[13px] text-[#174D36] font-medium flex items-center gap-1.5 pt-1">
-                    <span className="material-symbols-outlined icon-fill text-sm text-[#C69A3A]">star</span>
-                    <strong>{guide.rating}</strong> ({guide.reviewCount} ulasan) · <strong>{guide.tripsCount}+</strong>{' '}
-                    perjalanan
-                  </p>
-                </div>
-              </div>
 
-              <div className="p-4 rounded-[18px] bg-white border border-[#DDE2D9] space-y-2">
-                <span className="text-[12px] font-bold text-[#B5653A]">Sertifikasi & etika warga</span>
-                <div className="flex items-center gap-2 text-[13px] text-[#17251E]">
-                  <span className="material-symbols-outlined text-[#174D36] text-base">badge</span>
-                  <span>{guide.license || 'Lisensi Resmi Himpunan Pramuwisata Indonesia'}</span>
-                </div>
-                <div className="flex items-center gap-2 text-[13px] text-[#68736D]">
-                  <span className="material-symbols-outlined text-[#174D36] text-base">diversity_3</span>
-                  <span>Lulus Pelatihan Tata Krama Komunitas Adat & Protokol Keamanan Tamu</span>
-                </div>
-              </div>
+        {/* =================================================
+            MAIN
+        ================================================= */}
 
-              <div className="space-y-2">
-                <h2 className="font-['Outfit'] text-[18px] font-bold text-[#17251E]">Cerita & latar belakang</h2>
-                <p className="text-[15px] text-[#68736D] leading-relaxed">
-                  {guide.bio || 'Pemandu lokal berdedikasi tinggi yang lahir dan dibesarkan di lingkungan budaya setempat.'}
-                </p>
-              </div>
+        <main className="guide-modal__body">
 
-              {guide.specialties?.length > 0 && (
-                <div className="space-y-2.5">
-                  <h2 className="font-['Outfit'] text-[18px] font-bold text-[#17251E]">Fokus & keahlian khusus</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {guide.specialties.map((spec) => (
-                      <span
-                        key={spec}
-                        className="px-3.5 py-1.5 rounded-full bg-[#FAF4DD] border border-[#DDE2D9] text-[#17251E] text-[13px] font-medium"
-                      >
-                        {spec}
+          <div className="guide-modal__layout">
+
+
+            {/* =================================================
+                LEFT CONTENT
+            ================================================= */}
+
+            <div className="guide-modal__main">
+
+
+              {/* PROFILE HERO */}
+
+              <section className="guide-profile-card">
+
+                <div className="guide-profile-card__avatar-wrap">
+
+                  <img
+                    src={guide.avatar}
+                    alt={`Foto ${guide.name}`}
+                    className="guide-profile-card__avatar"
+                    onError={(event) => {
+                      event.currentTarget.src =
+                        FALLBACK_GUIDE_IMAGE
+                    }}
+                  />
+
+                  <span
+                    className={`guide-status-dot ${
+                      isOffline
+                        ? 'guide-status-dot--offline'
+                        : ''
+                    }`}
+                    title={availabilityLabel}
+                  />
+
+                </div>
+
+
+                <div className="guide-profile-card__content">
+
+                  <div className="guide-profile-card__title-row">
+
+                    <h1 id="guide-modal-title">
+                      {guide.name}
+                    </h1>
+
+                    {guide.certified && (
+                      <span className="guide-certified">
+
+                        <span className="material-symbols-outlined">
+                          verified
+                        </span>
+
+                        Tersertifikasi
+
                       </span>
-                    ))}
+                    )}
+
                   </div>
+
+
+                  <p className="guide-profile-card__role">
+                    {guide.role}
+                  </p>
+
+
+                  <div className="guide-rating">
+
+                    <span className="material-symbols-outlined guide-rating__star">
+                      star
+                    </span>
+
+                    <strong>
+                      {guide.rating > 0
+                        ? guide.rating.toFixed(1)
+                        : 'Baru'}
+                    </strong>
+
+                    <span>
+                      ({guide.reviewCount} ulasan)
+                    </span>
+
+                    <span className="guide-rating__dot">
+                      ·
+                    </span>
+
+                    <strong>
+                      {guide.trips}+
+                    </strong>
+
+                    <span>
+                      perjalanan
+                    </span>
+
+                  </div>
+
                 </div>
+
+              </section>
+
+
+              {/* QUICK STATS */}
+
+              <section className="guide-stats">
+
+                <div className="guide-stat">
+
+                  <strong>
+                    {guide.experience}
+                  </strong>
+
+                  <span>
+                    Tahun pengalaman
+                  </span>
+
+                </div>
+
+
+                <div className="guide-stat">
+
+                  <strong>
+                    {guide.trips}+
+                  </strong>
+
+                  <span>
+                    Perjalanan
+                  </span>
+
+                </div>
+
+
+                <div className="guide-stat">
+
+                  <strong
+                    className={
+                      isOffline
+                        ? 'guide-stat__offline'
+                        : 'guide-stat__active'
+                    }
+                  >
+                    {isOffline
+                      ? 'Offline'
+                      : 'Aktif'}
+                  </strong>
+
+                  <span>
+                    Status
+                  </span>
+
+                </div>
+
+              </section>
+
+
+              {/* ABOUT */}
+
+              <section className="guide-section">
+
+                <div className="guide-section__heading">
+
+                  <div className="guide-section__icon">
+
+                    <span className="material-symbols-outlined">
+                      person
+                    </span>
+
+                  </div>
+
+
+                  <div>
+
+                    <span className="guide-section__kicker">
+                      TENTANG PEMANDU
+                    </span>
+
+                    <h2>
+                      Cerita & latar belakang
+                    </h2>
+
+                  </div>
+
+                </div>
+
+
+                <p className="guide-section__text">
+                  {guide.bio}
+                </p>
+
+              </section>
+
+
+              {/* LOCATION / LANGUAGE */}
+
+              {(guide.languages.length > 0 ||
+                guide.location) && (
+
+                <section className="guide-info-grid">
+
+                  {guide.location && (
+                    <div className="guide-info-card">
+
+                      <div className="guide-info-card__icon">
+
+                        <span className="material-symbols-outlined">
+                          location_on
+                        </span>
+
+                      </div>
+
+
+                      <div>
+
+                        <span>
+                          Area layanan
+                        </span>
+
+                        <strong>
+                          {guide.location}
+                        </strong>
+
+                      </div>
+
+                    </div>
+                  )}
+
+
+                  {guide.languages.length > 0 && (
+                    <div className="guide-info-card">
+
+                      <div className="guide-info-card__icon">
+
+                        <span className="material-symbols-outlined">
+                          translate
+                        </span>
+
+                      </div>
+
+
+                      <div>
+
+                        <span>
+                          Bahasa
+                        </span>
+
+                        <strong>
+                          {guide.languages.join(' · ')}
+                        </strong>
+
+                      </div>
+
+                    </div>
+                  )}
+
+                </section>
               )}
 
-              <figure className="bg-[#FAF4DD]/70 rounded-[20px] p-5 border border-[#DDE2D9] space-y-3">
-                <figcaption className="font-['Outfit'] text-[16px] font-bold text-[#17251E]">Ulasan pelancong</figcaption>
-                <blockquote className="text-[13px] text-[#68736D] italic leading-relaxed">“{review.text}”</blockquote>
-                <p className="text-[12px] font-semibold text-[#17251E]">— {review.author}</p>
+
+              {/* SPECIALTIES */}
+
+              {guide.specialties.length > 0 && (
+
+                <section className="guide-section">
+
+                  <div className="guide-section__heading">
+
+                    <div className="guide-section__icon">
+
+                      <span className="material-symbols-outlined">
+                        explore
+                      </span>
+
+                    </div>
+
+
+                    <div>
+
+                      <span className="guide-section__kicker">
+                        KEAHLIAN
+                      </span>
+
+                      <h2>
+                        Fokus keahlian
+                      </h2>
+
+                    </div>
+
+                  </div>
+
+
+                  <div className="guide-specialties">
+
+                    {guide.specialties.map(
+                      (item, index) => (
+                        <span
+                          key={`${item}-${index}`}
+                          className="guide-specialty"
+                        >
+
+                          <span className="material-symbols-outlined">
+                            check_circle
+                          </span>
+
+                          {item}
+
+                        </span>
+                      )
+                    )}
+
+                  </div>
+
+                </section>
+              )}
+
+
+              {/* REVIEW */}
+
+              <figure className="guide-review">
+
+                <div className="guide-review__top">
+
+                  <div className="guide-review__icon">
+
+                    <span className="material-symbols-outlined">
+                      format_quote
+                    </span>
+
+                  </div>
+
+
+                  <div>
+
+                    <span className="guide-section__kicker">
+                      TRAVELER REVIEW
+                    </span>
+
+                    <figcaption>
+                      Ulasan pelancong
+                    </figcaption>
+
+                  </div>
+
+                </div>
+
+
+                <blockquote>
+                  “{review.text}”
+                </blockquote>
+
+
+                <div className="guide-review__author">
+
+                  <span className="guide-review__avatar">
+                    {review.author
+                      ?.charAt(0)
+                      ?.toUpperCase() || 'T'}
+                  </span>
+
+                  <span>
+                    {review.author}
+                  </span>
+
+                </div>
+
               </figure>
+
             </div>
 
-            {/* Kanan: kartu booking sticky (desktop) */}
-            <aside className="hidden lg:block lg:col-span-4 lg:sticky lg:top-0 self-start">
-              <div className="bg-[#FAF4DD] rounded-[24px] p-6 border border-[#DDE2D9] shadow-lg space-y-5">
-                <div>
-                  <span className="text-[12px] text-[#68736D] block">Tarif pendampingan</span>
-                  <span className="font-['Outfit'] text-[26px] font-bold text-[#174D36] block mt-1">{priceLabel}</span>
-                  <p className="text-[11px] text-[#68736D] mt-1">100% langsung disalurkan ke pemandu tanpa potongan agen</p>
+
+            {/* =================================================
+                DESKTOP BOOKING SIDEBAR
+            ================================================= */}
+
+            <aside className="guide-booking-sidebar">
+
+              <div className="guide-booking-card">
+
+
+                {/* CARD TOP */}
+
+                <div className="guide-booking-card__top">
+
+                  <span className="guide-booking-card__label">
+                    TARIF PENDAMPINGAN
+                  </span>
+
+                  <strong className="guide-booking-card__price">
+                    {priceLabel}
+                  </strong>
+
+                  <p>
+                    Koordinasi langsung dengan pemandu,
+                    tanpa markup agen.
+                  </p>
+
                 </div>
 
-                <div className="space-y-3 pt-3 border-t border-[#DDE2D9]">
-                  <button
-                    type="button"
-                    onClick={inTrip ? handleGoToMyTrip : handleAddTrip}
-                    className="w-full py-3.5 px-4 rounded-[14px] bg-[#174D36] hover:bg-[#0F3524] text-white font-semibold text-[14px] flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-lg">{inTrip ? 'luggage' : 'add_location_alt'}</span>
-                    <span>{inTrip ? 'Sudah di My Trip, buka' : 'Tambah ke Perjalanan'}</span>
-                  </button>
+
+                {/* QUICK BENEFITS */}
+
+                <div className="guide-benefits">
+
+                  <div>
+
+                    <span className="material-symbols-outlined">
+                      verified
+                    </span>
+
+                    <span>
+                      Pemandu lokal
+                    </span>
+
+                  </div>
+
+
+                  <div>
+
+                    <span className="material-symbols-outlined">
+                      handshake
+                    </span>
+
+                    <span>
+                      Koordinasi langsung
+                    </span>
+
+                  </div>
+
+
+                  <div>
+
+                    <span className="material-symbols-outlined">
+                      luggage
+                    </span>
+
+                    <span>
+                      Bisa ditambahkan ke My Trip
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                {/* ACTIONS */}
+
+                <div className="guide-booking-actions">
 
                   <button
                     type="button"
+                    className="guide-primary-button"
+                    onClick={
+                      inTrip
+                        ? handleMyTrip
+                        : handleAddTrip
+                    }
+                  >
+
+                    <span className="material-symbols-outlined">
+                      {inTrip
+                        ? 'luggage'
+                        : 'add_location_alt'}
+                    </span>
+
+                    <span>
+                      {inTrip
+                        ? 'Sudah di My Trip'
+                        : 'Tambah ke Perjalanan'}
+                    </span>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    className="guide-secondary-button"
                     onClick={handleBook}
-                    className="w-full py-3 px-4 rounded-[14px] bg-white hover:bg-[#FFFDF7] text-[#174D36] font-semibold text-[14px] border border-[#174D36] flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-lg">bolt</span>
-                    <span>Pesan Pemandu Sekarang</span>
+
+                    <span className="material-symbols-outlined">
+                      bolt
+                    </span>
+
+                    <span>
+                      Pesan Pemandu Sekarang
+                    </span>
+
                   </button>
+
                 </div>
 
-                <div className="pt-2 text-[12px] text-[#68736D] space-y-1.5 border-t border-[#DDE2D9]/80">
-                  <div className="flex items-center gap-2 text-[#174D36]">
-                    <span className="material-symbols-outlined text-sm">lock</span>
-                    <span>Tarif adil & bermartabat</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-sm">forum</span>
-                    <span>Koordinasi WhatsApp langsung setelah konfirmasi</span>
-                  </div>
-                </div>
+
+                <p className="guide-booking-note">
+                  Belum melakukan pembayaran.
+                  Booking akan dilanjutkan melalui
+                  ringkasan pemesanan.
+                </p>
+
               </div>
+
             </aside>
-          </div>
-        </div>
 
-        {/* Bar bawah (mobile) */}
-        <div className="lg:hidden bg-[#FFFDF7] border-t border-[#DDE2D9] px-5 py-3.5 pb-[max(0.875rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] shrink-0">
-          <div>
-            <span className="text-[11px] text-[#68736D] block">Tarif</span>
-            <span className="font-['Outfit'] text-[17px] font-bold text-[#174D36]">{priceLabel}</span>
           </div>
 
-          <div className="flex items-center gap-2">
+        </main>
+
+
+        {/* =================================================
+            MOBILE BOTTOM ACTION
+        ================================================= */}
+
+        <footer className="guide-mobile-actions">
+
+          <div className="guide-mobile-price">
+
+            <span>
+              Mulai dari
+            </span>
+
+            <strong>
+              {priceLabel}
+            </strong>
+
+          </div>
+
+
+          <div className="guide-mobile-buttons">
+
             <button
               type="button"
-              onClick={inTrip ? handleGoToMyTrip : handleAddTrip}
-              className="py-2.5 px-3.5 rounded-xl bg-[#FAF4DD] hover:bg-[#EEE8D2] text-[#174D36] font-semibold text-[13px] border border-[#DDE2D9] flex items-center gap-1.5 cursor-pointer"
+              className="guide-mobile-trip"
+              onClick={
+                inTrip
+                  ? handleMyTrip
+                  : handleAddTrip
+              }
             >
-              <span className="material-symbols-outlined text-base">{inTrip ? 'luggage' : 'add_location_alt'}</span>
-              <span>{inTrip ? 'My Trip' : '+ Trip'}</span>
+              {inTrip
+                ? 'My Trip'
+                : '+ Trip'}
             </button>
+
+
             <button
               type="button"
+              className="guide-mobile-book"
               onClick={handleBook}
-              className="py-2.5 px-4 rounded-xl bg-[#174D36] hover:bg-[#0F3524] text-white font-semibold text-[13px] shadow-sm cursor-pointer"
             >
               Pesan
             </button>
+
           </div>
-        </div>
+
+        </footer>
+
       </div>
+
     </div>
-  );
+  )
 }

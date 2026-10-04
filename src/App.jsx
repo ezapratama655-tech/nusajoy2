@@ -12,12 +12,16 @@
  * Catatan perbaikan:
  * - sharedPageProps tidak lagi dibungkus useMemo
  *   (penyebab react-hooks/refs: "Cannot access refs during render").
- * - Halaman lazy dimuat lewat import.meta.glob. Jika file halaman belum ada,
- *   route tetap hidup dan menampilkan pesan jelas + console.error,
- *   sehingga satu file hilang tidak mematikan seluruh dev server.
+ * - Halaman lazy memakai path eksplisit (semua file di src/pages sudah ada).
+ * - Setiap modal dibungkus SectionBoundary: crash satu modal tidak lagi
+ *   mengosongkan seluruh aplikasi, dan errornya tetap tampil + masuk console.
  * - onRemoveFavorite menerima OBJEK item utuh (type/guideId tidak hilang).
  * - Favorit dibuka lewat openFavorites() agar modal tidak bertumpuk.
  * - Item My Trip yang sama tidak ditambahkan dua kali.
+ * - Toast memakai state + effect (bukan useRef) agar lolos react-hooks/refs.
+ * - My Trip menjadi sumber halaman utama untuk /my-trip dan alias /bookings.
+ * - Akun legacy tetap dipertahankan melalui src/views/AkunView.jsx sebagai
+ *   adapter menuju halaman Account modern.
  */
 
 /* ==========================================================================
@@ -30,7 +34,7 @@ import {
   lazy,
   useCallback,
   useEffect,
-  useRef,
+  useMemo,
   useState,
 } from 'react';
 
@@ -81,7 +85,7 @@ import './styles/DestinationDetail.css';
 import './styles/TourGuide.css';
 import './styles/TourGuideDetail.css';
 import './styles/GuideBooking.css';
-import './styles/Bookings.css';
+import './styles/MyTrip.css';
 import './styles/Account.css';
 import './styles/Favorite.css';
 
@@ -109,54 +113,35 @@ import { UI_STATES, isValidUIState } from './constants/navigation.js';
    MODERN LAZY PAGES
    ========================================================================== */
 
-const PAGE_MODULES = import.meta.glob('./pages/*.jsx');
+/*
+ * Migration map:
+ * Bookings → MyTrip
+ *
+ * Semua navigasi baru sebaiknya memakai /my-trip.
+ * /bookings tetap dipertahankan untuk kompatibilitas URL lama.
+ */
 
-function MissingPage({ name }) {
-  return (
-    <section
-      className="flex min-h-[50vh] items-center justify-center px-4 py-16"
-      role="alert"
-    >
-      <div className="w-full max-w-xl text-center">
-        <h1 className="font-['Outfit'] text-2xl font-bold text-[#174D36]">
-          Halaman belum tersedia
-        </h1>
-        <p className="mt-3 text-sm text-[#68736D]">
-          File <code>src/pages/{name}.jsx</code> tidak ditemukan di project.
-          Pulihkan file tersebut agar halaman ini tampil.
-        </p>
-      </div>
-    </section>
-  );
-}
+const Home = lazy(() => import('./pages/Home.jsx'));
+const Explore = lazy(() => import('./pages/Explore.jsx'));
+const Recommendation = lazy(() => import('./pages/Recommendation.jsx'));
+const DestinationDetail = lazy(() => import('./pages/DestinationDetail.jsx'));
+const Favorite = lazy(() => import('./pages/Favorite.jsx'));
+const Account = lazy(() => import('./pages/Account.jsx'));
+const Login = lazy(() => import('./pages/Login.jsx'));
+const LocalBusiness = lazy(() => import('./pages/LocalBusiness.jsx'));
+const TourGuide = lazy(() => import('./pages/TourGuide.jsx'));
+const TourGuideDetail = lazy(() => import('./pages/TourGuideDetail.jsx'));
+const GuideBooking = lazy(() => import('./pages/GuideBooking.jsx'));
+const MyTrip = lazy(() => import('./pages/MyTrip.jsx'));
 
-const lazyPage = (name) =>
-  lazy(() => {
-    const loader = PAGE_MODULES[`./pages/${name}.jsx`];
-
-    if (loader) {
-      return loader();
-    }
-
-    console.error(`NuSaJoy: ./pages/${name}.jsx tidak ditemukan.`);
-
-    return Promise.resolve({
-      default: () => <MissingPage name={name} />,
-    });
-  });
-
-const Home = lazyPage('Home');
-const Explore = lazyPage('Explore');
-const Recommendation = lazyPage('Recommendation');
-const DestinationDetail = lazyPage('DestinationDetail');
-const Favorite = lazyPage('Favorite');
-const Account = lazyPage('Account');
-const Login = lazyPage('Login');
-const LocalBusiness = lazyPage('LocalBusiness');
-const TourGuide = lazyPage('TourGuide');
-const TourGuideDetail = lazyPage('TourGuideDetail');
-const GuideBooking = lazyPage('GuideBooking');
-const Bookings = lazyPage('Bookings');
+/*
+ * Backward compatibility:
+ * - MyTrip adalah halaman utama baru.
+ * - Nama Bookings tetap dipertahankan sebagai alias agar route/komponen lama
+ *   tidak langsung rusak saat migrasi dari halaman Booking ke My Trip.
+ * - Tidak ada lagi import Bookings.jsx di sini.
+ */
+const Bookings = MyTrip;
 
 /* ==========================================================================
    ROUTE MAP
@@ -390,6 +375,59 @@ class ErrorBoundary extends Component {
 }
 
 /* ==========================================================================
+   SECTION BOUNDARY
+   Untuk modal/drawer di luar <Routes>. Error tetap terlihat (banner + console),
+   tetapi komponen lain dan halaman tetap hidup.
+   ========================================================================== */
+
+class SectionBoundary extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error(`NuSaJoy: ${this.props.name} gagal dirender.`, error, info);
+  }
+
+  handleRetry = () => {
+    this.setState({ error: null });
+  };
+
+  render() {
+    if (!this.state.error) {
+      return this.props.children;
+    }
+
+    return (
+      <div
+        role="alert"
+        className="fixed bottom-4 left-4 z-[120] max-w-xs rounded-2xl border border-[#B5653A]/40 bg-[#FFFDF7] px-4 py-3 text-[12px] text-[#17251E] shadow-[0_12px_35px_rgba(23,37,30,0.18)]"
+      >
+        <p className="font-semibold text-[#B5653A]">
+          {this.props.name} gagal dimuat
+        </p>
+        <p className="mt-1 text-[#68736D]">
+          {String(this.state.error?.message || this.state.error)}
+        </p>
+        <button
+          type="button"
+          onClick={this.handleRetry}
+          className="mt-2 cursor-pointer rounded-full bg-[#174D36] px-3 py-1 text-[11px] font-semibold text-white"
+        >
+          Coba lagi
+        </button>
+      </div>
+    );
+  }
+}
+
+/* ==========================================================================
    404
    ========================================================================== */
 
@@ -617,9 +655,16 @@ export default function App() {
      Ref hanya dibaca di dalam handler/effect, tidak saat render.
   ------------------------------------------------------------------------ */
 
-  const [toastMessage, setToastMessage] = useState(null);
-  const toastTimerRef = useRef(null);
+  const [toast, setToast] = useState(null);
 
+  const toastMessage = toast ? toast.message : null;
+
+  /**
+   * showToast hanya memanggil setState (tanpa ref), sehingga aman dilempar
+   * ke getSharedPageProps saat render (react-hooks/refs).
+   * Objek baru tiap pemanggilan membuat timer di effect di bawah dimulai
+   * ulang, jadi toast beruntun tidak saling memotong.
+   */
   const showToast = useCallback((message) => {
     if (message === null || message === undefined) {
       return;
@@ -631,27 +676,22 @@ export default function App() {
       return;
     }
 
-    setToastMessage(normalizedMessage);
+    setToast({ id: Date.now(), message: normalizedMessage });
+  }, [setToast]);
 
-    if (toastTimerRef.current) {
-      window.clearTimeout(toastTimerRef.current);
+  useEffect(() => {
+    if (!toast) {
+      return undefined;
     }
 
-    toastTimerRef.current = window.setTimeout(() => {
-      setToastMessage(null);
-      toastTimerRef.current = null;
+    const timer = window.setTimeout(() => {
+      setToast(null);
     }, 3500);
-  }, []);
 
-  useEffect(
-    () => () => {
-      if (toastTimerRef.current) {
-        window.clearTimeout(toastTimerRef.current);
-        toastTimerRef.current = null;
-      }
-    },
-    [],
-  );
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [toast]);
 
   /* ------------------------------------------------------------------------
      FAVORITES SYNC
@@ -712,7 +752,13 @@ export default function App() {
     setIsFavoritesOpen(false);
     setQuickTripGateData(null);
     setSelectedExperience(experience);
-  }, []);
+  }, [
+    setBookingModalData,
+    setIsFavoritesOpen,
+    setQuickTripGateData,
+    setSelectedExperience,
+    setSelectedGuide,
+  ]);
 
   const openGuide = useCallback((guide) => {
     if (!guide) {
@@ -724,7 +770,13 @@ export default function App() {
     setIsFavoritesOpen(false);
     setQuickTripGateData(null);
     setSelectedGuide(guide);
-  }, []);
+  }, [
+    setBookingModalData,
+    setIsFavoritesOpen,
+    setQuickTripGateData,
+    setSelectedExperience,
+    setSelectedGuide,
+  ]);
 
   const openBookingSummary = useCallback((bookingData) => {
     if (!bookingData) {
@@ -736,14 +788,25 @@ export default function App() {
     setIsFavoritesOpen(false);
     setQuickTripGateData(null);
     setBookingModalData(bookingData);
-  }, []);
+  }, [
+    setBookingModalData,
+    setIsFavoritesOpen,
+    setQuickTripGateData,
+    setSelectedExperience,
+    setSelectedGuide,
+  ]);
 
   const openFavorites = useCallback(() => {
     setSelectedExperience(null);
     setSelectedGuide(null);
     setBookingModalData(null);
     setIsFavoritesOpen(true);
-  }, []);
+  }, [
+    setBookingModalData,
+    setIsFavoritesOpen,
+    setSelectedExperience,
+    setSelectedGuide,
+  ]);
 
   const openQuickTripGate = useCallback((type) => {
     setSelectedExperience(null);
@@ -751,13 +814,26 @@ export default function App() {
     setBookingModalData(null);
     setIsFavoritesOpen(false);
     setQuickTripGateData({ type: type === 'transport' ? 'transport' : 'stay' });
-  }, []);
+  }, [
+    setBookingModalData,
+    setIsFavoritesOpen,
+    setQuickTripGateData,
+    setSelectedExperience,
+    setSelectedGuide,
+  ]);
 
   /* ------------------------------------------------------------------------
      ADD TO TRIP
      Item baru di paling atas, item lama diturunkan (isNew: false).
      Sumber asli disimpan agar info pemandu tidak hilang.
   ------------------------------------------------------------------------ */
+
+  const activeTripItems = activeTrip?.items;
+
+const tripItems = useMemo(
+  () => (Array.isArray(activeTripItems) ? activeTripItems : []),
+  [activeTripItems],
+);
 
   const handleAddToTrip = useCallback(
     (item) => {
@@ -776,7 +852,7 @@ export default function App() {
       /* Hindari item yang sama masuk dua kali. */
       const alreadyInTrip =
         sourceId !== '' &&
-        (Array.isArray(activeTrip?.items) ? activeTrip.items : []).some(
+        tripItems.some(
           (tripItem) =>
             String(tripItem.sourceId) === String(sourceId) &&
             isGuideLike(tripItem) === guideItem,
@@ -847,30 +923,27 @@ export default function App() {
       setSelectedExperience(null);
       setSelectedGuide(null);
     },
-    [activeTrip, showToast],
+    [tripItems, showToast, setActiveTrip, setSelectedExperience, setSelectedGuide],
   );
 
   /* ------------------------------------------------------------------------
      REMOVE FROM TRIP
   ------------------------------------------------------------------------ */
 
-  const handleRemoveTripItem = useCallback(
-    (itemId) => {
-      if (!itemId) {
-        return;
-      }
+ const handleRemoveTripItem = (itemId) => {
+  if (!itemId) {
+    return;
+  }
 
-      setActiveTrip((previous) => ({
-        ...previous,
-        items: (Array.isArray(previous?.items) ? previous.items : []).filter(
-          (item) => item.id !== itemId,
-        ),
-      }));
+  setActiveTrip((previous) => ({
+    ...previous,
+    items: (Array.isArray(previous?.items) ? previous.items : []).filter(
+      (item) => item.id !== itemId,
+    ),
+  }));
 
-      showToast('Aktivitas dihapus dari rencana perjalanan.');
-    },
-    [showToast],
-  );
+  showToast('Aktivitas dihapus dari rencana perjalanan.');
+};
 
   /* ------------------------------------------------------------------------
      FAVORITES
@@ -1164,7 +1237,7 @@ export default function App() {
             <button
               type="button"
               aria-label="Tutup notifikasi"
-              onClick={() => setToastMessage(null)}
+              onClick={() => setToast(null)}
               className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             >
               <span
@@ -1211,6 +1284,10 @@ export default function App() {
                 {/* Booking */}
                 <Route path="/book/:id" element={page(GuideBooking)} />
                 <Route path="/booking/:id" element={page(GuideBooking)} />
+                {/*
+                 * URL lama tetap aktif sebagai alias My Trip.
+                 * Halaman yang dirender tetap ./pages/MyTrip.jsx.
+                 */}
                 <Route path="/bookings" element={page(Bookings)} />
 
                 {/* Others */}
@@ -1256,108 +1333,122 @@ export default function App() {
         />
 
         {/* DETAIL PENGALAMAN */}
-        <DetailPengalamanModal
-          isOpen={Boolean(selectedExperience)}
-          onClose={() => setSelectedExperience(null)}
-          experience={selectedExperience}
-          onAddToTrip={handleAddToTrip}
-          onOpenBookingSummary={openBookingSummary}
-          onOpenGuideDetail={openGuide}
-          onGoToMyTrip={() => {
-            setSelectedExperience(null);
-            navigateToTab('mytrip');
-          }}
-          isFavorited={
-            selectedExperience ? isFavorite(selectedExperience.id) : false
-          }
-          onToggleFavorite={handleToggleFavorite}
-        />
+        <SectionBoundary name="DetailPengalamanModal">
+          <DetailPengalamanModal
+            isOpen={Boolean(selectedExperience)}
+            onClose={() => setSelectedExperience(null)}
+            experience={selectedExperience}
+            onAddToTrip={handleAddToTrip}
+            onOpenBookingSummary={openBookingSummary}
+            onOpenGuideDetail={openGuide}
+            onGoToMyTrip={() => {
+              setSelectedExperience(null);
+              navigateToTab('mytrip');
+            }}
+            isFavorited={
+              selectedExperience ? isFavorite(selectedExperience) : false
+            }
+            onToggleFavorite={handleToggleFavorite}
+          />
+        </SectionBoundary>
 
         {/* DETAIL PEMANDU */}
-        <DetailPemanduModal
-          isOpen={Boolean(selectedGuide)}
-          onClose={() => setSelectedGuide(null)}
-          guide={selectedGuide}
-          onAddToTrip={handleAddToTrip}
-          onOpenBookingSummary={openBookingSummary}
-          onGoToMyTrip={() => {
-            setSelectedGuide(null);
-            navigateToTab('mytrip');
-          }}
-          isFavorited={selectedGuide ? isFavorite(selectedGuide.id) : false}
-          onToggleFavorite={handleToggleFavorite}
-        />
+        <SectionBoundary name="DetailPemanduModal">
+          <DetailPemanduModal
+            isOpen={Boolean(selectedGuide)}
+            onClose={() => setSelectedGuide(null)}
+            guide={selectedGuide}
+            onAddToTrip={handleAddToTrip}
+            onOpenBookingSummary={openBookingSummary}
+            onGoToMyTrip={() => {
+              setSelectedGuide(null);
+              navigateToTab('mytrip');
+            }}
+            isFavorited={selectedGuide ? isFavorite(selectedGuide) : false}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        </SectionBoundary>
 
         {/* BOOKING SUMMARY (universal) */}
-        <BookingSummaryModal
-          isOpen={Boolean(bookingModalData)}
-          onClose={() => setBookingModalData(null)}
-          bookingData={bookingModalData}
-          onBookingSuccess={handleBookingSuccess}
-          onGoToMyTrip={() => {
-            setBookingModalData(null);
-            navigateToTab('mytrip');
-          }}
-        />
+        <SectionBoundary name="BookingSummaryModal">
+          <BookingSummaryModal
+            isOpen={Boolean(bookingModalData)}
+            onClose={() => setBookingModalData(null)}
+            bookingData={bookingModalData}
+            onBookingSuccess={handleBookingSuccess}
+            onGoToMyTrip={() => {
+              setBookingModalData(null);
+              navigateToTab('mytrip');
+            }}
+          />
+        </SectionBoundary>
 
         {/* FAVORIT */}
-        <FavoritModal
-          isOpen={isFavoritesOpen}
-          onClose={() => setIsFavoritesOpen(false)}
-          favorites={favoritesList}
-          onRemoveFavorite={handleRemoveFavorite}
-          onAddToTrip={handleAddToTrip}
-          onSelectExperience={(item) => {
-            setIsFavoritesOpen(false);
+        <SectionBoundary name="FavoritModal">
+          <FavoritModal
+            isOpen={isFavoritesOpen}
+            onClose={() => setIsFavoritesOpen(false)}
+            favorites={favoritesList}
+            onRemoveFavorite={handleRemoveFavorite}
+            onAddToTrip={handleAddToTrip}
+            onSelectExperience={(item) => {
+              setIsFavoritesOpen(false);
 
-            if (isGuideLike(item)) {
-              openGuide(item);
-            } else {
-              openExperience(item);
-            }
-          }}
-          onSelectGuide={(guide) => {
-            setIsFavoritesOpen(false);
-            openGuide(guide);
-          }}
-          onNavigateExplore={() => {
-            setIsFavoritesOpen(false);
-            navigateToTab('jelajah');
-          }}
-        />
+              if (isGuideLike(item)) {
+                openGuide(item);
+              } else {
+                openExperience(item);
+              }
+            }}
+            onSelectGuide={(guide) => {
+              setIsFavoritesOpen(false);
+              openGuide(guide);
+            }}
+            onNavigateExplore={() => {
+              setIsFavoritesOpen(false);
+              navigateToTab('jelajah');
+            }}
+          />
+        </SectionBoundary>
 
         {/* QUICK TRIP GATE */}
-        <QuickTripGateModal
-          isOpen={Boolean(quickTripGateData)}
-          onClose={() => setQuickTripGateData(null)}
-          targetType={quickTripGateData?.type || 'stay'}
-          hasActiveTrip={Boolean(activeTrip?.items?.length)}
-          activeTripTitle={activeTrip?.title || 'Trip Yogyakarta'}
-          onProceedWithTrip={() => {
-            setQuickTripGateData(null);
-            navigateToTab('mytrip');
-          }}
-          onCreateNewTrip={() => {
-            setQuickTripGateData(null);
-            setActiveTrip(createInitialTrip());
-            navigateToTab('mytrip');
-            showToast('Trip baru siap disusun di My Trip!');
-          }}
-        />
+        <SectionBoundary name="QuickTripGateModal">
+          <QuickTripGateModal
+            isOpen={Boolean(quickTripGateData)}
+            onClose={() => setQuickTripGateData(null)}
+            targetType={quickTripGateData?.type || 'stay'}
+            hasActiveTrip={Boolean(activeTrip?.items?.length)}
+            activeTripTitle={activeTrip?.title || 'Trip Yogyakarta'}
+            onProceedWithTrip={() => {
+              setQuickTripGateData(null);
+              navigateToTab('mytrip');
+            }}
+            onCreateNewTrip={() => {
+              setQuickTripGateData(null);
+              setActiveTrip(createInitialTrip());
+              navigateToTab('mytrip');
+              showToast('Trip baru siap disusun di My Trip!');
+            }}
+          />
+        </SectionBoundary>
 
         {/* UI STATE SIMULATOR */}
-        <StateSimulatorDrawer
-          currentState={uiState}
-          onStateChange={handleStateChange}
-        />
+        <SectionBoundary name="StateSimulatorDrawer">
+          <StateSimulatorDrawer
+            currentState={uiState}
+            onStateChange={handleStateChange}
+          />
+        </SectionBoundary>
 
         {/* BRAND IDENTITY */}
-        <BrandIdentityModal
-          isOpen={isBrandModalOpen}
-          onClose={() => setIsBrandModalOpen(false)}
-          activeConcept={brandConcept}
-          onChangeConcept={handleChangeBrandConcept}
-        />
+        <SectionBoundary name="BrandIdentityModal">
+          <BrandIdentityModal
+            isOpen={isBrandModalOpen}
+            onClose={() => setIsBrandModalOpen(false)}
+            activeConcept={brandConcept}
+            onChangeConcept={handleChangeBrandConcept}
+          />
+        </SectionBoundary>
       </div>
     </div>
   );

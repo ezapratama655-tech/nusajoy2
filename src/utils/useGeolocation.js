@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -24,6 +25,15 @@ const DEFAULT_OPTIONS = {
   maximumAge: 60000,
 
 };
+
+
+// -----------------------------------------------------
+// EMPTY OPTIONS
+// -----------------------------------------------------
+
+// Digunakan agar default parameter tidak membuat object
+// baru pada setiap render.
+const EMPTY_OPTIONS = {};
 
 
 // =====================================================
@@ -67,7 +77,7 @@ function getGeolocationErrorMessage(error) {
 // =====================================================
 
 export default function useGeolocation(
-  customOptions = {}
+  customOptions = EMPTY_OPTIONS
 ) {
 
   // ---------------------------------------------------
@@ -122,24 +132,30 @@ export default function useGeolocation(
   // OPTIONS
   // ---------------------------------------------------
 
-  const options = {
-    ...DEFAULT_OPTIONS,
-    ...customOptions,
-  };
+  const options = useMemo(
+    () => ({
+      ...DEFAULT_OPTIONS,
+      ...customOptions,
+    }),
+    [customOptions]
+  );
 
 
   // ===================================================
   // CHECK GEOLOCATION SUPPORT
   // ===================================================
 
-  const isSupported = () => {
+  const isSupported = useCallback(
+    () => {
 
-    return (
-      typeof navigator !== "undefined" &&
-      "geolocation" in navigator
-    );
+      return (
+        typeof navigator !== "undefined" &&
+        "geolocation" in navigator
+      );
 
-  };
+    },
+    []
+  );
 
 
   // ===================================================
@@ -253,6 +269,8 @@ export default function useGeolocation(
     [
       handleSuccess,
       handleError,
+      isSupported,
+      options,
     ]
   );
 
@@ -331,6 +349,8 @@ export default function useGeolocation(
     [
       handleSuccess,
       handleError,
+      isSupported,
+      options,
     ]
   );
 
@@ -351,13 +371,14 @@ export default function useGeolocation(
           watchIdRef.current
         );
 
+
         watchIdRef.current =
           null;
 
       }
 
     },
-    []
+    [isSupported]
   );
 
 
@@ -380,6 +401,10 @@ export default function useGeolocation(
             watchIdRef.current
           );
 
+
+          watchIdRef.current =
+            null;
+
         }
 
       };
@@ -391,7 +416,7 @@ export default function useGeolocation(
 
   // ===================================================
   // RETURN
-  // ===================================================
+  // =====================================================
 
   return {
 

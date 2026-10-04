@@ -2592,3 +2592,2480 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* =========================================================
+   NUSAJOY — INTERACTION & MOTION LAYER
+   -------------------------------------
+   Tidak mengubah struktur / fungsi JSX.
+   Layer ini menambahkan:
+   - reveal animation berbasis viewport
+   - micro-interaction kartu
+   - animated buttons + shine
+   - soft image zoom / parallax-feel
+   - floating badges
+   - premium hover states
+   - richer focus states
+   - animated stat / process elements
+   - mobile-safe motion
+========================================================= */
+
+/* ---------------- MOTION TOKENS ---------------- */
+.nusajoy-home {
+  --nj-ease: cubic-bezier(.22, 1, .36, 1);
+  --nj-ease-soft: cubic-bezier(.2, .8, .2, 1);
+  --nj-duration-fast: .18s;
+  --nj-duration: .35s;
+  --nj-duration-slow: .7s;
+}
+
+/* ---------------- GLOBAL INTERACTION ---------------- */
+.nusajoy-home a,
+.nusajoy-home button,
+.nusajoy-home input,
+.nusajoy-home select,
+.nusajoy-home textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nusajoy-home button,
+.nusajoy-home a {
+  cursor: pointer;
+}
+
+.nusajoy-home a,
+.nusajoy-home button,
+.nusajoy-home .nj-category-card,
+.nusajoy-home .nj-experience-card,
+.nusajoy-home .nj-process-item,
+.nusajoy-home .nj-dest-card,
+.nusajoy-home .nj-impact-card,
+.nusajoy-home .nj-floating-card,
+.nusajoy-home .nj-final,
+.nusajoy-home .nj-local-card {
+  will-change: transform;
+}
+
+/* Richer keyboard focus without changing layout */
+.nusajoy-home :where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(20, 112, 94, .22);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(20, 112, 94, .055);
+}
+
+/* ---------------- BUTTON SHINE ---------------- */
+.nusajoy-home .nj-primary-button,
+.nusajoy-home .nj-search-button,
+.nusajoy-home .nj-final-button,
+.nusajoy-home .nj-local-link:not(.secondary) {
+  isolation: isolate;
+}
+
+.nusajoy-home .nj-primary-button::after,
+.nusajoy-home .nj-search-button::after,
+.nusajoy-home .nj-final-button::after,
+.nusajoy-home .nj-local-link:not(.secondary)::after {
+  content: "";
+  position: absolute;
+  inset: -30% auto -30% -65%;
+  width: 42%;
+  transform: skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.26),
+    transparent
+  );
+  pointer-events: none;
+  opacity: 0;
+}
+
+.nusajoy-home .nj-primary-button:hover::after,
+.nusajoy-home .nj-search-button:hover::after,
+.nusajoy-home .nj-final-button:hover::after,
+.nusajoy-home .nj-local-link:not(.secondary):hover::after {
+  opacity: 1;
+  animation: njButtonShine .9s var(--nj-ease) both;
+}
+
+@keyframes njButtonShine {
+  from { transform: translateX(0) skewX(-18deg); }
+  to { transform: translateX(380%) skewX(-18deg); }
+}
+
+/* ---------------- SEARCH MICRO INTERACTION ---------------- */
+.nusajoy-home .nj-search-widget {
+  transform: translateZ(0);
+}
+
+.nusajoy-home .nj-search-icon {
+  transition:
+    color var(--nj-duration-fast) ease,
+    transform var(--nj-duration) var(--nj-ease);
+}
+
+.nusajoy-home .nj-search-widget:focus-within .nj-search-icon {
+  color: var(--nj-primary);
+  transform: scale(1.08) rotate(-6deg);
+}
+
+.nusajoy-home .nj-search-input-group input {
+  transition: color var(--nj-duration-fast) ease;
+}
+
+.nusajoy-home .nj-search-widget:focus-within .nj-search-input-group input {
+  color: var(--nj-dark);
+}
+
+/* ---------------- HERO PARALLAX-FEEL ---------------- */
+.nusajoy-home .nj-image-frame {
+  transform-style: preserve-3d;
+  transition:
+    transform .6s var(--nj-ease),
+    box-shadow .6s ease;
+}
+
+.nusajoy-home .nj-image-frame:hover {
+  transform: translateY(-5px) rotateX(1deg) rotateY(-1deg);
+  box-shadow: 0 34px 82px rgba(9, 76, 64, .23);
+}
+
+.nusajoy-home .nj-image-frame img {
+  transform: scale(1.001);
+  transition:
+    transform .95s var(--nj-ease),
+    filter .6s ease;
+}
+
+.nusajoy-home .nj-image-frame:hover img {
+  transform: scale(1.075);
+  filter: saturate(1.08) contrast(1.035);
+}
+
+.nusajoy-home .nj-image-shade {
+  transition: opacity .5s ease;
+}
+
+.nusajoy-home .nj-image-frame:hover .nj-image-shade {
+  opacity: .82;
+}
+
+.nusajoy-home .nj-image-location {
+  transition:
+    transform .35s var(--nj-ease),
+    background .25s ease;
+}
+
+.nusajoy-home .nj-image-frame:hover .nj-image-location {
+  transform: translateY(-2px);
+  background: rgba(14,47,40,.72);
+}
+
+/* ---------------- FLOATING CARDS ---------------- */
+.nusajoy-home .nj-floating-card {
+  animation:
+    njFloatSoft 5.5s ease-in-out infinite,
+    njCardFloatIn .7s var(--nj-ease) both;
+  transition:
+    transform .25s var(--nj-ease),
+    box-shadow .25s ease;
+}
+
+.nusajoy-home .nj-floating-bottom {
+  animation-delay: .35s, .16s;
+}
+
+.nusajoy-home .nj-floating-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 22px 45px rgba(11,71,60,.2);
+}
+
+@keyframes njCardFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------------- CATEGORY CARDS ---------------- */
+.nusajoy-home .nj-category-card {
+  transform: translateZ(0);
+}
+
+.nusajoy-home .nj-category-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      120deg,
+      transparent 28%,
+      rgba(255,255,255,.42) 48%,
+      transparent 68%
+    );
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nusajoy-home .nj-category-card:hover {
+  transform: translateY(-8px) scale(1.012);
+  box-shadow: 0 22px 44px rgba(13,78,65,.13);
+}
+
+.nusajoy-home .nj-category-card:hover::after {
+  opacity: 1;
+  animation: njCardSweep .85s ease both;
+}
+
+.nusajoy-home .nj-category-icon {
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .35s ease,
+    background .35s ease;
+}
+
+.nusajoy-home .nj-category-card:hover .nj-category-icon {
+  transform: translateY(-2px) rotate(-6deg) scale(1.09);
+}
+
+@keyframes njCardSweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(120%); }
+}
+
+/* ---------------- EXPERIENCE / DESTINATION CARDS ---------------- */
+.nusajoy-home .nj-experience-card,
+.nusajoy-home .nj-dest-card,
+.nusajoy-home .nj-impact-card,
+.nusajoy-home .nj-process-item {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.nusajoy-home .nj-experience-card::after,
+.nusajoy-home .nj-dest-card::after,
+.nusajoy-home .nj-impact-card::after,
+.nusajoy-home .nj-process-item::after {
+  content: "";
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -55px;
+  top: -55px;
+  border-radius: 50%;
+  background: rgba(20,112,94,.045);
+  transition:
+    transform .45s var(--nj-ease),
+    opacity .35s ease;
+  pointer-events: none;
+}
+
+.nusajoy-home .nj-experience-card:hover,
+.nusajoy-home .nj-dest-card:hover,
+.nusajoy-home .nj-impact-card:hover,
+.nusajoy-home .nj-process-item:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 22px 44px rgba(13,78,65,.12);
+}
+
+.nusajoy-home .nj-experience-card:hover::after,
+.nusajoy-home .nj-dest-card:hover::after,
+.nusajoy-home .nj-impact-card:hover::after,
+.nusajoy-home .nj-process-item:hover::after {
+  transform: scale(1.45);
+  opacity: .9;
+}
+
+.nusajoy-home .nj-experience-icon,
+.nusajoy-home .nj-process-icon,
+.nusajoy-home .nj-impact-icon {
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nusajoy-home .nj-experience-card:hover .nj-experience-icon,
+.nusajoy-home .nj-process-item:hover .nj-process-icon,
+.nusajoy-home .nj-impact-card:hover .nj-impact-icon {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 10px 22px rgba(20,112,94,.12);
+}
+
+/* ---------------- DESTINATION IMAGE INTERACTION ---------------- */
+.nusajoy-home .nj-dest-image {
+  isolation: isolate;
+}
+
+.nusajoy-home .nj-dest-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 25%,
+    rgba(255,255,255,.12) 47%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.nusajoy-home .nj-dest-card:hover .nj-dest-image::after {
+  animation: njImageSweep 1s ease both;
+}
+
+.nusajoy-home .nj-dest-image img {
+  transition:
+    transform .85s var(--nj-ease),
+    filter .55s ease;
+}
+
+.nusajoy-home .nj-dest-card:hover .nj-dest-image img {
+  transform: scale(1.075);
+  filter: saturate(1.08) contrast(1.025);
+}
+
+@keyframes njImageSweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(120%); }
+}
+
+/* ---------------- PLAN CENTER / ORBITS ---------------- */
+.nusajoy-home .nj-plan-center {
+  animation: njCenterFloat 4.5s ease-in-out infinite;
+}
+
+.nusajoy-home .nj-plan-visual {
+  isolation: isolate;
+}
+
+.nusajoy-home .nj-plan-orbit {
+  animation: njOrbitBreathe 6s ease-in-out infinite;
+}
+
+.nusajoy-home .orbit-b {
+  animation-delay: 1s;
+}
+
+.nusajoy-home .nj-plan-mini {
+  transition:
+    transform .3s var(--nj-ease),
+    background .25s ease,
+    border-color .25s ease;
+}
+
+.nusajoy-home .nj-plan-mini:hover {
+  transform: translateY(-3px) scale(1.04);
+  background: rgba(255,255,255,.13);
+  border-color: rgba(255,255,255,.22);
+}
+
+/* ---------------- LOCAL CARD ---------------- */
+.nusajoy-home .nj-local-card {
+  position: relative;
+}
+
+.nusajoy-home .nj-local-card::before {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -75px;
+  top: -75px;
+  border-radius: 50%;
+  background: rgba(20,112,94,.07);
+  animation: njAmbientFloat 9s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
+.nusajoy-home .nj-local-icon {
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nusajoy-home .nj-local-card:hover .nj-local-icon {
+  transform: rotate(-5deg) scale(1.07);
+  box-shadow: 0 13px 26px rgba(20,112,94,.2);
+}
+
+/* ---------------- FINAL CTA ---------------- */
+.nusajoy-home .nj-final {
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .4s ease,
+    border-color .3s ease;
+}
+
+.nusajoy-home .nj-final:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 72px rgba(12,65,55,.14);
+  border-color: rgba(20,112,94,.18);
+}
+
+.nusajoy-home .nj-final-icon {
+  transition:
+    transform .7s var(--nj-ease),
+    opacity .4s ease;
+}
+
+.nusajoy-home .nj-final:hover .nj-final-icon {
+  transform: rotate(12deg) scale(1.05);
+  opacity: .12;
+}
+
+/* ---------------- LINK ARROWS ---------------- */
+.nusajoy-home .nj-link-more svg,
+.nusajoy-home .nj-link-more,
+.nusajoy-home .nj-dest-link,
+.nusajoy-home .nj-category-arrow {
+  transition:
+    transform .28s var(--nj-ease),
+    color .25s ease;
+}
+
+.nusajoy-home .nj-link-more:hover svg,
+.nusajoy-home .nj-dest-link:hover svg {
+  transform: translateX(4px);
+}
+
+.nusajoy-home .nj-category-card:hover .nj-category-arrow {
+  transform: translateX(5px);
+}
+
+/* ---------------- STAGGERED SECTION REVEAL ---------------- */
+@supports (animation-timeline: view()) {
+  .nusajoy-home .nj-categories-section,
+  .nusajoy-home .nj-problem-section,
+  .nusajoy-home .nj-solution-section,
+  .nusajoy-home .nj-how-section,
+  .nusajoy-home .nj-destinations-section,
+  .nusajoy-home .nj-plan-section,
+  .nusajoy-home .nj-impact-section,
+  .nusajoy-home .nj-local-section,
+  .nusajoy-home .nj-final-section {
+    animation-name: njScrollReveal;
+    animation-duration: 1ms;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 26%;
+  }
+}
+
+@keyframes njScrollReveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- BETTER CARD ENTRANCE ---------------- */
+.nusajoy-home .nj-categories-grid > *,
+.nusajoy-home .nj-experience-grid > *,
+.nusajoy-home .nj-process > *,
+.nusajoy-home .nj-destinations-grid > *,
+.nusajoy-home .nj-impact-grid > * {
+  animation-duration: .72s;
+  animation-timing-function: var(--nj-ease);
+  animation-fill-mode: both;
+}
+
+.nusajoy-home .nj-categories-grid > *:nth-child(1),
+.nusajoy-home .nj-experience-grid > *:nth-child(1),
+.nusajoy-home .nj-process > *:nth-child(1),
+.nusajoy-home .nj-destinations-grid > *:nth-child(1),
+.nusajoy-home .nj-impact-grid > *:nth-child(1) {
+  animation-delay: .02s;
+}
+
+.nusajoy-home .nj-categories-grid > *:nth-child(2),
+.nusajoy-home .nj-experience-grid > *:nth-child(2),
+.nusajoy-home .nj-process > *:nth-child(2),
+.nusajoy-home .nj-destinations-grid > *:nth-child(2),
+.nusajoy-home .nj-impact-grid > *:nth-child(2) {
+  animation-delay: .08s;
+}
+
+.nusajoy-home .nj-categories-grid > *:nth-child(3),
+.nusajoy-home .nj-experience-grid > *:nth-child(3),
+.nusajoy-home .nj-process > *:nth-child(3),
+.nusajoy-home .nj-destinations-grid > *:nth-child(3),
+.nusajoy-home .nj-impact-grid > *:nth-child(3) {
+  animation-delay: .14s;
+}
+
+/* ---------------- MOBILE TOUCH REFINEMENT ---------------- */
+@media (max-width: 639px) {
+  .nusajoy-home .nj-category-card:active,
+  .nusajoy-home .nj-experience-card:active,
+  .nusajoy-home .nj-process-item:active,
+  .nusajoy-home .nj-dest-card:active,
+  .nusajoy-home .nj-primary-button:active,
+  .nusajoy-home .nj-secondary-button:active,
+  .nusajoy-home .nj-final-button:active,
+  .nusajoy-home .nj-final-secondary:active,
+  .nusajoy-home .nj-local-link:active {
+    transform: scale(.985);
+  }
+
+  .nusajoy-home .nj-image-frame:hover {
+    transform: none;
+  }
+
+  .nusajoy-home .nj-floating-card:hover {
+    transform: none;
+  }
+}
+
+/* ---------------- REDUCED MOTION ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  .nusajoy-home *,
+  .nusajoy-home *::before,
+  .nusajoy-home *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    transform: none !important;
+  }
+}
+/* =========================================================
+   NUSAJOY HOME — PREMIUM INTERACTION MOTION LAYER
+   ---------------------------------------------------------
+   Tambahkan PALING BAWAH Home.css
+   Tidak membutuhkan perubahan JSX.
+========================================================= */
+
+
+/* =========================================================
+   1. MOTION TOKENS
+========================================================= */
+
+.nusajoy-home {
+  --nj-ease: cubic-bezier(.22, 1, .36, 1);
+  --nj-ease-soft: cubic-bezier(.2, .8, .2, 1);
+  --nj-ease-spring: cubic-bezier(.16, 1, .3, 1);
+
+  --nj-motion-fast: .18s;
+  --nj-motion: .35s;
+  --nj-motion-medium: .55s;
+  --nj-motion-slow: .9s;
+
+  --nj-glow-primary:
+    rgba(20, 112, 94, .18);
+
+  --nj-glow-accent:
+    rgba(246, 184, 74, .18);
+
+  --nj-card-hover-shadow:
+    0 24px 55px rgba(10, 67, 57, .14);
+
+  --nj-card-active-shadow:
+    0 12px 28px rgba(10, 67, 57, .11);
+}
+
+
+/* =========================================================
+   2. GLOBAL SMOOTHNESS
+========================================================= */
+
+.nusajoy-home {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.nusajoy-home a,
+.nusajoy-home button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nusajoy-home a,
+.nusajoy-home button,
+.nusajoy-home input {
+  transition-timing-function:
+    var(--nj-ease);
+}
+
+.nusajoy-home button,
+.nusajoy-home a {
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   3. AMBIENT BACKGROUND MOTION
+========================================================= */
+
+.nusajoy-home::before,
+.nusajoy-home::after {
+  content: "";
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: .65;
+}
+
+.nusajoy-home::before {
+  width: 280px;
+  height: 280px;
+  top: 18%;
+  left: -140px;
+  background:
+    rgba(54, 190, 163, .09);
+  animation:
+    njHomeAmbientA 14s
+    ease-in-out
+    infinite;
+}
+
+.nusajoy-home::after {
+  width: 240px;
+  height: 240px;
+  top: 58%;
+  right: -120px;
+  background:
+    rgba(246, 184, 74, .08);
+  animation:
+    njHomeAmbientB 17s
+    ease-in-out
+    infinite;
+}
+
+@keyframes njHomeAmbientA {
+  0%,
+  100% {
+    transform:
+      translate3d(0, 0, 0)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate3d(55px, -35px, 0)
+      scale(1.12);
+  }
+}
+
+@keyframes njHomeAmbientB {
+  0%,
+  100% {
+    transform:
+      translate3d(0, 0, 0)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate3d(-45px, 30px, 0)
+      scale(1.08);
+  }
+}
+
+
+/* =========================================================
+   4. SECTION HEADER MOTION
+========================================================= */
+
+.nj-section-header,
+.nj-section-intro,
+.nj-solution-header,
+.nj-how-header {
+  position: relative;
+}
+
+.nj-section-header h2,
+.nj-section-intro h2,
+.nj-solution-header h2,
+.nj-how-header h2 {
+  transition:
+    transform var(--nj-motion)
+    var(--nj-ease);
+}
+
+.nj-section-header:hover h2,
+.nj-section-intro:hover h2,
+.nj-solution-header:hover h2,
+.nj-how-header:hover h2 {
+  transform: translateX(2px);
+}
+
+.nj-label {
+  position: relative;
+}
+
+.nj-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--nj-primary),
+      var(--nj-accent)
+    );
+  transform-origin: left center;
+  transform: scaleX(.55);
+  transition:
+    transform .35s var(--nj-ease);
+}
+
+.nj-section-header:hover .nj-label::after,
+.nj-section-intro:hover .nj-label::after,
+.nj-solution-header:hover .nj-label::after,
+.nj-how-header:hover .nj-label::after {
+  transform: scaleX(1);
+}
+
+
+/* =========================================================
+   5. HERO — MORE DEPTH
+========================================================= */
+
+.nj-hero {
+  position: relative;
+}
+
+.nj-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.nj-hero-content h1 {
+  text-wrap: balance;
+}
+
+.nj-hero-content h1 span {
+  position: relative;
+  display: inline-block;
+  background-size: 220% 100%;
+  animation:
+    njHeroGradient 7s
+    ease-in-out
+    infinite;
+}
+
+@keyframes njHeroGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+
+/* =========================================================
+   6. EYEBROW — SOFT PULSE
+========================================================= */
+
+.nj-eyebrow {
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .35s ease,
+    border-color .35s ease;
+}
+
+.nj-eyebrow:hover {
+  transform:
+    translateY(-2px)
+    scale(1.015);
+
+  border-color:
+    rgba(11, 122, 105, .32);
+
+  box-shadow:
+    0 14px 30px
+    rgba(11, 122, 105, .12);
+}
+
+.nj-eyebrow::after {
+  animation:
+    njEyebrowPulse
+    2.4s
+    ease-in-out
+    infinite;
+}
+
+@keyframes njEyebrowPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: .8;
+  }
+
+  50% {
+    transform: scale(1.28);
+    opacity: 1;
+  }
+}
+
+
+/* =========================================================
+   7. SEARCH — PREMIUM INTERACTION
+========================================================= */
+
+.nj-search-widget {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .4s ease,
+    border-color .35s ease;
+}
+
+.nj-search-widget::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background:
+    radial-gradient(
+      circle at 15% 50%,
+      rgba(20, 112, 94, .07),
+      transparent 35%
+    );
+
+  opacity: 0;
+  transition:
+    opacity .4s ease;
+}
+
+.nj-search-widget:hover {
+  transform:
+    translateY(-3px);
+  box-shadow:
+    0 24px 50px
+    rgba(12, 65, 55, .14);
+}
+
+.nj-search-widget:focus-within {
+  transform:
+    translateY(-4px)
+    scale(1.003);
+
+  border-color:
+    rgba(11, 122, 105, .34);
+
+  box-shadow:
+    0 26px 54px
+    rgba(12, 65, 55, .16),
+    0 0 0 5px
+    rgba(20, 112, 94, .055);
+}
+
+.nj-search-widget:hover::before,
+.nj-search-widget:focus-within::before {
+  opacity: 1;
+}
+
+.nj-search-icon {
+  transition:
+    transform .35s var(--nj-ease),
+    color .25s ease;
+}
+
+.nj-search-widget:hover .nj-search-icon {
+  transform:
+    translateX(1px)
+    scale(1.05);
+}
+
+.nj-search-widget:focus-within .nj-search-icon {
+  color:
+    var(--nj-primary);
+
+  transform:
+    rotate(-7deg)
+    scale(1.12);
+}
+
+.nj-search-input-group input {
+  transition:
+    color .2s ease,
+    transform .25s var(--nj-ease);
+}
+
+.nj-search-widget:focus-within
+.nj-search-input-group input {
+  transform:
+    translateX(2px);
+}
+
+
+/* =========================================================
+   8. SEARCH BUTTON — SHINE
+========================================================= */
+
+.nj-search-button,
+.nj-primary-button,
+.nj-final-button,
+.nj-local-link:not(.secondary) {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  transition:
+    transform .3s var(--nj-ease),
+    box-shadow .3s ease,
+    background .3s ease;
+}
+
+.nj-search-button::after,
+.nj-primary-button::after,
+.nj-final-button::after,
+.nj-local-link:not(.secondary)::after {
+  content: "";
+
+  position: absolute;
+  top: -80%;
+  bottom: -80%;
+  left: -65%;
+
+  width: 35%;
+
+  transform:
+    skewX(-18deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.3),
+      transparent
+    );
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nj-search-button:hover,
+.nj-primary-button:hover,
+.nj-final-button:hover,
+.nj-local-link:not(.secondary):hover {
+  transform:
+    translateY(-4px);
+
+  box-shadow:
+    0 18px 35px
+    rgba(8, 119, 102, .28);
+}
+
+.nj-search-button:hover::after,
+.nj-primary-button:hover::after,
+.nj-final-button:hover::after,
+.nj-local-link:not(.secondary):hover::after {
+  opacity: 1;
+
+  animation:
+    njButtonShine
+    .9s
+    var(--nj-ease)
+    both;
+}
+
+@keyframes njButtonShine {
+  from {
+    transform:
+      translateX(0)
+      skewX(-18deg);
+  }
+
+  to {
+    transform:
+      translateX(430%)
+      skewX(-18deg);
+  }
+}
+
+.nj-search-button:active,
+.nj-primary-button:active,
+.nj-final-button:active,
+.nj-local-link:not(.secondary):active {
+  transform:
+    translateY(-1px)
+    scale(.98);
+}
+
+
+/* =========================================================
+   9. SECONDARY BUTTON
+========================================================= */
+
+.nj-secondary-button,
+.nj-final-secondary,
+.nj-local-link.secondary {
+  transition:
+    transform .3s var(--nj-ease),
+    box-shadow .3s ease,
+    border-color .3s ease,
+    background .3s ease;
+}
+
+.nj-secondary-button:hover,
+.nj-final-secondary:hover,
+.nj-local-link.secondary:hover {
+  transform:
+    translateY(-4px);
+
+  border-color:
+    rgba(20, 112, 94, .22);
+
+  background:
+    rgba(255,255,255,.96);
+
+  box-shadow:
+    0 16px 34px
+    rgba(10, 67, 57, .10);
+}
+
+
+/* =========================================================
+   10. HERO IMAGE — DEPTH + ZOOM
+========================================================= */
+
+.nj-image-frame {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  transform:
+    translateZ(0);
+
+  transition:
+    transform .65s var(--nj-ease),
+    box-shadow .65s ease;
+}
+
+.nj-image-frame::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 20%,
+      rgba(255,255,255,.13) 48%,
+      transparent 68%
+    );
+
+  transform:
+    translateX(-120%);
+
+  pointer-events: none;
+}
+
+.nj-image-frame:hover {
+  transform:
+    translateY(-8px)
+    rotateX(1deg)
+    rotateY(-1deg);
+
+  box-shadow:
+    0 38px 90px
+    rgba(9, 76, 64, .25);
+}
+
+.nj-image-frame:hover::after {
+  animation:
+    njHeroImageSweep
+    1s
+    var(--nj-ease)
+    both;
+}
+
+@keyframes njHeroImageSweep {
+  from {
+    transform:
+      translateX(-120%);
+  }
+
+  to {
+    transform:
+      translateX(120%);
+  }
+}
+
+.nj-image-frame img {
+  transform:
+    scale(1.001);
+
+  transition:
+    transform .95s var(--nj-ease),
+    filter .6s ease;
+}
+
+.nj-image-frame:hover img {
+  transform:
+    scale(1.075);
+
+  filter:
+    saturate(1.08)
+    contrast(1.04);
+}
+
+.nj-image-shade {
+  transition:
+    opacity .5s ease;
+}
+
+.nj-image-frame:hover
+.nj-image-shade {
+  opacity: .86;
+}
+
+
+/* =========================================================
+   11. IMAGE LOCATION BADGE
+========================================================= */
+
+.nj-image-location {
+  transition:
+    transform .35s var(--nj-ease),
+    background .3s ease,
+    box-shadow .3s ease;
+}
+
+.nj-image-frame:hover
+.nj-image-location {
+  transform:
+    translateY(-3px);
+
+  background:
+    rgba(14,47,40,.76);
+
+  box-shadow:
+    0 12px 26px
+    rgba(0,0,0,.16);
+}
+
+
+/* =========================================================
+   12. FLOATING CARD — NATURAL FLOAT
+========================================================= */
+
+.nj-floating-card {
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nj-floating-card:hover {
+  transform:
+    translateY(-10px)
+    scale(1.025);
+
+  box-shadow:
+    0 24px 48px
+    rgba(11,71,60,.20);
+}
+
+.nj-floating-top {
+  animation:
+    njFloatingTop
+    5.8s
+    ease-in-out
+    infinite;
+}
+
+.nj-floating-bottom {
+  animation:
+    njFloatingBottom
+    6.8s
+    ease-in-out
+    infinite;
+}
+
+@keyframes njFloatingTop {
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(-9px);
+  }
+}
+
+@keyframes njFloatingBottom {
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(8px);
+  }
+}
+
+.nj-floating-icon {
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nj-floating-card:hover
+.nj-floating-icon {
+  transform:
+    rotate(-7deg)
+    scale(1.08);
+
+  box-shadow:
+    0 10px 22px
+    rgba(20,112,94,.14);
+}
+
+
+/* =========================================================
+   13. CATEGORY CARDS
+========================================================= */
+
+.nj-category-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  transition:
+    transform .42s var(--nj-ease),
+    box-shadow .42s ease,
+    border-color .35s ease;
+}
+
+.nj-category-card::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 22%,
+      rgba(255,255,255,.5) 48%,
+      transparent 72%
+    );
+
+  transform:
+    translateX(-125%);
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.nj-category-card:hover {
+  transform:
+    translateY(-9px)
+    scale(1.012);
+
+  border-color:
+    rgba(20,112,94,.23);
+
+  box-shadow:
+    0 25px 50px
+    rgba(13,78,65,.14);
+}
+
+.nj-category-card:hover::after {
+  opacity: 1;
+
+  animation:
+    njCardShimmer
+    .85s
+    var(--nj-ease)
+    both;
+}
+
+@keyframes njCardShimmer {
+  from {
+    transform:
+      translateX(-125%);
+  }
+
+  to {
+    transform:
+      translateX(125%);
+  }
+}
+
+.nj-category-icon {
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nj-category-card:hover
+.nj-category-icon {
+  transform:
+    translateY(-3px)
+    rotate(-7deg)
+    scale(1.1);
+
+  box-shadow:
+    0 12px 25px
+    rgba(20,112,94,.14);
+}
+
+.nj-category-arrow {
+  transition:
+    transform .35s var(--nj-ease),
+    color .25s ease;
+}
+
+.nj-category-card:hover
+.nj-category-arrow {
+  transform:
+    translateX(6px);
+
+  color:
+    var(--nj-primary);
+}
+
+
+/* =========================================================
+   14. EXPERIENCE CARDS
+========================================================= */
+
+.nj-experience-card {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .42s var(--nj-ease),
+    box-shadow .42s ease,
+    border-color .35s ease;
+}
+
+.nj-experience-card::before {
+  content: "";
+
+  position: absolute;
+  width: 120px;
+  height: 120px;
+
+  right: -70px;
+  bottom: -70px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(20,112,94,.11),
+      transparent 68%
+    );
+
+  transition:
+    transform .5s var(--nj-ease);
+}
+
+.nj-experience-card:hover {
+  transform:
+    translateY(-8px);
+
+  border-color:
+    rgba(20,112,94,.22);
+
+  box-shadow:
+    0 24px 48px
+    rgba(12,65,55,.13);
+}
+
+.nj-experience-card:hover::before {
+  transform:
+    scale(1.5);
+}
+
+.nj-experience-icon {
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nj-experience-card:hover
+.nj-experience-icon {
+  transform:
+    translateY(-3px)
+    rotate(-6deg)
+    scale(1.08);
+
+  box-shadow:
+    0 12px 24px
+    rgba(20,112,94,.13);
+}
+
+.nj-experience-card > span {
+  transition:
+    gap .35s var(--nj-ease),
+    color .25s ease;
+}
+
+.nj-experience-card:hover > span {
+  gap: 9px;
+}
+
+
+/* =========================================================
+   15. PROBLEM ITEMS
+========================================================= */
+
+.nj-problem-item {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .35s ease,
+    border-color .3s ease;
+}
+
+.nj-problem-item::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--nj-primary),
+      var(--nj-accent)
+    );
+
+  transform:
+    scaleY(0);
+
+  transform-origin:
+    center top;
+
+  transition:
+    transform .35s var(--nj-ease);
+}
+
+.nj-problem-item:hover {
+  transform:
+    translateX(7px);
+
+  border-color:
+    rgba(20,112,94,.24);
+
+  box-shadow:
+    0 15px 32px
+    rgba(12,65,55,.10);
+}
+
+.nj-problem-item:hover::after {
+  transform:
+    scaleY(1);
+}
+
+
+/* =========================================================
+   16. PROCESS ITEMS
+========================================================= */
+
+.nj-process-item {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .42s var(--nj-ease),
+    box-shadow .42s ease,
+    border-color .3s ease;
+}
+
+.nj-process-item:hover {
+  transform:
+    translateY(-9px);
+
+  border-color:
+    rgba(20,112,94,.22);
+
+  box-shadow:
+    0 25px 48px
+    rgba(12,65,55,.13);
+}
+
+.nj-process-item::before {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+
+  height: 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--nj-primary),
+      var(--nj-accent)
+    );
+
+  transform:
+    scaleX(0);
+
+  transform-origin:
+    left center;
+
+  transition:
+    transform .4s var(--nj-ease);
+}
+
+.nj-process-item:hover::before {
+  transform:
+    scaleX(1);
+}
+
+.nj-process-icon {
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nj-process-item:hover
+.nj-process-icon {
+  transform:
+    translateY(-3px)
+    scale(1.1)
+    rotate(-6deg);
+
+  box-shadow:
+    0 12px 25px
+    rgba(20,112,94,.14);
+}
+
+.nj-process-top > span {
+  transition:
+    transform .35s var(--nj-ease),
+    background .3s ease,
+    color .3s ease;
+}
+
+.nj-process-item:hover
+.nj-process-top > span {
+  transform:
+    scale(1.08);
+
+  background:
+    var(--nj-primary);
+
+  color:
+    white;
+}
+
+
+/* =========================================================
+   17. DESTINATION CARDS
+========================================================= */
+
+.nj-dest-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  transition:
+    transform .45s var(--nj-ease),
+    box-shadow .45s ease,
+    border-color .35s ease;
+}
+
+.nj-dest-card::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  pointer-events: none;
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(255,255,255,.4);
+
+  z-index: 4;
+}
+
+.nj-dest-card:hover {
+  transform:
+    translateY(-10px);
+
+  border-color:
+    rgba(20,112,94,.22);
+
+  box-shadow:
+    var(--nj-card-hover-shadow);
+}
+
+.nj-dest-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.nj-dest-image img {
+  transition:
+    transform .85s var(--nj-ease),
+    filter .55s ease;
+}
+
+.nj-dest-card:hover
+.nj-dest-image img {
+  transform:
+    scale(1.09);
+
+  filter:
+    saturate(1.08)
+    contrast(1.03);
+}
+
+.nj-dest-image::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 24%,
+      rgba(255,255,255,.16) 48%,
+      transparent 66%
+    );
+
+  transform:
+    translateX(-120%);
+
+  pointer-events: none;
+}
+
+.nj-dest-card:hover
+.nj-dest-image::before {
+  animation:
+    njDestinationSweep
+    .95s
+    var(--nj-ease)
+    both;
+}
+
+@keyframes njDestinationSweep {
+  from {
+    transform:
+      translateX(-120%);
+  }
+
+  to {
+    transform:
+      translateX(120%);
+  }
+}
+
+.nj-dest-badge {
+  transition:
+    transform .3s var(--nj-ease),
+    box-shadow .3s ease,
+    background .3s ease;
+}
+
+.nj-dest-card:hover
+.nj-dest-badge {
+  transform:
+    translateY(-3px)
+    scale(1.04);
+
+  box-shadow:
+    0 10px 22px
+    rgba(0,0,0,.11);
+
+  background:
+    rgba(255,255,255,.96);
+}
+
+.nj-dest-rating {
+  transition:
+    transform .3s var(--nj-ease);
+}
+
+.nj-dest-card:hover
+.nj-dest-rating {
+  transform:
+    translateY(-1px);
+}
+
+.nj-dest-link {
+  transition:
+    gap .35s var(--nj-ease),
+    color .25s ease;
+}
+
+.nj-dest-link:hover {
+  gap: 9px;
+  color:
+    var(--nj-primary-dark);
+}
+
+
+/* =========================================================
+   18. SMART PLAN — MORE ALIVE
+========================================================= */
+
+.nj-plan-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  transition:
+    transform .5s var(--nj-ease),
+    box-shadow .5s ease;
+}
+
+.nj-plan-card:hover {
+  transform:
+    translateY(-5px);
+
+  box-shadow:
+    0 34px 75px
+    rgba(7,74,63,.25);
+}
+
+.nj-plan-visual {
+  position: relative;
+  overflow: hidden;
+}
+
+.nj-plan-visual::after {
+  content: "";
+
+  position: absolute;
+  width: 280px;
+  height: 280px;
+
+  top: 50%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(90,224,195,.12),
+      transparent 68%
+    );
+
+  animation:
+    njPlanGlow
+    6s
+    ease-in-out
+    infinite;
+}
+
+@keyframes njPlanGlow {
+  0%,
+  100% {
+    opacity: .65;
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.12);
+  }
+}
+
+.nj-plan-center {
+  transition:
+    transform .5s var(--nj-ease),
+    box-shadow .5s ease;
+}
+
+.nj-plan-card:hover
+.nj-plan-center {
+  box-shadow:
+    0 0 55px
+    rgba(101,231,202,.13);
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.05);
+}
+
+.nj-plan-orbit {
+  transition:
+    opacity .35s ease;
+}
+
+.nj-plan-card:hover
+.nj-plan-orbit {
+  opacity: 1;
+}
+
+.nj-plan-mini {
+  transition:
+    transform .35s var(--nj-ease),
+    background .3s ease,
+    border-color .3s ease,
+    box-shadow .3s ease;
+}
+
+.nj-plan-mini:hover {
+  transform:
+    translateY(-4px)
+    scale(1.05);
+
+  background:
+    rgba(255,255,255,.14);
+
+  border-color:
+    rgba(255,255,255,.25);
+
+  box-shadow:
+    0 12px 25px
+    rgba(0,0,0,.15);
+}
+
+.nj-plan-button {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .3s var(--nj-ease),
+    box-shadow .3s ease;
+}
+
+.nj-plan-button:hover {
+  transform:
+    translateY(-4px);
+
+  box-shadow:
+    0 20px 34px
+    rgba(0,0,0,.18);
+}
+
+
+/* =========================================================
+   19. IMPACT CARDS
+========================================================= */
+
+.nj-impact-card {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .4s ease,
+    border-color .3s ease;
+}
+
+.nj-impact-card:hover {
+  transform:
+    translateY(-8px);
+
+  border-color:
+    rgba(20,112,94,.21);
+
+  box-shadow:
+    0 23px 45px
+    rgba(12,65,55,.12);
+}
+
+.nj-impact-icon {
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nj-impact-card:hover
+.nj-impact-icon {
+  transform:
+    translateY(-3px)
+    rotate(-5deg)
+    scale(1.08);
+
+  box-shadow:
+    0 12px 24px
+    rgba(20,112,94,.13);
+}
+
+
+/* =========================================================
+   20. LOCAL ECOSYSTEM
+========================================================= */
+
+.nj-local-card {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .45s var(--nj-ease),
+    box-shadow .45s ease,
+    border-color .3s ease;
+}
+
+.nj-local-card:hover {
+  transform:
+    translateY(-5px);
+
+  box-shadow:
+    0 28px 58px
+    rgba(12,65,55,.12);
+
+  border-color:
+    rgba(20,112,94,.2);
+}
+
+.nj-local-icon {
+  transition:
+    transform .4s var(--nj-ease),
+    box-shadow .35s ease;
+}
+
+.nj-local-card:hover
+.nj-local-icon {
+  transform:
+    rotate(-6deg)
+    scale(1.08);
+
+  box-shadow:
+    0 15px 30px
+    rgba(20,112,94,.21);
+}
+
+
+/* =========================================================
+   21. FINAL CTA
+========================================================= */
+
+.nj-final {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .45s var(--nj-ease),
+    box-shadow .45s ease,
+    border-color .35s ease;
+}
+
+.nj-final::before {
+  content: "";
+
+  position: absolute;
+
+  width: 260px;
+  height: 260px;
+
+  right: -120px;
+  bottom: -130px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(20,112,94,.10),
+      transparent 68%
+    );
+
+  transition:
+    transform .7s var(--nj-ease);
+}
+
+.nj-final:hover {
+  transform:
+    translateY(-6px);
+
+  box-shadow:
+    0 32px 72px
+    rgba(12,65,55,.14);
+
+  border-color:
+    rgba(20,112,94,.20);
+}
+
+.nj-final:hover::before {
+  transform:
+    scale(1.2);
+}
+
+.nj-final-icon {
+  transition:
+    transform .7s var(--nj-ease),
+    opacity .4s ease;
+}
+
+.nj-final:hover
+.nj-final-icon {
+  transform:
+    rotate(12deg)
+    scale(1.08);
+
+  opacity: .13;
+}
+
+.nj-final-button,
+.nj-final-secondary {
+  transition:
+    transform .35s var(--nj-ease),
+    box-shadow .3s ease;
+}
+
+.nj-final-button:hover,
+.nj-final-secondary:hover {
+  transform:
+    translateY(-4px);
+}
+
+
+/* =========================================================
+   22. LINK MICRO INTERACTION
+========================================================= */
+
+.nj-link-more {
+  position: relative;
+
+  transition:
+    transform .3s var(--nj-ease),
+    color .25s ease;
+}
+
+.nj-link-more svg,
+.nj-dest-link svg,
+.nj-category-arrow {
+  transition:
+    transform .3s var(--nj-ease);
+}
+
+.nj-link-more:hover {
+  transform:
+    translateX(5px);
+
+  color:
+    var(--nj-primary-dark);
+}
+
+.nj-link-more:hover svg,
+.nj-dest-link:hover svg {
+  transform:
+    translateX(4px);
+}
+
+
+/* =========================================================
+   23. FOCUS STATE
+========================================================= */
+
+.nusajoy-home
+:where(
+  a,
+  button,
+  input,
+  select,
+  textarea
+):focus-visible {
+  outline:
+    3px solid
+    rgba(20,112,94,.2);
+
+  outline-offset:
+    4px;
+
+  box-shadow:
+    0 0 0 6px
+    rgba(20,112,94,.045);
+
+  border-radius:
+    10px;
+}
+
+.nj-search-input-group input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   24. TOUCH FEEDBACK
+========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+
+  .nj-category-card:active,
+  .nj-experience-card:active,
+  .nj-process-item:active,
+  .nj-dest-card:active,
+  .nj-impact-card:active,
+  .nj-primary-button:active,
+  .nj-secondary-button:active,
+  .nj-final-button:active,
+  .nj-final-secondary:active,
+  .nj-local-link:active,
+  .nj-search-button:active {
+    transform:
+      scale(.985);
+  }
+
+  .nj-image-frame:hover {
+    transform: none;
+  }
+
+  .nj-floating-card:hover {
+    transform: none;
+  }
+
+  .nj-dest-card:hover {
+    transform: none;
+  }
+}
+
+
+/* =========================================================
+   25. DESKTOP-ONLY HOVER
+========================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+
+  .nj-category-card,
+  .nj-experience-card,
+  .nj-process-item,
+  .nj-dest-card,
+  .nj-impact-card,
+  .nj-final,
+  .nj-local-card {
+    will-change:
+      transform,
+      box-shadow;
+  }
+
+  .nj-category-card:hover,
+  .nj-experience-card:hover,
+  .nj-process-item:hover,
+  .nj-dest-card:hover,
+  .nj-impact-card:hover {
+    will-change:
+      transform,
+      box-shadow;
+  }
+}
+
+
+/* =========================================================
+   26. SCROLL REVEAL
+========================================================= */
+
+@supports (animation-timeline: view()) {
+
+  .nj-categories-section,
+  .nj-problem-section,
+  .nj-solution-section,
+  .nj-how-section,
+  .nj-destinations-section,
+  .nj-plan-section,
+  .nj-impact-section,
+  .nj-local-section,
+  .nj-final-section {
+
+    animation:
+      njSectionReveal
+      1ms
+      both;
+
+    animation-timeline:
+      view();
+
+    animation-range:
+      entry 0%
+      cover 28%;
+  }
+}
+
+@keyframes njSectionReveal {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(34px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+
+/* =========================================================
+   27. CARD ENTRANCE
+========================================================= */
+
+.nj-categories-grid > *,
+.nj-experience-grid > *,
+.nj-process > *,
+.nj-destinations-grid > *,
+.nj-impact-grid > * {
+  animation:
+    njCardReveal
+    .75s
+    var(--nj-ease)
+    both;
+}
+
+.nj-categories-grid > *:nth-child(1),
+.nj-experience-grid > *:nth-child(1),
+.nj-process > *:nth-child(1),
+.nj-destinations-grid > *:nth-child(1),
+.nj-impact-grid > *:nth-child(1) {
+  animation-delay:
+    .03s;
+}
+
+.nj-categories-grid > *:nth-child(2),
+.nj-experience-grid > *:nth-child(2),
+.nj-process > *:nth-child(2),
+.nj-destinations-grid > *:nth-child(2),
+.nj-impact-grid > *:nth-child(2) {
+  animation-delay:
+    .09s;
+}
+
+.nj-categories-grid > *:nth-child(3),
+.nj-experience-grid > *:nth-child(3),
+.nj-process > *:nth-child(3),
+.nj-destinations-grid > *:nth-child(3),
+.nj-impact-grid > *:nth-child(3) {
+  animation-delay:
+    .15s;
+}
+
+.nj-categories-grid > *:nth-child(4),
+.nj-process > *:nth-child(4) {
+  animation-delay:
+    .21s;
+}
+
+@keyframes njCardReveal {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(22px)
+      scale(.985);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* =========================================================
+   28. HERO ENTRANCE
+========================================================= */
+
+.nj-hero-content {
+  animation:
+    njHeroContentIn
+    .85s
+    var(--nj-ease)
+    both;
+}
+
+.nj-hero-visual {
+  animation:
+    njHeroVisualIn
+    .95s
+    .08s
+    var(--nj-ease)
+    both;
+}
+
+@keyframes njHeroContentIn {
+  from {
+    opacity: 0;
+    transform:
+      translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0);
+  }
+}
+
+@keyframes njHeroVisualIn {
+  from {
+    opacity: 0;
+    transform:
+      translateX(30px)
+      scale(.975);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateX(0)
+      scale(1);
+  }
+}
+
+
+/* =========================================================
+   29. MOBILE REFINEMENT
+========================================================= */
+
+@media (max-width: 639px) {
+
+  .nusajoy-home::before {
+    width: 200px;
+    height: 200px;
+    left: -100px;
+  }
+
+  .nusajoy-home::after {
+    width: 180px;
+    height: 180px;
+    right: -90px;
+  }
+
+  .nj-search-widget:hover,
+  .nj-search-widget:focus-within {
+    transform:
+      translateY(-2px);
+  }
+
+  .nj-category-card:hover,
+  .nj-experience-card:hover,
+  .nj-process-item:hover,
+  .nj-dest-card:hover,
+  .nj-impact-card:hover,
+  .nj-final:hover,
+  .nj-local-card:hover {
+    transform:
+      translateY(-4px);
+  }
+
+  .nj-image-frame:hover {
+    transform:
+      none;
+  }
+
+  .nj-image-frame:hover img {
+    transform:
+      scale(1.04);
+  }
+
+  .nj-floating-card {
+    animation-duration:
+      6.5s;
+  }
+
+  .nj-final::before {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+
+/* =========================================================
+   30. TABLET REFINEMENT
+========================================================= */
+
+@media (min-width: 640px) and (max-width: 991px) {
+
+  .nj-category-card:hover,
+  .nj-experience-card:hover,
+  .nj-process-item:hover,
+  .nj-dest-card:hover,
+  .nj-impact-card:hover {
+    transform:
+      translateY(-6px);
+  }
+
+  .nj-image-frame:hover {
+    transform:
+      translateY(-4px);
+  }
+}
+
+
+/* =========================================================
+   31. REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .nusajoy-home,
+  .nusajoy-home *,
+  .nusajoy-home *::before,
+  .nusajoy-home *::after {
+
+    animation:
+      none !important;
+
+    transition:
+      none !important;
+
+    scroll-behavior:
+      auto !important;
+  }
+
+  .nj-image-frame:hover,
+  .nj-category-card:hover,
+  .nj-experience-card:hover,
+  .nj-process-item:hover,
+  .nj-dest-card:hover,
+  .nj-impact-card:hover,
+  .nj-final:hover,
+  .nj-local-card:hover {
+    transform:
+      none !important;
+  }
+}

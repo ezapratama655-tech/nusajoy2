@@ -9,7 +9,6 @@
  * atribut dialog untuk aksesibilitas.
  */
 
-import React from 'react';
 import useModalBehavior, { getBackdropProps } from '../hooks/useModalBehavior.js';
 
 export default function QuickTripGateModal({

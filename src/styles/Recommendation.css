@@ -1,0 +1,7775 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
+
+/* =========================================================
+   NUSAJOY — RECOMMENDATION / SMART MATCHER
+   ---------------------------------------------------------
+   Fondasi warna:
+   cream · forest green · gold · terracotta
+
+   Pengembangan:
+   01 Token & dasar
+   02 Hero
+   03 Kartu filter
+   04 Kontrol
+   05 Panel lama
+   06 Aksi filter
+   07 Hasil & kartu
+   08 Gambar & badge
+   09 Isi kartu
+   10 Aksi kartu
+   11 Empty / sebelum cari
+   12 State & skeleton
+   13 Fokus
+   14 Responsive
+   15 Reduced motion
+
+   TAMBAHAN DISCOVERY EXPERIENCE:
+   16 Discovery search engine
+   17 Search popover & autocomplete
+   18 Category navigation
+   19 Destinasi populer
+   20 Hidden gem
+   21 Personalized recommendation
+   22 Recommendation mini cards
+   23 Experience chips
+   24 Enhanced matcher
+   25 Scroll & micro interaction
+   26 Responsive discovery
+   27 Accessibility
+   28 Dark compatibility
+   29 Final utility
+   ========================================================= */
+
+
+/* =========================================================
+   01 TOKEN & DASAR
+   ========================================================= */
+
+.nusa-rec-page {
+
+  --nusa-rec-nav-offset: 0px;
+
+  --nusa-rec-ink: #17251e;
+  --nusa-rec-ink-soft: #35554a;
+  --nusa-rec-muted: #5f6b65;
+
+  --nusa-rec-surface: #fffdf7;
+  --nusa-rec-white: #ffffff;
+
+  --nusa-rec-cream: #faf4dd;
+  --nusa-rec-cream-deep: #f0ecdf;
+
+  --nusa-rec-green: #174d36;
+  --nusa-rec-green-dark: #0f3524;
+  --nusa-rec-green-2: #1d6b51;
+
+  --nusa-rec-green-soft: #cfeacb;
+  --nusa-rec-green-soft-2: #eef7f2;
+
+  --nusa-rec-gold: #c69a3a;
+  --nusa-rec-gold-soft: #fbf2d7;
+
+  --nusa-rec-orange: #b5653a;
+
+  --nusa-rec-border: #dde2d9;
+
+  --nusa-rec-danger: #a23f39;
+  --nusa-rec-danger-soft: #f7d9d5;
+
+  --nusa-rec-shadow:
+    0 24px 60px rgba(23, 77, 54, 0.12);
+
+  --nusa-rec-shadow-soft:
+    0 10px 28px rgba(23, 77, 54, 0.08);
+
+  --nusa-rec-radius-xl: 28px;
+  --nusa-rec-radius-lg: 22px;
+  --nusa-rec-radius-md: 16px;
+
+  --nusa-rec-search-radius: 20px;
+
+  --nusa-rec-ease:
+    cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  position: relative;
+
+  width: 100%;
+  min-height: 100vh;
+
+  padding:
+    calc(var(--nusa-rec-nav-offset) + 28px)
+    0
+    96px;
+
+  overflow-x: clip;
+
+  color: var(--nusa-rec-ink);
+
+  background:
+    radial-gradient(
+      circle at 92% 6%,
+      rgba(198, 154, 58, 0.12),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 4% 38%,
+      rgba(207, 234, 203, 0.4),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      #f6eed4 0%,
+      #faf4dd 34%,
+      #fffdf7 100%
+    );
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+.nusa-rec-page,
+.nusa-rec-page * {
+  box-sizing: border-box;
+}
+
+.nusa-rec-page button,
+.nusa-rec-page input,
+.nusa-rec-page select {
+  font: inherit;
+}
+
+.nusa-rec-page button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nusa-rec-page h1,
+.nusa-rec-page h2,
+.nusa-rec-page h3,
+.nusa-rec-page h4 {
+  font-family:
+    Outfit,
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+}
+
+.nusa-rec-page img {
+  max-width: 100%;
+}
+
+.nusa-rec-shell {
+  width: min(1240px, calc(100% - 36px));
+  margin: 0 auto;
+}
+
+.nusa-rec-section-kicker {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: var(--nusa-rec-orange);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   02 HERO
+   ========================================================= */
+
+.nusa-rec-hero {
+
+  position: relative;
+
+  overflow: hidden;
+
+  padding:
+    44px
+    44px
+    84px;
+
+  border-radius: 34px;
+
+  color: #fff;
+
+  background:
+    radial-gradient(
+      circle at 88% 12%,
+      rgba(198, 154, 58, 0.34),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 6% 110%,
+      rgba(207, 234, 203, 0.2),
+      transparent 38%
+    ),
+    linear-gradient(
+      125deg,
+      #0b2b1d 0%,
+      #0f3524 38%,
+      #174d36 74%,
+      #24664a 100%
+    );
+
+  box-shadow: var(--nusa-rec-shadow);
+
+  animation:
+    nusa-rec-rise
+    520ms
+    var(--nusa-rec-ease)
+    both;
+}
+
+.nusa-rec-hero::before {
+
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    radial-gradient(
+      rgba(255, 255, 255, 0.09) 1px,
+      transparent 1.5px
+    );
+
+  background-size: 24px 24px;
+
+  mask-image:
+    linear-gradient(
+      120deg,
+      black 0%,
+      transparent 70%
+    );
+
+  -webkit-mask-image:
+    linear-gradient(
+      120deg,
+      black 0%,
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+.nusa-rec-hero::after {
+
+  content: '';
+
+  position: absolute;
+
+  top: -120px;
+  right: -110px;
+
+  width: 360px;
+  height: 360px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  box-shadow:
+    0 0 0 44px
+    rgba(255, 255, 255, 0.03),
+    0 0 0 92px
+    rgba(255, 255, 255, 0.02);
+
+  pointer-events: none;
+}
+
+.nusa-rec-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.nusa-rec-eyebrow {
+
+  display: inline-flex;
+
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 18px;
+
+  padding:
+    7px
+    14px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.18);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  color: #f6e6b0;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.nusa-rec-eyebrow-dot {
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 999px;
+
+  background:
+    var(--nusa-rec-gold);
+
+  box-shadow:
+    0 0 0 5px
+    rgba(198, 154, 58, 0.2);
+
+  animation:
+    nusa-rec-pulse
+    2.4s
+    ease-in-out
+    infinite;
+}
+
+.nusa-rec-hero-copy {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 32px;
+}
+
+.nusa-rec-hero h1 {
+
+  max-width: 800px;
+
+  margin: 0;
+
+  color: #fffdf7;
+
+  font-size:
+    clamp(
+      2.2rem,
+      4.6vw,
+      3.9rem
+    );
+
+  font-weight: 800;
+
+  line-height: 1.02;
+
+  letter-spacing: -0.045em;
+}
+
+.nusa-rec-hero p {
+
+  max-width: 640px;
+
+  margin:
+    18px
+    0
+    0;
+
+  color:
+    rgba(
+      255,
+      253,
+      247,
+      0.8
+    );
+
+  font-size: 16px;
+
+  line-height: 1.7;
+}
+
+.nusa-rec-smart-status {
+
+  flex:
+    0 0 auto;
+
+  min-width: 280px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding:
+    15px
+    18px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.16);
+
+  border-radius: 20px;
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  backdrop-filter: blur(14px);
+
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.nusa-rec-status-icon {
+
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 13px;
+
+  color:
+    var(--nusa-rec-green-dark);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-smart-status strong,
+.nusa-rec-smart-status span {
+  display: block;
+}
+
+.nusa-rec-smart-status strong {
+
+  font-family: Outfit, sans-serif;
+
+  font-size: 15px;
+}
+
+.nusa-rec-smart-status > div > span {
+
+  margin-top: 2px;
+
+  color:
+    rgba(
+      255,
+      253,
+      247,
+      0.74
+    );
+
+  font-size: 13px;
+
+  line-height: 1.45;
+}
+
+.nusa-rec-hero-stats {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.nusa-rec-hero-stat {
+
+  min-width: 130px;
+
+  padding:
+    12px
+    18px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-radius: 16px;
+
+  background:
+    rgba(255, 255, 255, 0.07);
+}
+
+.nusa-rec-hero-stat strong {
+
+  display: block;
+
+  color: #f6e6b0;
+
+  font-family: Outfit, sans-serif;
+
+  font-size: 26px;
+
+  font-weight: 800;
+
+  line-height: 1.1;
+}
+
+.nusa-rec-hero-stat span {
+
+  color:
+    rgba(
+      255,
+      253,
+      247,
+      0.72
+    );
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   03 KARTU FILTER
+   ========================================================= */
+
+.nusa-rec-filter-card {
+
+  position: relative;
+
+  z-index: 2;
+
+  overflow: hidden;
+
+  margin:
+    -48px
+    20px
+    0;
+
+  padding: 28px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius:
+    var(--nusa-rec-radius-xl);
+
+  background:
+    rgba(
+      255,
+      253,
+      247,
+      0.97
+    );
+
+  box-shadow:
+    var(--nusa-rec-shadow);
+
+  backdrop-filter: blur(12px);
+
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.nusa-rec-filter-card::before {
+
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  top: 0;
+
+  height: 4px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--nusa-rec-green) 0%,
+      var(--nusa-rec-green-2) 45%,
+      var(--nusa-rec-gold) 100%
+    );
+}
+
+.nusa-rec-filter-card-head {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding-bottom: 20px;
+
+  border-bottom:
+    1px solid
+    rgba(23, 77, 54, 0.09);
+}
+
+.nusa-rec-filter-card h2,
+.nusa-rec-result-head h2 {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size:
+    clamp(
+      1.4rem,
+      2.6vw,
+      2rem
+    );
+
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.03em;
+}
+
+.nusa-rec-filter-card-head p,
+.nusa-rec-result-head p {
+
+  margin:
+    8px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.nusa-rec-head-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+.nusa-rec-reset-button,
+.nusa-rec-help-toggle {
+
+  min-height: 42px;
+
+  padding:
+    9px
+    16px;
+
+  border-radius: 13px;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms var(--nusa-rec-ease),
+    background 180ms ease,
+    border-color 180ms ease;
+}
+
+.nusa-rec-reset-button {
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.15);
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+}
+
+.nusa-rec-help-toggle {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  border:
+    1px solid
+    rgba(198, 154, 58, 0.3);
+
+  color: #82600f;
+
+  background:
+    var(--nusa-rec-gold-soft);
+}
+
+.nusa-rec-reset-button:hover,
+.nusa-rec-help-toggle:hover {
+
+  transform:
+    translateY(-1px);
+}
+
+.nusa-rec-reset-button:hover {
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-algorithm-note {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-top: 16px;
+
+  padding:
+    14px
+    16px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 16px;
+
+  background: #f3f8f4;
+
+  animation:
+    nusa-rec-reveal
+    220ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-algorithm-note__icon {
+
+  width: 38px;
+  height: 38px;
+
+  flex:
+    0 0 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 12px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-algorithm-note strong {
+  display: block;
+
+  font-size: 14px;
+}
+
+.nusa-rec-algorithm-note p {
+
+  margin:
+    4px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   04 KONTROL
+   ========================================================= */
+
+.nusa-rec-filter-grid {
+
+  counter-reset: nusa-step;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      5,
+      minmax(0, 1fr)
+    );
+
+  gap: 16px;
+
+  margin-top: 22px;
+}
+
+.nusa-rec-advanced-control {
+
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+.nusa-rec-advanced-control > label,
+.nusa-rec-control-label {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-advanced-control > label::before,
+.nusa-rec-control-label::before {
+
+  counter-increment:
+    nusa-step;
+
+  content:
+    counter(nusa-step);
+
+  width: 22px;
+  height: 22px;
+
+  flex:
+    0 0 22px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  background:
+    var(--nusa-rec-green);
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-advanced-control > select {
+
+  width: 100%;
+
+  min-height: 50px;
+
+  padding:
+    0
+    38px
+    0
+    14px;
+
+  border:
+    1px solid
+    var(--nusa-rec-border);
+
+  border-radius: 15px;
+
+  color:
+    var(--nusa-rec-ink);
+
+  background-color:
+    var(--nusa-rec-cream);
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23174D36' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+  background-repeat: no-repeat;
+
+  background-position:
+    right 14px center;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    background-color 170ms ease;
+}
+
+.nusa-rec-advanced-control > select:hover {
+
+  border-color:
+    rgba(23, 77, 54, 0.3);
+
+  background-color:
+    #f7f1da;
+}
+
+.nusa-rec-advanced-control > select:focus {
+
+  border-color:
+    var(--nusa-rec-green);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(23, 77, 54, 0.1);
+}
+
+.nusa-rec-segmented {
+
+  min-height: 50px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      1fr
+    );
+
+  gap: 4px;
+
+  padding: 4px;
+
+  border:
+    1px solid
+    var(--nusa-rec-border);
+
+  border-radius: 15px;
+
+  background:
+    var(--nusa-rec-cream);
+}
+
+.nusa-rec-segmented button {
+
+  min-width: 0;
+
+  border: 0;
+
+  border-radius: 11px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  background: transparent;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.nusa-rec-segmented button:hover {
+
+  color:
+    var(--nusa-rec-ink);
+}
+
+.nusa-rec-segmented button:active {
+
+  transform:
+    scale(0.97);
+}
+
+.nusa-rec-segmented button.is-active {
+
+  color: #fff;
+
+  background:
+    var(--nusa-rec-green);
+
+  box-shadow:
+    0 6px 14px
+    rgba(23, 77, 54, 0.22);
+}
+
+
+/* =========================================================
+   05 PANEL LAMA
+   ========================================================= */
+
+.nusa-rec-legacy-tools {
+  display: none;
+}
+
+.nusa-rec-filter-chip {
+
+  min-height: 78px;
+
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    42px
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding:
+    10px
+    12px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fbfaf5 0%,
+      #f4f6f1 100%
+    );
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.nusa-rec-filter-chip.is-active {
+
+  border-color:
+    rgba(23, 77, 54, 0.34);
+
+  background:
+    linear-gradient(
+      180deg,
+      #f2faf6 0%,
+      #e9f4ee 100%
+    );
+}
+
+.nusa-rec-filter-icon {
+
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 13px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background: #fff;
+
+  font-weight: 900;
+}
+
+.nusa-rec-filter-content {
+  min-width: 0;
+}
+
+.nusa-rec-filter-content small,
+.nusa-rec-filter-content strong {
+  display: block;
+}
+
+.nusa-rec-filter-content small {
+
+  margin-bottom: 4px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 12px;
+}
+
+.nusa-rec-filter-content strong {
+
+  overflow: hidden;
+
+  font-size: 14px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-filter-arrow {
+
+  color: #82988e;
+
+  font-size: 16px;
+}
+
+.nusa-rec-filter-panel {
+
+  margin-top: 12px;
+
+  padding: 16px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.08);
+
+  border-radius: 18px;
+
+  background: #f6f8f3;
+
+  animation:
+    nusa-rec-reveal
+    180ms
+    ease;
+}
+
+.nusa-rec-panel-heading {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 12px;
+}
+
+.nusa-rec-panel-heading strong,
+.nusa-rec-panel-heading span {
+  display: block;
+}
+
+.nusa-rec-panel-heading strong {
+  font-size: 14px;
+}
+
+.nusa-rec-panel-heading span {
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 12px;
+
+  text-align: right;
+}
+
+.nusa-rec-option-grid {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.nusa-rec-option-button {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    9px
+    13px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 999px;
+
+  color:
+    var(--nusa-rec-ink-soft);
+
+  background: #fff;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms var(--nusa-rec-ease),
+    background 160ms ease;
+}
+
+.nusa-rec-option-button:hover {
+
+  transform:
+    translateY(-1px);
+
+  background:
+    #fbfcf8;
+}
+
+.nusa-rec-option-button.is-active {
+
+  color: #fff;
+
+  border-color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green);
+}
+
+.nusa-rec-price-head {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 8px;
+}
+
+.nusa-rec-price-head strong,
+.nusa-rec-price-head span {
+  display: block;
+}
+
+.nusa-rec-price-head span {
+
+  margin-top: 3px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 12px;
+}
+
+.nusa-rec-price-value {
+
+  color:
+    var(--nusa-rec-orange);
+
+  font-size: 17px;
+}
+
+.nusa-rec-range {
+
+  width: 100%;
+
+  accent-color:
+    var(--nusa-rec-green);
+
+  cursor: pointer;
+}
+
+.nusa-rec-range-labels {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 3px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 12px;
+}
+
+.nusa-rec-budget-presets {
+  margin-top: 11px;
+}
+
+
+/* =========================================================
+   06 AKSI FILTER
+   ========================================================= */
+
+.nusa-rec-active-params {
+
+  margin-top: 20px;
+
+  padding-top: 16px;
+
+  border-top:
+    1px solid
+    rgba(23, 77, 54, 0.08);
+}
+
+.nusa-rec-active-params__label {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 10px;
+
+  color:
+    #567066;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.nusa-rec-active-params__chips {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.nusa-rec-active-chip {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    7px
+    12px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    linear-gradient(
+      135deg,
+      #f3f8f4,
+      var(--nusa-rec-gold-soft)
+    );
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  animation:
+    nusa-rec-chip
+    180ms
+    ease;
+}
+
+.nusa-rec-active-chip svg {
+  color:
+    var(--nusa-rec-green-2);
+}
+
+.nusa-rec-filter-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-top: 18px;
+
+  padding-top: 18px;
+
+  border-top:
+    1px solid
+    rgba(23, 77, 54, 0.09);
+}
+
+.nusa-rec-filter-hint {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  max-width: 520px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+
+  line-height: 1.55;
+}
+
+.nusa-rec-mini-orb {
+
+  width: 9px;
+  height: 9px;
+
+  flex:
+    0 0 9px;
+
+  border-radius: 50%;
+
+  background: #1b8b67;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(27, 139, 103, 0.12);
+}
+
+.nusa-rec-filter-action-right {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.nusa-rec-high-match-toggle {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 46px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 14px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  background:
+    #faf9f3;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.nusa-rec-high-match-toggle input {
+
+  accent-color:
+    var(--nusa-rec-green);
+
+  cursor: pointer;
+}
+
+.nusa-rec-search-button {
+
+  min-width: 240px;
+
+  min-height: 50px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  padding:
+    0
+    24px;
+
+  border: 0;
+
+  border-radius: 15px;
+
+  color: #fff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #174d36 0%,
+      #1d6b51 100%
+    );
+
+  box-shadow:
+    0 14px 28px
+      rgba(23, 77, 54, 0.24),
+    inset 0 -3px 0
+      rgba(198, 154, 58, 0.5);
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms var(--nusa-rec-ease),
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+.nusa-rec-search-button:hover:not(:disabled) {
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 18px 32px
+      rgba(23, 77, 54, 0.3),
+    inset 0 -3px 0
+      rgba(198, 154, 58, 0.7);
+}
+
+.nusa-rec-search-button:active:not(:disabled) {
+
+  transform:
+    translateY(0)
+    scale(0.99);
+}
+
+.nusa-rec-search-button:disabled {
+
+  opacity: 0.65;
+
+  cursor: wait;
+}
+
+.nusa-rec-spin {
+
+  animation:
+    nusa-rec-spin
+    0.95s
+    linear
+    infinite;
+}
+
+.nusa-rec-toast {
+
+  position: fixed;
+
+  right: 24px;
+  bottom: 24px;
+
+  z-index: 100;
+
+  max-width:
+    min(
+      380px,
+      calc(100vw - 32px)
+    );
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding:
+    13px
+    16px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.12);
+
+  border-radius: 16px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    rgba(
+      255,
+      253,
+      247,
+      0.98
+    );
+
+  box-shadow:
+    0 18px 42px
+    rgba(16, 36, 29, 0.18);
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  animation:
+    nusa-rec-reveal
+    200ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-toast > span {
+
+  width: 26px;
+  height: 26px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 9px;
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-error {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-top: 18px;
+
+  padding:
+    16px
+    18px;
+
+  border:
+    1px solid
+    rgba(174, 55, 55, 0.16);
+
+  border-radius: 18px;
+
+  background:
+    #fff6f4;
+}
+
+.nusa-rec-error-icon {
+
+  width: 30px;
+  height: 30px;
+
+  flex:
+    0 0 30px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  color:
+    var(--nusa-rec-danger);
+
+  background:
+    var(--nusa-rec-danger-soft);
+
+  font-weight: 900;
+}
+
+.nusa-rec-error strong {
+  font-size: 15px;
+}
+
+.nusa-rec-error p {
+
+  margin:
+    4px
+    0
+    0;
+
+  color: #8c655e;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.nusa-rec-error small {
+
+  display: block;
+
+  margin-top: 6px;
+
+  color: #9a746d;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.nusa-rec-error code {
+
+  margin-left: 4px;
+
+  padding:
+    1px
+    5px;
+
+  border-radius: 5px;
+
+  background:
+    #f5dfdc;
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.nusa-rec-error-retry {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 12px;
+
+  min-height: 38px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    rgba(162, 63, 57, 0.25);
+
+  border-radius: 11px;
+
+  color:
+    var(--nusa-rec-danger);
+
+  background: #fff;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   07 HASIL
+   ========================================================= */
+
+.nusa-rec-result-section {
+
+  margin-top: 56px;
+}
+
+.nusa-rec-result-head {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 26px;
+
+  margin-bottom: 22px;
+}
+
+.nusa-rec-result-tools {
+
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+}
+
+.nusa-rec-match-status {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    10px
+    14px;
+
+  border-radius: 999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    #dbf0df;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-live-dot {
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #0ca56e;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(12, 165, 110, 0.14);
+
+  animation:
+    nusa-rec-live
+    1.8s
+    ease-in-out
+    infinite;
+}
+
+.nusa-rec-sort-wrap {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 42px;
+
+  padding:
+    4px
+    12px
+    4px
+    14px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.12);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 255, 255, 0.85);
+}
+
+.nusa-rec-sort-wrap > span {
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+}
+
+.nusa-rec-sort-select {
+
+  min-width: 150px;
+
+  border: 0;
+
+  outline: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  background: transparent;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.nusa-rec-scope-note {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin:
+    0
+    0
+    18px;
+
+  padding:
+    12px
+    16px;
+
+  border:
+    1px solid
+    rgba(198, 154, 58, 0.3);
+
+  border-radius: 14px;
+
+  color: #7a5a10;
+
+  background:
+    var(--nusa-rec-gold-soft);
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+.nusa-rec-scope-note svg {
+  flex: 0 0 auto;
+}
+
+.nusa-rec-destination-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 22px;
+}
+
+.nusa-rec-destination-card {
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius:
+    var(--nusa-rec-radius-xl);
+
+  background:
+    var(--nusa-rec-white);
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+
+  transition:
+    transform 220ms var(--nusa-rec-ease),
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.nusa-rec-destination-card:hover {
+
+  transform:
+    translateY(-6px);
+
+  border-color:
+    rgba(23, 77, 54, 0.22);
+
+  box-shadow:
+    0 28px 52px
+    rgba(17, 46, 35, 0.15);
+}
+
+.nusa-rec-destination-card.is-featured {
+
+  grid-column:
+    span 2;
+
+  flex-direction: row;
+
+  border-color:
+    rgba(198, 154, 58, 0.45);
+
+  box-shadow:
+    0 22px 48px
+    rgba(23, 77, 54, 0.14);
+}
+
+.nusa-rec-destination-card.is-featured .nusa-rec-image-wrap {
+
+  flex:
+    1 1 48%;
+
+  height: auto;
+
+  min-height: 100%;
+}
+
+.nusa-rec-destination-card.is-featured .nusa-rec-card-body {
+
+  flex:
+    1 1 52%;
+}
+
+.nusa-rec-destination-card.is-featured .nusa-rec-destination-name {
+
+  font-size: 27px;
+}
+
+
+/* =========================================================
+   08 GAMBAR & BADGE
+   ========================================================= */
+
+.nusa-rec-image-wrap {
+
+  position: relative;
+
+  height: 232px;
+
+  overflow: hidden;
+
+  background:
+    #dfe8df;
+
+  cursor: pointer;
+
+  outline: none;
+}
+
+.nusa-rec-image-wrap:focus-visible {
+
+  box-shadow:
+    inset 0 0 0 4px
+    rgba(255, 255, 255, 0.85);
+}
+
+.nusa-rec-destination-image,
+.nusa-rec-image-fallback {
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+}
+
+.nusa-rec-destination-image {
+
+  object-fit: cover;
+
+  transition:
+    transform
+    650ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-destination-card:hover
+.nusa-rec-destination-image {
+
+  transform:
+    scale(1.07);
+}
+
+.nusa-rec-image-fallback {
+
+  display: grid;
+
+  place-items: center;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.7),
+      transparent 45%
+    ),
+    linear-gradient(
+      135deg,
+      #cfeacb,
+      #e8efe3
+    );
+}
+
+.nusa-rec-image-wrap.image-error::before {
+
+  content:
+    'Pratinjau gambar tidak tersedia';
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 1;
+
+  display: grid;
+
+  place-items: center;
+
+  color:
+    rgba(16, 36, 29, 0.55);
+
+  background:
+    #dfe8df;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  text-align: center;
+}
+
+.nusa-rec-image-overlay {
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(9, 26, 19, 0.1) 0%,
+      transparent 38%,
+      rgba(9, 26, 19, 0.55) 100%
+    );
+
+  pointer-events: none;
+}
+
+.nusa-rec-top-match-tag,
+.nusa-rec-score-badge,
+.nusa-rec-visual-pill {
+
+  position: absolute;
+
+  z-index: 2;
+}
+
+.nusa-rec-top-match-tag {
+
+  left: 14px;
+
+  top: 14px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    7px
+    12px;
+
+  border-radius: 999px;
+
+  color: #3d2c06;
+
+  background:
+    linear-gradient(
+      135deg,
+      #e9c46a,
+      var(--nusa-rec-gold)
+    );
+
+  box-shadow:
+    0 8px 18px
+    rgba(83, 61, 18, 0.25);
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-score-badge {
+
+  right: 14px;
+
+  top: 14px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    8px
+    13px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.25);
+
+  border-radius: 999px;
+
+  color: #fff;
+
+  background:
+    rgba(15, 53, 36, 0.82);
+
+  backdrop-filter: blur(8px);
+
+  -webkit-backdrop-filter: blur(8px);
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-score-badge svg {
+
+  color:
+    #f0cf7a;
+}
+
+.nusa-rec-visual-pill {
+
+  left: 14px;
+
+  bottom: 14px;
+
+  padding:
+    7px
+    12px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.3);
+
+  border-radius: 999px;
+
+  color: #fff;
+
+  background:
+    rgba(10, 35, 25, 0.4);
+
+  backdrop-filter: blur(8px);
+
+  -webkit-backdrop-filter: blur(8px);
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   09 ISI KARTU
+   ========================================================= */
+
+.nusa-rec-card-body {
+
+  display: flex;
+
+  flex-direction: column;
+
+  flex: 1;
+
+  padding: 20px;
+}
+
+.nusa-rec-card-topline {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 10px;
+}
+
+.nusa-rec-card-category,
+.nusa-rec-card-rating {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  font-size: 12.5px;
+
+  font-weight: 600;
+}
+
+.nusa-rec-card-category {
+
+  max-width: 72%;
+
+  overflow: hidden;
+
+  color:
+    var(--nusa-rec-muted);
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-card-rating {
+
+  padding:
+    3px
+    9px;
+
+  border-radius: 999px;
+
+  color: #6b4f0e;
+
+  background:
+    var(--nusa-rec-gold-soft);
+}
+
+.nusa-rec-card-rating svg {
+
+  color:
+    var(--nusa-rec-gold);
+}
+
+.nusa-rec-gem-badge {
+
+  align-self: flex-start;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-bottom: 8px;
+
+  padding:
+    5px
+    10px;
+
+  border-radius: 999px;
+
+  color: #82600f;
+
+  background:
+    var(--nusa-rec-gold-soft);
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-destination-name {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 21px;
+
+  font-weight: 800;
+
+  line-height: 1.18;
+
+  letter-spacing: -0.025em;
+}
+
+.nusa-rec-destination-name:hover {
+
+  color:
+    var(--nusa-rec-green);
+}
+
+.nusa-rec-destination-location {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin:
+    8px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+}
+
+.nusa-rec-destination-location svg {
+
+  flex:
+    0 0 auto;
+
+  color:
+    var(--nusa-rec-green);
+}
+
+.nusa-rec-destination-description {
+
+  display:
+    -webkit-box;
+
+  margin:
+    10px
+    0
+    16px;
+
+  overflow: hidden;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 14px;
+
+  line-height: 1.6;
+
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+
+  -webkit-box-orient: vertical;
+}
+
+.nusa-rec-score-block {
+
+  margin-bottom: 14px;
+}
+
+.nusa-rec-score-head {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 7px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+}
+
+.nusa-rec-score-head strong {
+
+  color:
+    var(--nusa-rec-green);
+
+  font-size: 14px;
+}
+
+.nusa-rec-score-bar {
+
+  width: 100%;
+
+  height: 8px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background:
+    #e9efe9;
+}
+
+.nusa-rec-score-fill {
+
+  height: 100%;
+
+  min-width: 2px;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #1d6b51 0%,
+      #5c9a71 70%,
+      #c69a3a 100%
+    );
+
+  transition:
+    width 500ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-info-row {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 10px;
+
+  margin-bottom: 14px;
+}
+
+.nusa-rec-info-item {
+
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px;
+
+  border-radius: 14px;
+
+  background:
+    #f6f8f3;
+}
+
+.nusa-rec-info-icon {
+
+  width: 32px;
+  height: 32px;
+
+  flex:
+    0 0 32px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background: #fff;
+
+  font-size: 12px;
+
+  font-weight: 800;
+}
+
+.nusa-rec-info-item small,
+.nusa-rec-info-item strong {
+  display: block;
+}
+
+.nusa-rec-info-item small {
+
+  margin-bottom: 1px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 12px;
+}
+
+.nusa-rec-info-item strong {
+
+  overflow: hidden;
+
+  font-size: 14px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-price-text {
+
+  color:
+    var(--nusa-rec-orange);
+}
+
+.nusa-rec-reason-box {
+
+  margin-bottom: 16px;
+
+  padding:
+    13px
+    14px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.08);
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f2f8f4,
+      #fbf6e4
+    );
+}
+
+.nusa-rec-reason-title {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 9px;
+
+  color:
+    var(--nusa-rec-green);
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-reason-list {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+.nusa-rec-reason-list span {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    4px
+    10px
+    4px
+    5px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.08);
+
+  border-radius: 999px;
+
+  color: #4b5f56;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.85
+    );
+
+  font-size: 12px;
+
+  line-height: 1.4;
+}
+
+.nusa-rec-reason-list b {
+
+  width: 16px;
+  height: 16px;
+
+  flex:
+    0 0 16px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #2f8b67;
+
+  background: #e2f1e7;
+}
+
+
+/* =========================================================
+   10 AKSI KARTU
+   ========================================================= */
+
+.nusa-rec-card-actions {
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    auto
+    minmax(0, 1fr);
+
+  gap: 8px;
+
+  align-items: center;
+
+  margin-top: auto;
+
+  padding-top: 16px;
+
+  border-top:
+    1px solid
+    var(--nusa-rec-border);
+}
+
+.nusa-rec-action-icon,
+.nusa-rec-trip-button {
+
+  min-height: 44px;
+
+  border: 0;
+
+  border-radius: 13px;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms var(--nusa-rec-ease),
+    background 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.nusa-rec-action-icon {
+
+  width: 44px;
+
+  display: grid;
+
+  place-items: center;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-cream);
+}
+
+.nusa-rec-action-icon:hover,
+.nusa-rec-trip-button:hover {
+
+  transform:
+    translateY(-1px);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-action-icon:active,
+.nusa-rec-trip-button:active {
+
+  transform:
+    scale(0.96);
+}
+
+.nusa-rec-action-icon.is-favorited {
+
+  color: #fff;
+
+  background:
+    var(--nusa-rec-orange);
+
+  box-shadow:
+    0 8px 18px
+    rgba(181, 101, 58, 0.28);
+}
+
+.nusa-rec-trip-button {
+
+  min-width: 78px;
+
+  padding:
+    0
+    12px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-cream);
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-detail-button {
+
+  min-height: 44px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    var(--nusa-rec-green);
+
+  border-radius: 13px;
+
+  color: #fff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #174d36,
+      #1d6b51
+    );
+
+  box-shadow:
+    0 8px 16px
+    rgba(23, 77, 54, 0.16);
+
+  text-decoration: none;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 170ms var(--nusa-rec-ease),
+    background 170ms ease;
+}
+
+.nusa-rec-detail-button:hover {
+
+  color: #fff;
+
+  background:
+    var(--nusa-rec-green-dark);
+
+  transform:
+    translateY(-1px);
+}
+
+.nusa-rec-clickable {
+  cursor: pointer;
+}
+
+.nusa-rec-load-more {
+
+  display: flex;
+
+  justify-content: center;
+
+  margin-top: 30px;
+}
+
+.nusa-rec-load-more-button {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  min-height: 50px;
+
+  padding:
+    0
+    26px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.2);
+
+  border-radius: 999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background: #fff;
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms var(--nusa-rec-ease),
+    background 180ms ease;
+}
+
+.nusa-rec-load-more-button small {
+
+  padding:
+    3px
+    9px;
+
+  border-radius: 999px;
+
+  color: #6b4f0e;
+
+  background:
+    var(--nusa-rec-gold-soft);
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-load-more-button:hover {
+
+  transform:
+    translateY(-2px);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+}
+
+
+/* =========================================================
+   11 EMPTY / SEBELUM CARI
+   ========================================================= */
+
+.nusa-rec-empty-state {
+
+  padding:
+    60px
+    26px;
+
+  border:
+    1px dashed
+    rgba(23, 77, 54, 0.2);
+
+  border-radius:
+    var(--nusa-rec-radius-xl);
+
+  background:
+    rgba(255, 255, 255, 0.75);
+
+  text-align: center;
+}
+
+.nusa-rec-empty-icon,
+.nusa-rec-before-search-icon {
+
+  width: 56px;
+  height: 56px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin:
+    0
+    auto
+    14px;
+
+  border-radius: 18px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-empty-state h3 {
+
+  margin: 0;
+
+  font-size: 21px;
+}
+
+.nusa-rec-empty-state p {
+
+  max-width: 480px;
+
+  margin:
+    8px
+    auto
+    18px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.nusa-rec-empty-reset {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  min-height: 44px;
+
+  padding:
+    0
+    18px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.15);
+
+  border-radius: 13px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background: #fff;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms var(--nusa-rec-ease),
+    background 160ms ease;
+}
+
+.nusa-rec-empty-reset:hover {
+
+  transform:
+    translateY(-1px);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+}
+
+.nusa-rec-before-search {
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 18px;
+
+  margin-top: 40px;
+
+  padding:
+    22px
+    24px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 24px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(198, 154, 58, 0.12),
+      transparent 40%
+    ),
+    rgba(255, 255, 255, 0.8);
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+}
+
+.nusa-rec-before-search-icon {
+
+  width: 54px;
+  height: 54px;
+
+  margin: 0;
+
+  border-radius: 16px;
+}
+
+.nusa-rec-before-search h2 {
+
+  margin: 0;
+
+  font-size: 22px;
+}
+
+.nusa-rec-before-search p {
+
+  max-width: 620px;
+
+  margin:
+    6px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.nusa-rec-before-search-actions {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: flex-end;
+
+  gap: 8px;
+}
+
+.nusa-rec-before-search-actions span {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    8px
+    12px;
+
+  border-radius: 999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    #f0f7f2;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   12 STATE & SKELETON
+   ========================================================= */
+
+.nusa-rec-state-card {
+
+  max-width: 720px;
+
+  margin:
+    80px
+    auto;
+
+  padding:
+    44px
+    30px;
+
+  border:
+    1px solid
+    var(--nusa-rec-border);
+
+  border-radius: 28px;
+
+  background:
+    var(--nusa-rec-surface);
+
+  text-align: center;
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+}
+
+.nusa-rec-state-card h2 {
+
+  margin:
+    6px
+    0
+    8px;
+
+  font-size: 26px;
+
+  line-height: 1.15;
+}
+
+.nusa-rec-state-card p {
+
+  max-width: 470px;
+
+  margin:
+    0
+    auto
+    22px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+.nusa-rec-state-icon {
+
+  width: 64px;
+  height: 64px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin:
+    0
+    auto
+    18px;
+
+  border-radius: 50%;
+}
+
+.nusa-rec-state-icon-error {
+
+  color: #ba1a1a;
+
+  background:
+    #ffdcd8;
+}
+
+.nusa-rec-state-button {
+
+  min-width: 200px;
+}
+
+.nusa-rec-skeleton-shell {
+
+  padding-top: 12px;
+}
+
+.nusa-rec-skeleton-hero,
+.nusa-rec-skeleton-filter,
+.nusa-rec-skeleton-heading,
+.nusa-rec-skeleton-card {
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    #eee8d2;
+}
+
+.nusa-rec-skeleton-hero {
+
+  height: 240px;
+
+  margin-bottom: 26px;
+
+  border-radius: 30px;
+}
+
+.nusa-rec-skeleton-filter {
+
+  height: 240px;
+
+  margin-bottom: 38px;
+
+  border-radius: 28px;
+}
+
+.nusa-rec-skeleton-heading {
+
+  width: 44%;
+
+  height: 50px;
+
+  margin-bottom: 20px;
+
+  border-radius: 14px;
+}
+
+.nusa-rec-skeleton-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 22px;
+}
+
+.nusa-rec-skeleton-card {
+
+  height: 520px;
+
+  border-radius: 24px;
+}
+
+.nusa-rec-skeleton-hero::after,
+.nusa-rec-skeleton-filter::after,
+.nusa-rec-skeleton-heading::after,
+.nusa-rec-skeleton-card::after {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  transform:
+    translateX(-100%);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.45),
+      transparent
+    );
+
+  animation:
+    nusa-rec-shimmer
+    1.3s
+    infinite;
+}
+
+
+/* =========================================================
+   13 FOKUS
+   ========================================================= */
+
+.nusa-rec-page a:focus-visible,
+.nusa-rec-page button:focus-visible,
+.nusa-rec-page select:focus-visible,
+.nusa-rec-page input:focus-visible,
+.nusa-rec-page [role='button']:focus-visible {
+
+  outline:
+    3px solid
+    rgba(198, 154, 58, 0.7);
+
+  outline-offset: 2px;
+}
+
+.nusa-rec-high-match-toggle:focus-within {
+
+  outline:
+    3px solid
+    rgba(198, 154, 58, 0.7);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   14 RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1180px) {
+
+  .nusa-rec-filter-grid {
+
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+
+  .nusa-rec-hero-copy {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .nusa-rec-smart-status {
+
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .nusa-rec-destination-grid,
+  .nusa-rec-skeleton-grid {
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .nusa-rec-destination-card.is-featured {
+
+    grid-column:
+      1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+
+  .nusa-rec-filter-grid {
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .nusa-rec-result-head {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .nusa-rec-result-tools {
+
+    width: 100%;
+
+    justify-content:
+      space-between;
+  }
+
+  .nusa-rec-filter-actions {
+
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .nusa-rec-filter-action-right {
+
+    width: 100%;
+  }
+
+  .nusa-rec-search-button {
+
+    flex: 1;
+  }
+
+  .nusa-rec-before-search {
+
+    grid-template-columns:
+      auto
+      minmax(0, 1fr);
+  }
+
+  .nusa-rec-before-search-actions {
+
+    grid-column:
+      1 / -1;
+
+    justify-content:
+      flex-start;
+  }
+
+  .nusa-rec-destination-card.is-featured {
+
+    flex-direction:
+      column;
+  }
+
+  .nusa-rec-destination-card.is-featured
+  .nusa-rec-image-wrap {
+
+    flex: none;
+
+    height: 260px;
+
+    min-height: 0;
+  }
+}
+
+@media (max-width: 680px) {
+
+  .nusa-rec-page {
+
+    padding:
+      calc(
+        var(--nusa-rec-nav-offset)
+        + 16px
+      )
+      0
+      78px;
+  }
+
+  .nusa-rec-shell {
+
+    width:
+      min(
+        calc(100% - 24px),
+        1240px
+      );
+  }
+
+  .nusa-rec-hero {
+
+    padding:
+      28px
+      22px
+      70px;
+
+    border-radius: 26px;
+  }
+
+  .nusa-rec-hero p {
+    font-size: 14px;
+  }
+
+  .nusa-rec-hero-stat {
+
+    flex:
+      1 1 90px;
+
+    min-width: 0;
+
+    padding:
+      10px
+      14px;
+  }
+
+  .nusa-rec-filter-card {
+
+    margin:
+      -44px
+      8px
+      0;
+
+    padding:
+      20px
+      16px;
+
+    border-radius: 24px;
+  }
+
+  .nusa-rec-filter-card-head {
+
+    flex-direction:
+      column;
+  }
+
+  .nusa-rec-head-actions {
+
+    width: 100%;
+  }
+
+  .nusa-rec-head-actions button {
+
+    flex: 1;
+
+    justify-content: center;
+  }
+
+  .nusa-rec-filter-grid {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .nusa-rec-filter-action-right {
+
+    flex-direction:
+      column;
+
+    align-items:
+      stretch;
+  }
+
+  .nusa-rec-high-match-toggle {
+
+    justify-content:
+      center;
+  }
+
+  .nusa-rec-result-tools {
+
+    flex-direction:
+      column;
+
+    align-items:
+      stretch;
+  }
+
+  .nusa-rec-sort-wrap {
+
+    justify-content:
+      space-between;
+  }
+
+  .nusa-rec-sort-select {
+
+    flex: 1;
+  }
+
+  .nusa-rec-destination-grid,
+  .nusa-rec-skeleton-grid {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .nusa-rec-image-wrap {
+
+    height: 225px;
+  }
+
+  .nusa-rec-before-search {
+
+    grid-template-columns:
+      1fr;
+
+    text-align: center;
+  }
+
+  .nusa-rec-before-search-icon {
+
+    margin:
+      0
+      auto;
+  }
+
+  .nusa-rec-before-search-actions {
+
+    grid-column:
+      auto;
+
+    justify-content:
+      center;
+  }
+
+  .nusa-rec-toast {
+
+    right: 12px;
+
+    left: 12px;
+
+    bottom: 16px;
+
+    max-width:
+      none;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .nusa-rec-info-row {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .nusa-rec-search-button {
+
+    min-width: 0;
+  }
+
+  .nusa-rec-head-actions {
+
+    flex-direction:
+      column;
+  }
+
+  .nusa-rec-card-body {
+
+    padding: 16px;
+  }
+
+  .nusa-rec-destination-card {
+
+    border-radius: 22px;
+  }
+}
+
+
+/* =========================================================
+   15 MOTION
+   ========================================================= */
+
+@keyframes nusa-rec-rise {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(14px);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+@keyframes nusa-rec-reveal {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(-5px);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+@keyframes nusa-rec-chip {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      scale(0.96);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      scale(1);
+  }
+}
+
+@keyframes nusa-rec-pulse {
+
+  0%,
+  100% {
+
+    transform:
+      scale(1);
+
+    opacity: 0.8;
+  }
+
+  50% {
+
+    transform:
+      scale(1.18);
+
+    opacity: 1;
+  }
+}
+
+@keyframes nusa-rec-live {
+
+  0%,
+  100% {
+
+    opacity: 0.7;
+
+    transform:
+      scale(0.9);
+  }
+
+  50% {
+
+    opacity: 1;
+
+    transform:
+      scale(1.1);
+  }
+}
+
+@keyframes nusa-rec-spin {
+
+  to {
+
+    transform:
+      rotate(360deg);
+  }
+}
+
+@keyframes nusa-rec-shimmer {
+
+  100% {
+
+    transform:
+      translateX(100%);
+  }
+}
+
+
+/* =========================================================
+   16 DISCOVERY SEARCH ENGINE
+   ========================================================= */
+
+/*
+   SEARCH BAR BARU
+   ---------------------------------------------------------
+   Ini adalah layer pencarian utama seperti pola travel
+   booking modern, tetapi tetap memakai identitas NuSaJoy.
+*/
+
+.nusa-rec-discovery {
+
+  position: relative;
+
+  z-index: 10;
+
+  margin-top:
+    -36px;
+
+  padding:
+    0
+    20px;
+}
+
+.nusa-rec-discovery-container {
+
+  position: relative;
+
+  width: min(
+    1120px,
+    100%
+  );
+
+  margin:
+    0
+    auto;
+}
+
+.nusa-rec-search-engine {
+
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(260px, 1.6fr)
+    minmax(170px, 0.9fr)
+    minmax(170px, 0.9fr)
+    auto;
+
+  align-items: stretch;
+
+  overflow: visible;
+
+  min-height: 76px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.12);
+
+  border-radius:
+    22px;
+
+  background:
+    rgba(
+      255,
+      253,
+      247,
+      0.98
+    );
+
+  box-shadow:
+    0 22px 55px
+    rgba(
+      23,
+      77,
+      54,
+      0.14
+    );
+
+  backdrop-filter:
+    blur(18px);
+
+  -webkit-backdrop-filter:
+    blur(18px);
+}
+
+.nusa-rec-search-field {
+
+  position: relative;
+
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding:
+    12px
+    18px;
+
+  border: 0;
+
+  background:
+    transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 180ms ease;
+}
+
+.nusa-rec-search-field:first-child {
+
+  border-radius:
+    22px
+    0
+    0
+    22px;
+}
+
+.nusa-rec-search-field:hover {
+
+  background:
+    #f5f8f4;
+}
+
+.nusa-rec-search-field.is-active {
+
+  background:
+    #f0f8f4;
+}
+
+.nusa-rec-search-field::after {
+
+  content: '';
+
+  position: absolute;
+
+  top: 18px;
+  right: 0;
+
+  width: 1px;
+  height: 40px;
+
+  background:
+    rgba(
+      23,
+      77,
+      54,
+      0.1
+    );
+}
+
+.nusa-rec-search-field:nth-last-child(2)::after {
+
+  display: none;
+}
+
+.nusa-rec-search-icon {
+
+  width: 42px;
+  height: 42px;
+
+  flex:
+    0 0 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    14px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+
+  font-size: 17px;
+}
+
+.nusa-rec-search-copy {
+
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.nusa-rec-search-copy small {
+
+  display: block;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-search-copy strong {
+
+  display: block;
+
+  overflow: hidden;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-search-chevron {
+
+  margin-left: auto;
+
+  color:
+    #789088;
+
+  font-size: 13px;
+
+  transition:
+    transform 180ms ease;
+}
+
+.nusa-rec-search-field.is-active
+.nusa-rec-search-chevron {
+
+  transform:
+    rotate(180deg);
+
+  color:
+    var(--nusa-rec-green);
+}
+
+.nusa-rec-discovery-search-button {
+
+  min-width: 142px;
+
+  margin: 8px;
+
+  padding:
+    0
+    22px;
+
+  border: 0;
+
+  border-radius:
+    16px;
+
+  color: #fff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f5b41,
+      #1d8062
+    );
+
+  box-shadow:
+    0 10px 24px
+    rgba(
+      23,
+      77,
+      54,
+      0.2
+    );
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 180ms var(--nusa-rec-ease),
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.nusa-rec-discovery-search-button:hover {
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 14px 30px
+    rgba(
+      23,
+      77,
+      54,
+      0.26
+    );
+
+  background:
+    linear-gradient(
+      135deg,
+      #0b4d38,
+      #176f55
+    );
+}
+
+.nusa-rec-discovery-search-button:active {
+
+  transform:
+    translateY(0)
+    scale(0.985);
+}
+
+
+/* =========================================================
+   17 SEARCH POPOVER & AUTOCOMPLETE
+   ========================================================= */
+
+.nusa-rec-search-popover {
+
+  position: absolute;
+
+  top:
+    calc(
+      100%
+      +
+      10px
+    );
+
+  left: 0;
+
+  width:
+    min(
+      560px,
+      calc(
+        100vw - 48px
+      )
+    );
+
+  max-height:
+    min(
+      540px,
+      calc(
+        100vh - 120px
+      )
+    );
+
+  overflow-y: auto;
+
+  padding: 14px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius:
+    22px;
+
+  background:
+    rgba(
+      255,
+      253,
+      247,
+      0.99
+    );
+
+  box-shadow:
+    0 28px 70px
+    rgba(
+      15,
+      53,
+      36,
+      0.18
+    );
+
+  backdrop-filter:
+    blur(18px);
+
+  -webkit-backdrop-filter:
+    blur(18px);
+
+  animation:
+    nusa-rec-search-popover-in
+    180ms
+    var(--nusa-rec-ease);
+
+  scrollbar-width:
+    thin;
+
+  scrollbar-color:
+    #cddbd3
+    transparent;
+}
+
+.nusa-rec-search-popover::-webkit-scrollbar {
+
+  width: 5px;
+}
+
+.nusa-rec-search-popover::-webkit-scrollbar-thumb {
+
+  border-radius:
+    999px;
+
+  background:
+    #cddbd3;
+}
+
+.nusa-rec-search-input-wrap {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  height: 52px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius:
+    15px;
+
+  background:
+    #f5f8f4;
+
+  transition:
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    background 170ms ease;
+}
+
+.nusa-rec-search-input-wrap:focus-within {
+
+  border-color:
+    rgba(
+      23,
+      107,
+      81,
+      0.45
+    );
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      23,
+      107,
+      81,
+      0.08
+    );
+}
+
+.nusa-rec-search-input-icon {
+
+  flex:
+    0 0 auto;
+
+  color:
+    #6d8178;
+
+  font-size: 18px;
+}
+
+.nusa-rec-search-input {
+
+  width: 100%;
+
+  min-width: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  background:
+    transparent;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.nusa-rec-search-input::placeholder {
+
+  color:
+    #97a49e;
+
+  font-weight: 500;
+}
+
+.nusa-rec-search-clear {
+
+  width: 26px;
+  height: 26px;
+
+  flex:
+    0 0 26px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius:
+    50%;
+
+  color:
+    #65756d;
+
+  background:
+    #e6eee9;
+
+  cursor: pointer;
+}
+
+.nusa-rec-search-section-title {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin:
+    18px
+    5px
+    9px;
+
+  color:
+    #77877f;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.09em;
+
+  text-transform:
+    uppercase;
+}
+
+.nusa-rec-search-section-title span:last-child {
+
+  padding:
+    3px
+    8px;
+
+  border-radius:
+    999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+
+  font-size: 10px;
+
+  letter-spacing:
+    normal;
+
+  text-transform:
+    none;
+}
+
+.nusa-rec-search-popular {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  padding:
+    0
+    4px;
+}
+
+.nusa-rec-search-popular-item {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    8px
+    11px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.08);
+
+  border-radius:
+    999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    #ffffff;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms var(--nusa-rec-ease),
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.nusa-rec-search-popular-item:hover {
+
+  transform:
+    translateY(-1px);
+
+  border-color:
+    rgba(
+      23,
+      77,
+      54,
+      0.2
+    );
+
+  background:
+    #f0f8f4;
+}
+
+.nusa-rec-search-result-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.nusa-rec-search-result {
+
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    38px
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding:
+    10px
+    9px;
+
+  border: 0;
+
+  border-radius:
+    13px;
+
+  background:
+    transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.nusa-rec-search-result:hover {
+
+  background:
+    #f3f8f4;
+}
+
+.nusa-rec-search-result.is-selected {
+
+  background:
+    #eaf6f0;
+}
+
+.nusa-rec-search-result-icon {
+
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    12px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+}
+
+.nusa-rec-search-result-copy {
+
+  min-width: 0;
+}
+
+.nusa-rec-search-result-copy strong {
+
+  display: block;
+
+  overflow: hidden;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-search-result-copy span {
+
+  display: block;
+
+  overflow: hidden;
+
+  margin-top: 2px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 11px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-search-result-meta {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    4px
+    7px;
+
+  border-radius:
+    999px;
+
+  color:
+    #5f6e68;
+
+  background:
+    #f2f6f3;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-search-empty {
+
+  padding:
+    34px
+    20px;
+
+  text-align: center;
+}
+
+.nusa-rec-search-empty-icon {
+
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin:
+    0
+    auto
+    10px;
+
+  border-radius:
+    14px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-search-empty strong {
+
+  display: block;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 14px;
+}
+
+.nusa-rec-search-empty span {
+
+  display: block;
+
+  margin-top: 4px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   18 CATEGORY NAVIGATION
+   ========================================================= */
+
+.nusa-rec-category-nav {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 16px;
+
+  padding:
+    0
+    2px;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+
+  scroll-behavior: smooth;
+}
+
+.nusa-rec-category-nav::-webkit-scrollbar {
+
+  display: none;
+}
+
+.nusa-rec-category-item {
+
+  flex:
+    0 0 auto;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  min-height: 38px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.09);
+
+  border-radius:
+    999px;
+
+  color:
+    var(--nusa-rec-ink-soft);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.75
+    );
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms var(--nusa-rec-ease),
+    border-color 160ms ease,
+    color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.nusa-rec-category-item:hover {
+
+  transform:
+    translateY(-1px);
+
+  border-color:
+    rgba(
+      23,
+      77,
+      54,
+      0.18
+    );
+
+  background:
+    #ffffff;
+}
+
+.nusa-rec-category-item.is-active {
+
+  color: #fff;
+
+  border-color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green);
+
+  box-shadow:
+    0 7px 16px
+    rgba(
+      23,
+      77,
+      54,
+      0.18
+    );
+}
+
+.nusa-rec-category-item svg {
+
+  width: 15px;
+  height: 15px;
+}
+
+
+/* =========================================================
+   19 DESTINASI POPULER
+   ========================================================= */
+
+.nusa-rec-popular-section {
+
+  position: relative;
+
+  margin-top: 54px;
+}
+
+.nusa-rec-section-heading {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 18px;
+}
+
+.nusa-rec-section-heading-copy {
+
+  min-width: 0;
+}
+
+.nusa-rec-section-heading h2 {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size:
+    clamp(
+      1.55rem,
+      3vw,
+      2.15rem
+    );
+
+  font-weight: 800;
+
+  line-height: 1.08;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.nusa-rec-section-heading p {
+
+  max-width: 620px;
+
+  margin:
+    7px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.nusa-rec-see-all {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  min-height: 38px;
+
+  padding:
+    0
+    12px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.08);
+
+  border-radius:
+    999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.7
+    );
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    transform 160ms var(--nusa-rec-ease),
+    background 160ms ease;
+}
+
+.nusa-rec-see-all:hover {
+
+  transform:
+    translateX(2px);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+}
+
+.nusa-rec-popular-track {
+
+  display: grid;
+
+  grid-auto-flow: column;
+
+  grid-auto-columns:
+    minmax(
+      245px,
+      1fr
+    );
+
+  gap: 18px;
+
+  overflow-x: auto;
+
+  padding:
+    4px
+    3px
+    14px;
+
+  scroll-snap-type:
+    x proximity;
+
+  scrollbar-width:
+    thin;
+
+  scrollbar-color:
+    #c8d7cf
+    transparent;
+}
+
+.nusa-rec-popular-track::-webkit-scrollbar {
+
+  height: 5px;
+}
+
+.nusa-rec-popular-track::-webkit-scrollbar-thumb {
+
+  border-radius:
+    999px;
+
+  background:
+    #c8d7cf;
+}
+
+.nusa-rec-popular-card {
+
+  position: relative;
+
+  overflow: hidden;
+
+  min-height: 312px;
+
+  border-radius:
+    22px;
+
+  scroll-snap-align:
+    start;
+
+  background:
+    #dfe8df;
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+
+  cursor: pointer;
+
+  isolation: isolate;
+
+  transition:
+    transform 220ms var(--nusa-rec-ease),
+    box-shadow 220ms ease;
+}
+
+.nusa-rec-popular-card:hover {
+
+  transform:
+    translateY(-5px);
+
+  box-shadow:
+    0 24px 42px
+    rgba(
+      17,
+      46,
+      35,
+      0.17
+    );
+}
+
+.nusa-rec-popular-card-image {
+
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition:
+    transform
+    700ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-popular-card:hover
+.nusa-rec-popular-card-image {
+
+  transform:
+    scale(1.075);
+}
+
+.nusa-rec-popular-card::after {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 1;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(
+        8,
+        30,
+        21,
+        0.04
+      ),
+      rgba(
+        8,
+        30,
+        21,
+        0.7
+      )
+    );
+}
+
+.nusa-rec-popular-content {
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 2;
+
+  padding:
+    20px;
+}
+
+.nusa-rec-popular-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-bottom: 9px;
+
+  padding:
+    5px
+    9px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.22
+    );
+
+  border-radius:
+    999px;
+
+  color:
+    #fff;
+
+  background:
+    rgba(
+      14,
+      47,
+      33,
+      0.48
+    );
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.04em;
+
+  text-transform:
+    uppercase;
+}
+
+.nusa-rec-popular-content h3 {
+
+  margin: 0;
+
+  color: #fff;
+
+  font-size: 22px;
+
+  font-weight: 800;
+
+  line-height: 1.05;
+
+  letter-spacing:
+    -0.025em;
+}
+
+.nusa-rec-popular-location {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 7px;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.78
+    );
+
+  font-size: 12px;
+}
+
+.nusa-rec-popular-meta {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-top: 13px;
+}
+
+.nusa-rec-popular-rating {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  color:
+    #f7dc91;
+
+  font-size: 12px;
+
+  font-weight: 800;
+}
+
+.nusa-rec-popular-rating svg {
+
+  color:
+    var(--nusa-rec-gold);
+}
+
+.nusa-rec-popular-arrow {
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    50%;
+
+  color:
+    var(--nusa-rec-green-dark);
+
+  background:
+    rgba(
+      255,
+      253,
+      247,
+      0.88
+    );
+
+  transition:
+    transform 180ms ease;
+}
+
+.nusa-rec-popular-card:hover
+.nusa-rec-popular-arrow {
+
+  transform:
+    translateX(2px);
+}
+
+
+/* =========================================================
+   20 HIDDEN GEM
+   ========================================================= */
+
+.nusa-rec-hidden-section {
+
+  position: relative;
+
+  margin-top: 70px;
+
+  padding:
+    34px
+    0
+    6px;
+}
+
+.nusa-rec-hidden-section::before {
+
+  content: '';
+
+  position: absolute;
+
+  left: -8vw;
+  right: -8vw;
+  top: 0;
+  bottom: 0;
+
+  z-index: -1;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(
+        207,
+        234,
+        203,
+        0.35
+      ),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 65%,
+      rgba(
+        198,
+        154,
+        58,
+        0.08
+      ),
+      transparent 28%
+    );
+}
+
+.nusa-rec-hidden-heading {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 22px;
+}
+
+.nusa-rec-hidden-title {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+}
+
+.nusa-rec-hidden-title-icon {
+
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    14px;
+
+  color:
+    #8a6716;
+
+  background:
+    var(--nusa-rec-gold-soft);
+
+  box-shadow:
+    0 8px 18px
+    rgba(
+      198,
+      154,
+      58,
+      0.13
+    );
+}
+
+.nusa-rec-hidden-title h2 {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size:
+    clamp(
+      1.55rem,
+      3vw,
+      2.15rem
+    );
+
+  font-weight: 800;
+
+  line-height: 1.05;
+}
+
+.nusa-rec-hidden-title p {
+
+  margin:
+    6px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+.nusa-rec-hidden-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 18px;
+}
+
+.nusa-rec-hidden-card {
+
+  position: relative;
+
+  display: flex;
+
+  min-height: 220px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.1
+    );
+
+  border-radius:
+    22px;
+
+  background:
+    #fff;
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+
+  transition:
+    transform 220ms var(--nusa-rec-ease),
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.nusa-rec-hidden-card:hover {
+
+  transform:
+    translateY(-4px);
+
+  border-color:
+    rgba(
+      198,
+      154,
+      58,
+      0.3
+    );
+
+  box-shadow:
+    0 24px 48px
+    rgba(
+      23,
+      77,
+      54,
+      0.13
+    );
+}
+
+.nusa-rec-hidden-card-image {
+
+  width: 43%;
+
+  min-height: 220px;
+
+  object-fit: cover;
+
+  transition:
+    transform
+    650ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-hidden-card:hover
+.nusa-rec-hidden-card-image {
+
+  transform:
+    scale(1.06);
+}
+
+.nusa-rec-hidden-card-content {
+
+  min-width: 0;
+
+  flex: 1;
+
+  padding:
+    18px
+    17px;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+.nusa-rec-hidden-badge {
+
+  align-self:
+    flex-start;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-bottom: 10px;
+
+  padding:
+    5px
+    9px;
+
+  border-radius:
+    999px;
+
+  color:
+    #7d5b0e;
+
+  background:
+    var(--nusa-rec-gold-soft);
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.04em;
+
+  text-transform:
+    uppercase;
+}
+
+.nusa-rec-hidden-card-content h3 {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 18px;
+
+  font-weight: 800;
+
+  line-height: 1.16;
+}
+
+.nusa-rec-hidden-location {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 6px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 11px;
+}
+
+.nusa-rec-hidden-description {
+
+  display:
+    -webkit-box;
+
+  margin:
+    10px
+    0
+    0;
+
+  overflow: hidden;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 12px;
+
+  line-height: 1.55;
+
+  -webkit-line-clamp: 3;
+line-clamp: 3;
+
+-webkit-box-orient: vertical;
+  -webkit-box-orient: vertical;
+}
+
+.nusa-rec-hidden-bottom {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 8px;
+
+  margin-top: auto;
+
+  padding-top: 14px;
+}
+
+.nusa-rec-hidden-rating {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  color:
+    #806011;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-hidden-action {
+
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.12
+    );
+
+  border-radius:
+    50%;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    #f3f8f4;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.nusa-rec-hidden-action:hover {
+
+  transform:
+    translateX(2px);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+
+/* =========================================================
+   21 PERSONALIZED RECOMMENDATION
+   ========================================================= */
+
+.nusa-rec-personalized-section {
+
+  position: relative;
+
+  margin-top: 72px;
+
+  padding:
+    30px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.1
+    );
+
+  border-radius:
+    30px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f4faf5 0%,
+      #fffdf7 50%,
+      #fbf4de 100%
+    );
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+}
+
+.nusa-rec-personalized-section::before {
+
+  content: '';
+
+  position: absolute;
+
+  top: -80px;
+  right: -80px;
+
+  width: 260px;
+  height: 260px;
+
+  border-radius:
+    50%;
+
+  border:
+    1px solid
+    rgba(
+      198,
+      154,
+      58,
+      0.13
+    );
+
+  box-shadow:
+    0 0 0 34px
+    rgba(
+      198,
+      154,
+      58,
+      0.025
+    ),
+    0 0 0 70px
+    rgba(
+      198,
+      154,
+      58,
+      0.02
+    );
+
+  pointer-events:
+    none;
+}
+
+.nusa-rec-personalized-top {
+
+  position: relative;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.nusa-rec-personalized-copy {
+
+  min-width: 0;
+}
+
+.nusa-rec-personalized-kicker {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 6px;
+
+  color:
+    var(--nusa-rec-orange);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+}
+
+.nusa-rec-personalized-copy h2 {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size:
+    clamp(
+      1.55rem,
+      3vw,
+      2.15rem
+    );
+
+  font-weight: 800;
+
+  line-height: 1.06;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.nusa-rec-personalized-copy p {
+
+  max-width: 650px;
+
+  margin:
+    7px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.nusa-rec-personalized-score {
+
+  flex:
+    0 0 auto;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding:
+    10px
+    14px;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.09
+    );
+
+  border-radius:
+    16px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.74
+    );
+}
+
+.nusa-rec-personalized-score-icon {
+
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    12px;
+
+  color:
+    #76550b;
+
+  background:
+    var(--nusa-rec-gold-soft);
+}
+
+.nusa-rec-personalized-score strong {
+
+  display: block;
+
+  color:
+    var(--nusa-rec-green);
+
+  font-family:
+    Outfit,
+    sans-serif;
+
+  font-size: 20px;
+
+  line-height: 1;
+}
+
+.nusa-rec-personalized-score span {
+
+  display: block;
+
+  margin-top: 3px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 10px;
+
+  font-weight: 600;
+}
+
+.nusa-rec-preference-summary {
+
+  position: relative;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 20px;
+
+  padding:
+    11px
+    13px;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.08
+    );
+
+  border-radius:
+    15px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.7
+    );
+}
+
+.nusa-rec-preference-summary-label {
+
+  margin-right: 3px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-preference-chip {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    5px
+    9px;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.08
+    );
+
+  border-radius:
+    999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    #f1f7f3;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-preference-chip.gold {
+
+  color:
+    #7b5b12;
+
+  background:
+    var(--nusa-rec-gold-soft);
+}
+
+.nusa-rec-recommendation-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 16px;
+}
+
+
+/* =========================================================
+   22 RECOMMENDATION MINI CARDS
+   ========================================================= */
+
+.nusa-rec-mini-card {
+
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.09
+    );
+
+  border-radius:
+    20px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.93
+    );
+
+  box-shadow:
+    0 9px 22px
+    rgba(
+      23,
+      77,
+      54,
+      0.07
+    );
+
+  transition:
+    transform 200ms var(--nusa-rec-ease),
+    box-shadow 200ms ease,
+    border-color 200ms ease;
+}
+
+.nusa-rec-mini-card:hover {
+
+  transform:
+    translateY(-4px);
+
+  border-color:
+    rgba(
+      23,
+      77,
+      54,
+      0.18
+    );
+
+  box-shadow:
+    0 20px 36px
+    rgba(
+      23,
+      77,
+      54,
+      0.12
+    );
+}
+
+.nusa-rec-mini-card-image-wrap {
+
+  position: relative;
+
+  height: 164px;
+
+  overflow: hidden;
+
+  background:
+    #e4ece6;
+}
+
+.nusa-rec-mini-card-image {
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition:
+    transform
+    600ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-mini-card:hover
+.nusa-rec-mini-card-image {
+
+  transform:
+    scale(1.06);
+}
+
+.nusa-rec-mini-match {
+
+  position: absolute;
+
+  top: 11px;
+  left: 11px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    6px
+    9px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.18
+    );
+
+  border-radius:
+    999px;
+
+  color: #fff;
+
+  background:
+    rgba(
+      15,
+      53,
+      36,
+      0.86
+    );
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+
+  font-size: 10px;
+
+  font-weight: 800;
+}
+
+.nusa-rec-mini-favorite {
+
+  position: absolute;
+
+  top: 10px;
+  right: 10px;
+
+  width: 33px;
+  height: 33px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.2
+    );
+
+  border-radius:
+    50%;
+
+  color:
+    #fff;
+
+  background:
+    rgba(
+      15,
+      53,
+      36,
+      0.62
+    );
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.nusa-rec-mini-favorite:hover {
+
+  transform:
+    scale(1.05);
+
+  background:
+    var(--nusa-rec-orange);
+}
+
+.nusa-rec-mini-body {
+
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding:
+    14px;
+
+}
+
+.nusa-rec-mini-category {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-bottom: 6px;
+
+  color:
+    var(--nusa-rec-orange);
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  text-transform:
+    uppercase;
+}
+
+.nusa-rec-mini-body h3 {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 17px;
+
+  font-weight: 800;
+
+  line-height: 1.15;
+}
+
+.nusa-rec-mini-location {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 5px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 11px;
+}
+
+.nusa-rec-mini-score {
+
+  margin-top: 12px;
+}
+
+.nusa-rec-mini-score-head {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 8px;
+
+  margin-bottom: 5px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 10px;
+
+  font-weight: 600;
+}
+
+.nusa-rec-mini-score-head strong {
+
+  color:
+    var(--nusa-rec-green);
+
+  font-size: 11px;
+}
+
+.nusa-rec-mini-score-bar {
+
+  width: 100%;
+
+  height: 5px;
+
+  overflow: hidden;
+
+  border-radius:
+    999px;
+
+  background:
+    #e7eee8;
+}
+
+.nusa-rec-mini-score-fill {
+
+  height: 100%;
+
+  border-radius:
+    inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #1c775a,
+      #6ca478,
+      #c69a3a
+    );
+}
+
+.nusa-rec-mini-meta {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 12px;
+
+  padding-top: 11px;
+
+  border-top:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.08
+    );
+}
+
+.nusa-rec-mini-meta span {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  min-width: 0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 10px;
+}
+
+.nusa-rec-mini-meta strong {
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 11px;
+}
+
+.nusa-rec-mini-meta .price {
+
+  margin-left: auto;
+
+  color:
+    var(--nusa-rec-orange);
+
+  font-weight: 800;
+}
+
+.nusa-rec-mini-reasons {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 5px;
+
+  margin-top: 10px;
+}
+
+.nusa-rec-mini-reason {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding:
+    4px
+    7px;
+
+  border-radius:
+    999px;
+
+  color:
+    #547064;
+
+  background:
+    #f2f7f3;
+
+  font-size: 9px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   23 EXPERIENCE CHIPS
+   ========================================================= */
+
+.nusa-rec-experience-strip {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  margin-top: 18px;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.nusa-rec-experience-strip::-webkit-scrollbar {
+
+  display: none;
+}
+
+.nusa-rec-experience-chip {
+
+  flex:
+    0 0 auto;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  min-height: 36px;
+
+  padding:
+    0
+    12px;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.09
+    );
+
+  border-radius:
+    999px;
+
+  color:
+    var(--nusa-rec-ink-soft);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.7
+    );
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms var(--nusa-rec-ease),
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.nusa-rec-experience-chip:hover {
+
+  transform:
+    translateY(-1px);
+
+  background:
+    #ffffff;
+
+  border-color:
+    rgba(
+      23,
+      77,
+      54,
+      0.18
+    );
+}
+
+.nusa-rec-experience-chip.is-selected {
+
+  color: #fff;
+
+  border-color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green);
+}
+
+.nusa-rec-experience-chip-icon {
+
+  width: 20px;
+  height: 20px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    50%;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-experience-chip.is-selected
+.nusa-rec-experience-chip-icon {
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.86
+    );
+}
+
+
+/* =========================================================
+   24 ENHANCED SMART MATCHER
+   ========================================================= */
+
+.nusa-rec-smart-matcher {
+
+  position: relative;
+
+  margin-top: 58px;
+
+  padding:
+    28px;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.1
+    );
+
+  border-radius:
+    28px;
+
+  background:
+    rgba(
+      255,
+      253,
+      247,
+      0.92
+    );
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+}
+
+.nusa-rec-smart-matcher-head {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 18px;
+
+  margin-bottom: 20px;
+}
+
+.nusa-rec-smart-matcher-label {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 7px;
+
+  color:
+    var(--nusa-rec-orange);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+}
+
+.nusa-rec-smart-matcher-head h2 {
+
+  margin: 0;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size:
+    clamp(
+      1.5rem,
+      3vw,
+      2rem
+    );
+
+  line-height: 1.06;
+
+  letter-spacing:
+    -0.03em;
+}
+
+.nusa-rec-smart-matcher-head p {
+
+  max-width: 620px;
+
+  margin:
+    7px
+    0
+    0;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.nusa-rec-smart-status-pill {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  min-height: 36px;
+
+  padding:
+    0
+    12px;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.1
+    );
+
+  border-radius:
+    999px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft-2);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-smart-status-dot {
+
+  width: 7px;
+  height: 7px;
+
+  border-radius:
+    50%;
+
+  background:
+    #12a674;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      18,
+      166,
+      116,
+      0.12
+    );
+}
+
+.nusa-rec-smart-matcher-controls {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      5,
+      minmax(0, 1fr)
+    );
+
+  gap: 10px;
+}
+
+.nusa-rec-smart-control {
+
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    12px
+    11px;
+
+  border:
+    1px solid
+    rgba(
+      23,
+      77,
+      54,
+      0.09
+    );
+
+  border-radius:
+    15px;
+
+  background:
+    #f7faf7;
+
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.nusa-rec-smart-control:hover {
+
+  border-color:
+    rgba(
+      23,
+      77,
+      54,
+      0.18
+    );
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 7px 16px
+    rgba(
+      23,
+      77,
+      54,
+      0.06
+    );
+}
+
+.nusa-rec-smart-control-icon {
+
+  width: 31px;
+  height: 31px;
+
+  flex:
+    0 0 31px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    10px;
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    var(--nusa-rec-green-soft);
+}
+
+.nusa-rec-smart-control-copy {
+
+  min-width: 0;
+}
+
+.nusa-rec-smart-control-copy small {
+
+  display: block;
+
+  margin-bottom: 2px;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 9px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-smart-control-copy strong {
+
+  display: block;
+
+  overflow: hidden;
+
+  color:
+    var(--nusa-rec-ink);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.nusa-rec-smart-match-line {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 18px;
+
+  padding:
+    12px
+    14px;
+
+  border-radius:
+    15px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #edf7f1,
+      #fbf4df
+    );
+}
+
+.nusa-rec-smart-match-line > span:first-child {
+
+  flex:
+    0 0 auto;
+
+  color:
+    var(--nusa-rec-muted);
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.nusa-rec-smart-match-track {
+
+  flex: 1;
+
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(
+      23,
+      77,
+      54,
+      0.1
+    );
+}
+
+.nusa-rec-smart-match-fill {
+
+  height: 100%;
+
+  width:
+    var(
+      --match-progress,
+      86%
+    );
+
+  border-radius:
+    inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #1d6b51,
+      #5d9873,
+      #c69a3a
+    );
+
+  transition:
+    width 600ms
+    var(--nusa-rec-ease);
+}
+
+.nusa-rec-smart-match-line strong {
+
+  color:
+    var(--nusa-rec-green);
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   25 SCROLL & MICRO INTERACTION
+   ========================================================= */
+
+.nusa-rec-horizontal-scroll {
+
+  overflow-x: auto;
+
+  scroll-behavior:
+    smooth;
+
+  scrollbar-width:
+    none;
+
+  -webkit-overflow-scrolling:
+    touch;
+}
+
+.nusa-rec-horizontal-scroll::-webkit-scrollbar {
+
+  display: none;
+}
+
+.nusa-rec-hover-lift {
+
+  transition:
+    transform 180ms var(--nusa-rec-ease),
+    box-shadow 180ms ease;
+}
+
+.nusa-rec-hover-lift:hover {
+
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    var(--nusa-rec-shadow-soft);
+}
+
+.nusa-rec-soft-glow {
+
+  position: relative;
+}
+
+.nusa-rec-soft-glow::after {
+
+  content: '';
+
+  position: absolute;
+
+  inset:
+    auto
+    14%
+    -18px;
+
+  height: 50px;
+
+  z-index: -1;
+
+  border-radius:
+    50%;
+
+  background:
+    rgba(
+      198,
+      154,
+      58,
+      0.12
+    );
+
+  filter:
+    blur(22px);
+
+  pointer-events:
+    none;
+}
+
+
+/* =========================================================
+   26 RESPONSIVE DISCOVERY
+   ========================================================= */
+
+@media (max-width: 1080px) {
+
+  .nusa-rec-search-engine {
+
+    grid-template-columns:
+      minmax(220px, 1.4fr)
+      minmax(150px, 0.8fr)
+      minmax(150px, 0.8fr)
+      auto;
+  }
+
+  .nusa-rec-smart-matcher-controls {
+
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+
+  .nusa-rec-hidden-grid {
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 860px) {
+
+  .nusa-rec-discovery {
+
+    margin-top:
+      -28px;
+  }
+
+  .nusa-rec-search-engine {
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+
+    padding:
+      8px;
+  }
+
+  .nusa-rec-search-field {
+
+    min-height: 70px;
+
+    border-radius:
+      15px;
+  }
+
+  .nusa-rec-search-field:first-child {
+
+    border-radius:
+      15px;
+  }
+
+  .nusa-rec-search-field::after {
+
+    display: none;
+  }
+
+  .nusa-rec-discovery-search-button {
+
+    min-height: 52px;
+
+    margin:
+      4px;
+
+    border-radius:
+      15px;
+  }
+
+  .nusa-rec-personalized-top {
+
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .nusa-rec-personalized-score {
+
+    width: 100%;
+
+    justify-content:
+      flex-start;
+  }
+
+  .nusa-rec-recommendation-grid {
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .nusa-rec-hidden-card {
+
+    min-height: 200px;
+  }
+
+  .nusa-rec-hidden-card-image {
+
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 680px) {
+
+  .nusa-rec-discovery {
+
+    padding:
+      0
+      12px;
+
+    margin-top:
+      -24px;
+  }
+
+  .nusa-rec-search-engine {
+
+    grid-template-columns:
+      1fr;
+
+    border-radius:
+      20px;
+
+    padding:
+      7px;
+  }
+
+  .nusa-rec-search-field {
+
+    min-height: 64px;
+
+    padding:
+      10px
+      12px;
+  }
+
+  .nusa-rec-search-field:first-child {
+
+    border-radius:
+      15px;
+  }
+
+  .nusa-rec-search-icon {
+
+    width: 38px;
+    height: 38px;
+
+    flex:
+      0 0 38px;
+  }
+
+  .nusa-rec-discovery-search-button {
+
+    width:
+      calc(
+        100%
+        -
+        8px
+      );
+
+    min-height: 48px;
+
+    margin:
+      4px;
+  }
+
+  .nusa-rec-category-nav {
+
+    margin-top:
+      11px;
+  }
+
+  .nusa-rec-search-popover {
+
+    left:
+      0;
+
+    width:
+      100%;
+
+    max-height:
+      calc(
+        100vh - 80px
+      );
+
+    border-radius:
+      18px;
+  }
+
+  .nusa-rec-section-heading,
+  .nusa-rec-hidden-heading {
+
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .nusa-rec-popular-track {
+
+    grid-auto-columns:
+      minmax(
+        220px,
+        78vw
+      );
+  }
+
+  .nusa-rec-hidden-section {
+
+    margin-top:
+      52px;
+  }
+
+  .nusa-rec-hidden-grid {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .nusa-rec-hidden-card {
+
+    min-height:
+      190px;
+  }
+
+  .nusa-rec-hidden-card-image {
+
+    width:
+      39%;
+
+    min-height:
+      190px;
+  }
+
+  .nusa-rec-personalized-section {
+
+    margin-top:
+      52px;
+
+    padding:
+      20px
+      16px;
+
+    border-radius:
+      24px;
+  }
+
+  .nusa-rec-recommendation-grid {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .nusa-rec-mini-card-image-wrap {
+
+    height:
+      190px;
+  }
+
+  .nusa-rec-smart-matcher {
+
+    margin-top:
+      44px;
+
+    padding:
+      20px
+      16px;
+
+    border-radius:
+      22px;
+  }
+
+  .nusa-rec-smart-matcher-head {
+
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .nusa-rec-smart-status-pill {
+
+    width:
+      100%;
+
+    justify-content:
+      center;
+  }
+
+  .nusa-rec-smart-matcher-controls {
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .nusa-rec-smart-match-line {
+
+    flex-wrap:
+      wrap;
+
+    gap:
+      8px;
+  }
+
+  .nusa-rec-smart-match-track {
+
+    flex:
+      1 1 100%;
+
+    order:
+      3;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .nusa-rec-search-copy strong {
+
+    font-size:
+      13px;
+  }
+
+  .nusa-rec-search-copy small {
+
+    font-size:
+      10px;
+  }
+
+  .nusa-rec-search-input-wrap {
+
+    height:
+      48px;
+  }
+
+  .nusa-rec-popular-track {
+
+    grid-auto-columns:
+      84vw;
+  }
+
+  .nusa-rec-hidden-card {
+
+    flex-direction:
+      column;
+  }
+
+  .nusa-rec-hidden-card-image {
+
+    width:
+      100%;
+
+    height:
+      160px;
+
+    min-height:
+      160px;
+  }
+
+  .nusa-rec-smart-matcher-controls {
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .nusa-rec-smart-control {
+
+    min-height:
+      55px;
+  }
+}
+
+
+/* =========================================================
+   27 ACCESSIBILITY
+   ========================================================= */
+
+.nusa-rec-search-field:focus-visible,
+.nusa-rec-category-item:focus-visible,
+.nusa-rec-search-result:focus-visible,
+.nusa-rec-search-popular-item:focus-visible,
+.nusa-rec-popular-card:focus-visible,
+.nusa-rec-hidden-card:focus-visible {
+
+  outline:
+    3px solid
+    rgba(
+      198,
+      154,
+      58,
+      0.75
+    );
+
+  outline-offset:
+    3px;
+}
+
+.nusa-rec-search-engine[aria-expanded='true'] {
+
+  border-color:
+    rgba(
+      23,
+      77,
+      54,
+      0.2
+    );
+
+  box-shadow:
+    0 26px 65px
+    rgba(
+      23,
+      77,
+      54,
+      0.17
+    );
+}
+
+
+/* =========================================================
+   28 DARK COMPATIBILITY
+   ---------------------------------------------------------
+   Tidak memaksa dark mode global.
+   Hanya aktif ketika parent page diberikan
+   [data-theme='dark'].
+   ========================================================= */
+
+.nusa-rec-page[data-theme='dark'] {
+
+  --nusa-rec-ink: #edf5ef;
+  --nusa-rec-ink-soft: #c5d8ce;
+  --nusa-rec-muted: #a6b7ae;
+
+  --nusa-rec-surface: #15251e;
+  --nusa-rec-white: #182a22;
+
+  --nusa-rec-border: #28463a;
+
+  background:
+    linear-gradient(
+      180deg,
+      #0c1b15,
+      #11251c
+    );
+}
+
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-search-engine {
+
+  background:
+    rgba(
+      19,
+      39,
+      30,
+      0.98
+    );
+
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+}
+
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-search-field:hover {
+
+  background:
+    #1c3428;
+}
+
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-search-copy strong {
+
+  color:
+    #edf5ef;
+}
+
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-search-popover {
+
+  background:
+    #14271e;
+
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+}
+
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-search-input-wrap {
+
+  background:
+    #1b3328;
+}
+
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-search-result:hover {
+
+  background:
+    #1d382c;
+}
+
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-popular-card,
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-hidden-card,
+.nusa-rec-page[data-theme='dark']
+.nusa-rec-mini-card {
+
+  background:
+    #172b22;
+
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+}
+
+
+/* =========================================================
+   29 FINAL UTILITY
+   ========================================================= */
+
+.nusa-rec-visually-hidden {
+
+  position: absolute !important;
+
+  width: 1px !important;
+  height: 1px !important;
+
+  padding: 0 !important;
+  margin: -1px !important;
+
+  overflow: hidden !important;
+
+  clip:
+    rect(
+      0,
+      0,
+      0,
+      0
+    ) !important;
+
+  white-space:
+    nowrap !important;
+
+  border: 0 !important;
+}
+
+.nusa-rec-no-select {
+
+  user-select:
+    none;
+
+  -webkit-user-select:
+    none;
+}
+
+.nusa-rec-text-gradient {
+
+  color:
+    var(--nusa-rec-green);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--nusa-rec-green),
+      var(--nusa-rec-green-2)
+    );
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  -webkit-text-fill-color:
+    transparent;
+}
+
+.nusa-rec-divider {
+
+  width: 100%;
+
+  height: 1px;
+
+  margin:
+    30px
+    0;
+
+  background:
+    rgba(
+      23,
+      77,
+      54,
+      0.09
+    );
+}
+
+.nusa-rec-section-spacing {
+
+  margin-top:
+    68px;
+}
+
+.nusa-rec-hidden {
+
+  display: none !important;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .nusa-rec-page *,
+  .nusa-rec-page *::before,
+  .nusa-rec-page *::after {
+
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      0.01ms !important;
+
+    scroll-behavior:
+      auto !important;
+  }
+}

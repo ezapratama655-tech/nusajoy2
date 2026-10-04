@@ -1,0 +1,1524 @@
+/* =========================================================
+   NUSAJOY — DETAIL PEMANDU MODAL
+   ---------------------------------------------------------
+   Structure
+   01. Token
+   02. Modal shell
+   03. Header
+   04. Success notification
+   05. Body / layout
+   06. Profile
+   07. Stats
+   08. Sections
+   09. Info cards
+   10. Specialties
+   11. Review
+   12. Booking sidebar
+   13. Benefits
+   14. Buttons
+   15. Mobile action
+   16. Responsive
+   17. Accessibility
+   18. Motion
+   ========================================================= */
+
+
+/* =========================================================
+   01 TOKENS
+   ========================================================= */
+
+.guide-modal {
+  --guide-ink: #17251e;
+  --guide-ink-soft: #35554a;
+  --guide-muted: #68736d;
+
+  --guide-white: #ffffff;
+  --guide-surface: #fffdf7;
+
+  --guide-cream: #faf4dd;
+  --guide-cream-deep: #eee8d2;
+
+  --guide-green: #174d36;
+  --guide-green-dark: #0f3524;
+  --guide-green-2: #1d6b51;
+
+  --guide-green-soft: #cfeacb;
+  --guide-green-soft-2: #eef7f2;
+
+  --guide-gold: #c69a3a;
+  --guide-gold-soft: #fbf2d7;
+
+  --guide-orange: #b5653a;
+
+  --guide-border: #dde2d9;
+
+  --guide-shadow:
+    0 28px 70px
+    rgba(15, 53, 36, 0.2);
+
+  --guide-shadow-soft:
+    0 12px 30px
+    rgba(23, 77, 54, 0.08);
+
+  --guide-ease:
+    cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+
+  background:
+    rgba(7, 20, 14, 0.64);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  color: var(--guide-ink);
+
+  animation:
+    guide-modal-fade
+    180ms
+    ease;
+}
+
+
+/* =========================================================
+   02 MODAL SHELL
+   ========================================================= */
+
+.guide-modal__panel {
+  width: min(1100px, 100%);
+  max-height: 94vh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(221, 226, 217, 0.95);
+
+  border-radius: 30px;
+
+  background:
+    var(--guide-surface);
+
+  box-shadow:
+    var(--guide-shadow);
+
+  animation:
+    guide-modal-enter
+    240ms
+    var(--guide-ease);
+}
+
+
+/* =========================================================
+   03 HEADER
+   ========================================================= */
+
+.guide-modal__header {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 15px 20px;
+
+  border-bottom:
+    1px solid
+    var(--guide-border);
+
+  background:
+    rgba(255, 253, 247, 0.96);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.guide-modal__header-info {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.guide-modal__eyebrow {
+  color: var(--guide-green);
+
+  font-family:
+    Inter,
+    sans-serif;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.06em;
+}
+
+.guide-modal__separator {
+  color: #9aa69f;
+}
+
+.guide-modal__city {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: var(--guide-muted);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.guide-modal__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guide-icon-button {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 12px;
+
+  color: var(--guide-muted);
+
+  background: transparent;
+
+  cursor: pointer;
+
+  transition:
+    transform 170ms var(--guide-ease),
+    background 170ms ease,
+    color 170ms ease;
+}
+
+.guide-icon-button:hover {
+  transform: translateY(-1px);
+
+  background: var(--guide-cream);
+
+  color: var(--guide-ink);
+}
+
+.guide-icon-button--favorite {
+  color: var(--guide-orange);
+
+  background:
+    #fff4ed;
+}
+
+
+/* =========================================================
+   04 SUCCESS NOTIFICATION
+   ========================================================= */
+
+.guide-success {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 11px 18px;
+
+  border-bottom:
+    1px solid
+    #9bb493;
+
+  background:
+    var(--guide-green-soft);
+
+  color:
+    var(--guide-green);
+
+  animation:
+    guide-slide-down
+    220ms
+    var(--guide-ease);
+}
+
+.guide-success__content {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guide-success__icon {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: var(--guide-green);
+
+  background:
+    rgba(255, 255, 255, 0.55);
+}
+
+.guide-success__content strong,
+.guide-success__content span {
+  display: block;
+}
+
+.guide-success__content strong {
+  font-size: 13px;
+}
+
+.guide-success__content span {
+  margin-top: 2px;
+
+  color:
+    rgba(23, 77, 54, 0.78);
+
+  font-size: 12px;
+}
+
+.guide-success__button {
+  flex-shrink: 0;
+
+  min-height: 36px;
+
+  padding: 0 13px;
+
+  border: 0;
+  border-radius: 10px;
+
+  color: #fff;
+
+  background:
+    var(--guide-green);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms var(--guide-ease),
+    background 160ms ease;
+}
+
+.guide-success__button:hover {
+  transform: translateY(-1px);
+
+  background:
+    var(--guide-green-dark);
+}
+
+
+/* =========================================================
+   05 BODY / LAYOUT
+   ========================================================= */
+
+.guide-modal__body {
+  min-height: 0;
+
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 26px;
+}
+
+.guide-modal__layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.7fr)
+    minmax(300px, 0.78fr);
+
+  gap: 26px;
+
+  align-items: start;
+}
+
+.guide-modal__main {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+
+/* =========================================================
+   06 PROFILE
+   ========================================================= */
+
+.guide-profile-card {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 20px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 24px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(198, 154, 58, 0.12),
+      transparent 32%
+    ),
+    linear-gradient(
+      135deg,
+      #faf4dd,
+      #f2f8f4
+    );
+}
+
+.guide-profile-card::after {
+  content: '';
+
+  position: absolute;
+
+  right: -80px;
+  bottom: -100px;
+
+  width: 220px;
+  height: 220px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(198, 154, 58, 0.13);
+
+  pointer-events: none;
+}
+
+.guide-profile-card__avatar-wrap {
+  position: relative;
+
+  flex: 0 0 auto;
+}
+
+.guide-profile-card__avatar {
+  width: 84px;
+  height: 84px;
+
+  display: block;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border:
+    4px solid
+    var(--guide-green);
+
+  box-shadow:
+    0 8px 18px
+    rgba(23, 77, 54, 0.14);
+}
+
+.guide-status-dot {
+  position: absolute;
+
+  right: 2px;
+  bottom: 5px;
+
+  width: 15px;
+  height: 15px;
+
+  border: 3px solid
+    var(--guide-surface);
+
+  border-radius: 50%;
+
+  background: #19a36f;
+
+  box-shadow:
+    0 4px 10px
+    rgba(25, 163, 111, 0.25);
+}
+
+.guide-status-dot--offline {
+  background: #9aa69f;
+
+  box-shadow: none;
+}
+
+.guide-profile-card__content {
+  min-width: 0;
+}
+
+.guide-profile-card__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guide-profile-card__title-row h1 {
+  margin: 0;
+
+  color: var(--guide-ink);
+
+  font-family:
+    Outfit,
+    sans-serif;
+
+  font-size: 24px;
+  font-weight: 800;
+
+  line-height: 1.15;
+}
+
+.guide-certified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  background:
+    var(--guide-green-soft);
+
+  color:
+    var(--guide-green);
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.guide-certified .material-symbols-outlined {
+  font-size: 13px;
+}
+
+.guide-profile-card__role {
+  margin: 5px 0 0;
+
+  color: var(--guide-muted);
+
+  font-size: 13px;
+}
+
+.guide-rating {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 5px;
+
+  margin-top: 8px;
+
+  color: var(--guide-muted);
+
+  font-size: 12px;
+}
+
+.guide-rating strong {
+  color: var(--guide-green);
+}
+
+.guide-rating__star {
+  color: var(--guide-gold);
+
+  font-size: 17px;
+
+  font-variation-settings:
+    'FILL' 1;
+}
+
+.guide-rating__dot {
+  color: #9aa69f;
+
+  margin: 0 2px;
+}
+
+
+/* =========================================================
+   07 STATS
+   ========================================================= */
+
+.guide-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  border:
+    1px solid
+    var(--guide-border);
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  background: #fff;
+
+  box-shadow:
+    var(--guide-shadow-soft);
+}
+
+.guide-stat {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 88px;
+
+  padding: 14px;
+
+  text-align: center;
+}
+
+.guide-stat + .guide-stat {
+  border-left:
+    1px solid
+    var(--guide-border);
+}
+
+.guide-stat strong {
+  color: var(--guide-green);
+
+  font-family:
+    Outfit,
+    sans-serif;
+
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.guide-stat span {
+  margin-top: 3px;
+
+  color: var(--guide-muted);
+
+  font-size: 10px;
+}
+
+.guide-stat__active {
+  color: #14845f !important;
+}
+
+.guide-stat__offline {
+  color: #7d8983 !important;
+}
+
+
+/* =========================================================
+   08 SECTIONS
+   ========================================================= */
+
+.guide-section {
+  padding-bottom: 2px;
+}
+
+.guide-section__heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-bottom: 12px;
+}
+
+.guide-section__icon {
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: var(--guide-green);
+
+  background:
+    var(--guide-green-soft);
+}
+
+.guide-section__icon .material-symbols-outlined {
+  font-size: 19px;
+}
+
+.guide-section__kicker {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: var(--guide-orange);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+.guide-section h2 {
+  margin: 0;
+
+  color: var(--guide-ink);
+
+  font-family:
+    Outfit,
+    sans-serif;
+
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.guide-section__text {
+  margin: 0;
+
+  color: var(--guide-muted);
+
+  font-size: 14px;
+
+  line-height: 1.75;
+}
+
+
+/* =========================================================
+   09 INFO CARDS
+   ========================================================= */
+
+.guide-info-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 11px;
+}
+
+.guide-info-card {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 13px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.08);
+
+  border-radius: 16px;
+
+  background:
+    #f6f8f3;
+}
+
+.guide-info-card__icon {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: var(--guide-green);
+
+  background: #fff;
+}
+
+.guide-info-card__icon .material-symbols-outlined {
+  font-size: 17px;
+}
+
+.guide-info-card span,
+.guide-info-card strong {
+  display: block;
+}
+
+.guide-info-card span {
+  margin-bottom: 2px;
+
+  color: var(--guide-muted);
+
+  font-size: 10px;
+}
+
+.guide-info-card strong {
+  overflow: hidden;
+
+  color: var(--guide-ink);
+
+  font-size: 12px;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   10 SPECIALTIES
+   ========================================================= */
+
+.guide-specialties {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.guide-specialty {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 8px 11px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 999px;
+
+  color: var(--guide-ink);
+
+  background:
+    var(--guide-cream);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  transition:
+    transform 160ms var(--guide-ease),
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.guide-specialty:hover {
+  transform: translateY(-1px);
+
+  border-color:
+    rgba(23, 77, 54, 0.2);
+
+  background: #fff;
+}
+
+.guide-specialty .material-symbols-outlined {
+  color: #32825f;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   11 REVIEW
+   ========================================================= */
+
+.guide-review {
+  margin: 0;
+
+  padding: 18px;
+
+  border:
+    1px solid
+    rgba(198, 154, 58, 0.24);
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff9e9,
+      #f4faf5
+    );
+}
+
+.guide-review__top {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.guide-review__icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  color: #7c5c13;
+
+  background:
+    var(--guide-gold-soft);
+}
+
+.guide-review__icon .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.guide-review figcaption {
+  margin: 0;
+
+  color: var(--guide-ink);
+
+  font-family:
+    Outfit,
+    sans-serif;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.guide-review blockquote {
+  margin: 15px 0;
+
+  color: #586b61;
+
+  font-size: 13px;
+  font-style: italic;
+
+  line-height: 1.75;
+}
+
+.guide-review__author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--guide-ink);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.guide-review__avatar {
+  width: 26px;
+  height: 26px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: var(--guide-green);
+
+  background:
+    var(--guide-green-soft);
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   12 BOOKING SIDEBAR
+   ========================================================= */
+
+.guide-booking-sidebar {
+  position: sticky;
+  top: 0;
+
+  align-self: start;
+}
+
+.guide-booking-card {
+  overflow: hidden;
+
+  padding: 20px;
+
+  border:
+    1px solid
+    rgba(23, 77, 54, 0.1);
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #faf4dd,
+      #fffdf7
+    );
+
+  box-shadow:
+    var(--guide-shadow-soft);
+}
+
+.guide-booking-card__top {
+  padding-bottom: 18px;
+}
+
+.guide-booking-card__label {
+  display: block;
+
+  color: var(--guide-muted);
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.guide-booking-card__price {
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--guide-green);
+
+  font-family:
+    Outfit,
+    sans-serif;
+
+  font-size: 30px;
+  font-weight: 800;
+
+  line-height: 1.1;
+}
+
+.guide-booking-card__top p {
+  margin: 7px 0 0;
+
+  color: var(--guide-muted);
+
+  font-size: 11px;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   13 BENEFITS
+   ========================================================= */
+
+.guide-benefits {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  padding:
+    16px 0;
+
+  border-top:
+    1px solid
+    var(--guide-border);
+
+  border-bottom:
+    1px solid
+    var(--guide-border);
+}
+
+.guide-benefits > div {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--guide-ink-soft);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.guide-benefits .material-symbols-outlined {
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  color: var(--guide-green);
+
+  background:
+    var(--guide-green-soft);
+
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   14 BUTTONS
+   ========================================================= */
+
+.guide-booking-actions {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  margin-top: 16px;
+}
+
+.guide-primary-button,
+.guide-secondary-button {
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border-radius: 14px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 170ms var(--guide-ease),
+    box-shadow 170ms ease,
+    background 170ms ease;
+}
+
+.guide-primary-button {
+  border: 1px solid
+    var(--guide-green);
+
+  color: #fff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--guide-green),
+      var(--guide-green-2)
+    );
+
+  box-shadow:
+    0 10px 22px
+    rgba(23, 77, 54, 0.16);
+}
+
+.guide-primary-button:hover {
+  transform: translateY(-2px);
+
+  background:
+    var(--guide-green-dark);
+
+  box-shadow:
+    0 15px 28px
+    rgba(23, 77, 54, 0.22);
+}
+
+.guide-secondary-button {
+  border:
+    1px solid
+    var(--guide-green);
+
+  color:
+    var(--guide-green);
+
+  background:
+    #fff;
+}
+
+.guide-secondary-button:hover {
+  transform: translateY(-1px);
+
+  background:
+    var(--guide-green-soft-2);
+}
+
+.guide-booking-note {
+  margin: 14px 0 0;
+
+  color: #829088;
+
+  font-size: 10px;
+
+  line-height: 1.55;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   15 MOBILE ACTION
+   ========================================================= */
+
+.guide-mobile-actions {
+  display: none;
+}
+
+
+/* =========================================================
+   16 RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 920px) {
+
+  .guide-modal {
+    padding: 0;
+  }
+
+  .guide-modal__panel {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+
+    border-radius: 0;
+  }
+
+  .guide-modal__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-booking-sidebar {
+    display: none;
+  }
+
+  .guide-modal__body {
+    padding:
+      20px;
+  }
+
+  .guide-modal__main {
+    padding-bottom: 18px;
+  }
+
+  .guide-mobile-actions {
+    position: relative;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding:
+      11px 16px;
+
+    border-top:
+      1px solid
+      var(--guide-border);
+
+    background:
+      rgba(255, 253, 247, 0.98);
+
+    box-shadow:
+      0 -7px 20px
+      rgba(0, 0, 0, 0.06);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .guide-mobile-price {
+    min-width: 0;
+  }
+
+  .guide-mobile-price span {
+    display: block;
+
+    color: var(--guide-muted);
+
+    font-size: 10px;
+  }
+
+  .guide-mobile-price strong {
+    display: block;
+
+    margin-top: 2px;
+
+    overflow: hidden;
+
+    color: var(--guide-green);
+
+    font-family:
+      Outfit,
+      sans-serif;
+
+    font-size: 19px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .guide-mobile-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .guide-mobile-trip,
+  .guide-mobile-book {
+    min-height: 43px;
+
+    padding:
+      0 15px;
+
+    border-radius: 12px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+  }
+
+  .guide-mobile-trip {
+    border:
+      1px solid
+      var(--guide-border);
+
+    color: var(--guide-green);
+
+    background:
+      var(--guide-cream);
+  }
+
+  .guide-mobile-book {
+    min-width: 85px;
+
+    border: 0;
+
+    color: #fff;
+
+    background:
+      var(--guide-green);
+
+    box-shadow:
+      0 7px 16px
+      rgba(23, 77, 54, 0.18);
+  }
+
+}
+
+
+@media (max-width: 620px) {
+
+  .guide-modal__header {
+    padding:
+      12px 14px;
+  }
+
+  .guide-modal__body {
+    padding:
+      16px 14px 24px;
+  }
+
+  .guide-success {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding:
+      11px 14px;
+  }
+
+  .guide-success__button {
+    width: 100%;
+  }
+
+  .guide-profile-card {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding: 17px;
+  }
+
+  .guide-profile-card__avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .guide-profile-card__title-row h1 {
+    font-size: 21px;
+  }
+
+  .guide-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-stat {
+    min-height: 72px;
+  }
+
+  .guide-stat + .guide-stat {
+    border-left: 0;
+
+    border-top:
+      1px solid
+      var(--guide-border);
+  }
+
+  .guide-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-mobile-actions {
+    padding:
+      10px 12px;
+  }
+
+  .guide-mobile-price strong {
+    font-size: 16px;
+  }
+
+  .guide-mobile-trip,
+  .guide-mobile-book {
+    padding:
+      0 12px;
+  }
+
+}
+
+
+@media (max-width: 400px) {
+
+  .guide-mobile-price {
+    max-width: 120px;
+  }
+
+  .guide-mobile-buttons {
+    flex: 1;
+
+    justify-content: flex-end;
+  }
+
+  .guide-mobile-book {
+    min-width: 72px;
+  }
+
+}
+
+
+/* =========================================================
+   17 ACCESSIBILITY
+   ========================================================= */
+
+.guide-modal button:focus-visible {
+  outline:
+    3px solid
+    rgba(198, 154, 58, 0.7);
+
+  outline-offset:
+    2px;
+}
+
+.guide-modal__body {
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    #cbd7d0
+    transparent;
+}
+
+.guide-modal__body::-webkit-scrollbar {
+  width: 7px;
+}
+
+.guide-modal__body::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    #cbd7d0;
+}
+
+
+/* =========================================================
+   18 MOTION
+   ========================================================= */
+
+@keyframes guide-modal-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes guide-modal-enter {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(14px)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+@keyframes guide-slide-down {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .guide-modal *,
+  .guide-modal *::before,
+  .guide-modal *::after {
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      0.01ms !important;
+  }
+}

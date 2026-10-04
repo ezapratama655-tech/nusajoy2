@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -33,17 +33,38 @@ export default function TourGuideDetail() {
     error,
   } = useTourGuideDetail(id)
 
-  const [favorite, setFavorite] = useState(false)
+  /*
+   * FAVORITE STATE
+   *
+   * Tidak lagi menggunakan useEffect + setState.
+   * Sebelumnya:
+   *
+   * useEffect(() => {
+   *   if (!guide?.id) return
+   *   setFavorite(isFavorite(guide.id))
+   * }, [guide?.id])
+   *
+   * Pola tersebut memicu:
+   * "Calling setState synchronously within an effect can trigger cascading renders"
+   *
+   * Sekarang status favorit ditautkan ke guide.id yang sedang aktif.
+   * Jika guide berubah, nilai akan otomatis membaca status favorit terbaru
+   * tanpa perlu setState dari effect.
+   */
+  const [favoriteState, setFavoriteState] = useState({
+    guideId: null,
+    value: false,
+  })
+
+  const favorite = guide?.id
+    ? favoriteState.guideId === guide.id
+      ? favoriteState.value
+      : isFavorite(guide.id)
+    : false
 
   /* =========================================
      FAVORITE
   ========================================= */
-
-  useEffect(() => {
-    if (!guide?.id) return
-
-    setFavorite(isFavorite(guide.id))
-  }, [guide?.id])
 
   const handleFavorite = () => {
     if (!guide?.id) return
@@ -52,13 +73,16 @@ export default function TourGuideDetail() {
       guide.id
     )
 
-    setFavorite(
-      updatedFavorites.some(
-        (favoriteId) =>
-          String(favoriteId) ===
-          String(guide.id)
-      )
+    const nextFavorite = updatedFavorites.some(
+      (favoriteId) =>
+        String(favoriteId) ===
+        String(guide.id)
     )
+
+    setFavoriteState({
+      guideId: guide.id,
+      value: nextFavorite,
+    })
   }
 
   /* =========================================

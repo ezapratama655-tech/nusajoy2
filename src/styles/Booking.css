@@ -1,0 +1,7 @@
+/*
+ * Legacy compatibility stylesheet.
+ * Semua style Booking lama diarahkan ke MyTrip.
+ *
+ * File ini menjaga import lama tetap hidup selama proses migrasi.
+ */
+@import "./MyTrip.css";
