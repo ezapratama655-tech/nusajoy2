@@ -109,7 +109,7 @@ export default function StateSimulatorDrawer({
   const [
     isCollapsed,
     setIsCollapsed,
-  ] = useState(false);
+  ] = useState(true);
 
   /**
    * Mengubah UI_STATES object menjadi array.
@@ -194,6 +194,7 @@ export default function StateSimulatorDrawer({
           HEADER
       ================================================================== */}
 
+      {!isCollapsed && (
       <div
         className={`
           flex
@@ -399,6 +400,7 @@ export default function StateSimulatorDrawer({
           </span>
         </button>
       </div>
+      )}
 
 
       {/* ==================================================================
@@ -421,8 +423,7 @@ export default function StateSimulatorDrawer({
             gap-2
 
             px-3
-            pb-2.5
-            pt-0.5
+            py-2.5
 
             text-left
 

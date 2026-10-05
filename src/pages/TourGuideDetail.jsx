@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -17,10 +16,7 @@ import {
 
 import useTourGuideDetail from '../hooks/useTourGuideDetail'
 
-import {
-  isFavorite,
-  toggleFavorite,
-} from '../utils/favorites'
+import useFavorites from '../hooks/useFavorites.js'
 
 import '../styles/TourGuideDetail.css'
 
@@ -33,56 +29,10 @@ export default function TourGuideDetail() {
     error,
   } = useTourGuideDetail(id)
 
-  /*
-   * FAVORITE STATE
-   *
-   * Tidak lagi menggunakan useEffect + setState.
-   * Sebelumnya:
-   *
-   * useEffect(() => {
-   *   if (!guide?.id) return
-   *   setFavorite(isFavorite(guide.id))
-   * }, [guide?.id])
-   *
-   * Pola tersebut memicu:
-   * "Calling setState synchronously within an effect can trigger cascading renders"
-   *
-   * Sekarang status favorit ditautkan ke guide.id yang sedang aktif.
-   * Jika guide berubah, nilai akan otomatis membaca status favorit terbaru
-   * tanpa perlu setState dari effect.
-   */
-  const [favoriteState, setFavoriteState] = useState({
-    guideId: null,
-    value: false,
-  })
-
-  const favorite = guide?.id
-    ? favoriteState.guideId === guide.id
-      ? favoriteState.value
-      : isFavorite(guide.id)
-    : false
-
-  /* =========================================
-     FAVORITE
-  ========================================= */
-
+  const { isFavorite, toggleFavorite } = useFavorites()
+  const favorite = Boolean(guide?.id && isFavorite(guide.id))
   const handleFavorite = () => {
-    if (!guide?.id) return
-
-    const updatedFavorites = toggleFavorite(
-      guide.id
-    )
-
-    const nextFavorite = updatedFavorites.some(
-      (favoriteId) =>
-        String(favoriteId) ===
-        String(guide.id)
-    )
-
-    setFavoriteState({
-      guideId: guide.id,
-      value: nextFavorite,
-    })
+    if (guide?.id) toggleFavorite({ ...guide, type: 'guide' })
   }
 
   /* =========================================
@@ -322,7 +272,7 @@ export default function TourGuideDetail() {
               <strong>
                 {rating > 0
                   ? rating.toFixed(1)
-                  : '5.0'}
+                  : 'Baru'}
               </strong>
 
               <span>
@@ -618,7 +568,7 @@ export default function TourGuideDetail() {
             </strong>
 
             <small>
-              / hari
+              / {guide.priceUnit === 'trip' ? 'trip' : 'hari'}
             </small>
 
           </div>
@@ -668,7 +618,7 @@ export default function TourGuideDetail() {
               size={14}
             />
 
-            Booking aman melalui NuSaJoy
+            Booking simulasi melalui NuSaJoy
 
           </p>
 

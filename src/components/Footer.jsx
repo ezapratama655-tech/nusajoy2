@@ -103,7 +103,7 @@ export default function Footer({ onNavigateSection, brandConcept = 1, onOpenBran
 
         {/* Bar bawah */}
         <div className="pt-6 border-t border-[#DDE2D9] flex flex-col sm:flex-row items-center justify-between gap-4 text-[#68736D] text-[13px]">
-          <p>Â© {new Date().getFullYear()} NuSaJoy Indonesia. Hak cipta dilindungi undang-undang.</p>
+          <p>© {new Date().getFullYear()} NuSaJoy Indonesia. Hak cipta dilindungi undang-undang.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {SOCIALS.map((name) => (
               <span key={name} title="Segera hadir" className="cursor-default">

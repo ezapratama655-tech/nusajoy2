@@ -25,6 +25,7 @@ export const formatGuidePrice = (value = 0) => {
 export const getGuidePrice = (guide) => {
   return Number(
     guide?.price_per_day ??
+      guide?.price_per_trip ??
       guide?.price ??
       guide?.daily_price ??
       guide?.pricePerDay ??
@@ -170,7 +171,9 @@ export const normalizeGuide = (guide) => {
 
     rating: getGuideRating(guide),
 
-    price_per_day: getGuidePrice(guide),
+    price: getGuidePrice(guide),
+    price_per_day: guide.price_per_trip != null ? undefined : getGuidePrice(guide),
+    priceUnit: guide.price_per_trip != null ? 'trip' : 'day',
 
     trips: getGuideTrips(guide),
 
@@ -220,6 +223,9 @@ export const guideToTripItem = (guide) => {
   return {
     id: `guide-${normalized.id}`,
     guideId: normalized.id,
+    listingId: normalized.listingId,
+    providerId: normalized.providerId || normalized.user_id,
+    maxGuests: normalized.priceUnit === 'trip' ? 1 : undefined,
 
     type: 'guide',
     entityType: 'guide',
@@ -240,10 +246,12 @@ export const guideToTripItem = (guide) => {
       'Indonesia',
 
     price:
-      normalized.price_per_day,
+      normalized.price,
 
     pricePerDay:
-      normalized.price_per_day,
+      normalized.priceUnit === 'day' ? normalized.price : undefined,
+
+    priceUnit: normalized.priceUnit,
 
     guideName:
       normalized.name,

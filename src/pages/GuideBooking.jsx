@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -17,18 +17,22 @@ import {
 } from 'lucide-react'
 
 import useTourGuideDetail from '../hooks/useTourGuideDetail'
+import { demoPaymentService } from '../service/demoPaymentService.js'
+import SimulatedPayment from '../components/booking/SimulatedPayment.jsx'
 import '../styles/GuideBooking.css'
 
-export default function GuideBooking() {
+export default function GuideBooking({ onBookingSuccess }) {
   const { id } = useParams()
   const navigate = useNavigate()
 
   const {
     guide,
-    submitBooking,
     loading,
-    bookingLoading,
   } = useTourGuideDetail(id)
+  const [bookingLoading, setBookingLoading] = useState(false)
+  const [confirmedOrder, setConfirmedOrder] = useState(null)
+  const requestId = useRef(null)
+  const inFlight = useRef(false)
 
   // =====================================================
   // STATE
@@ -37,6 +41,7 @@ export default function GuideBooking() {
   const [date, setDate] = useState('')
   const [durationDays, setDurationDays] = useState(1)
   const [notes, setNotes] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState('qris')
 
   const [errorMsg, setErrorMsg] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
@@ -83,7 +88,7 @@ export default function GuideBooking() {
     ) || 0
 
   const totalPrice =
-    pricePerDay * durationDays
+    pricePerDay * (guide?.priceUnit === 'trip' ? 1 : durationDays)
 
   // =====================================================
   // FORMAT DATE
@@ -186,45 +191,49 @@ export default function GuideBooking() {
           </div>
 
           <span className="booking-success-badge">
-            Booking berhasil dibuat
+            Pesanan simulasi tersimpan
           </span>
 
           <h1>
-            Pemesanan Berhasil!
+            Simulasi pembayaran
           </h1>
 
           <p>
-            Permintaan pemesanan kamu telah
-            berhasil dikirim kepada pemandu.
-            Tunggu konfirmasi selanjutnya.
+            Pesanan simulasi kamu telah disimpan.
+            Pilih hasil pembayaran untuk mencoba alurnya.
+            Tidak ada transaksi uang atau reservasi nyata.
           </p>
+          <SimulatedPayment order={confirmedOrder} onOrderChange={(order) => {
+            setConfirmedOrder(order)
+            onBookingSuccess?.(order)
+          }} />
 
           <div className="booking-success-card">
             <div>
               <span>Pemandu</span>
               <strong>
-                {guide.name}
+                {confirmedOrder.title}
               </strong>
             </div>
 
             <div>
               <span>Tanggal</span>
               <strong>
-                {formattedDate || '-'}
+                {new Date(`${confirmedOrder.date}T00:00:00`).toLocaleDateString('id-ID', { dateStyle: 'long' })}
               </strong>
             </div>
 
             <div>
               <span>Durasi</span>
               <strong>
-                {durationDays} hari
+                {confirmedOrder.duration_days} hari
               </strong>
             </div>
 
             <div>
               <span>Total</span>
               <strong>
-                Rp {formatPrice(totalPrice)}
+                Rp {formatPrice(confirmedOrder.totalPrice)}
               </strong>
             </div>
           </div>
@@ -244,7 +253,7 @@ export default function GuideBooking() {
               type="button"
               className="booking-primary-button"
               onClick={() =>
-                navigate('/bookings')
+                navigate(confirmedOrder.owner === 'guest' ? '/my-trip' : '/account')
               }
             >
               Lihat Pesanan
@@ -277,6 +286,7 @@ export default function GuideBooking() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    if (inFlight.current) return
 
     setErrorMsg('')
 
@@ -332,31 +342,27 @@ export default function GuideBooking() {
     }
 
     try {
-      const bookingPayload = {
-        booking_date: date,
+      inFlight.current = true
+      setBookingLoading(true)
+      requestId.current ||= crypto.randomUUID()
+      const order = await demoPaymentService.createOrder({
+        id: requestId.current,
+        listingId: guide.listingId,
+        providerId: guide.providerId || guide.user_id,
+        guideId: guide.id,
+        type: 'guide', title: guide.name, guideName: guide.name,
+        date, guests: 1, guestsCount: 1, totalAmount: totalPrice, totalPrice,
+        location: guide.location || guide.city || '',
+        image: guide.image || guide.profile_photo || '',
+        paymentMethodKey: paymentMethod,
         duration_days: Number(
           durationDays
         ),
-        total_price: Number(
-          totalPrice
-        ),
-        notes: notes.trim(),
-        status: 'pending',
-      }
-
-      const result =
-        await submitBooking(
-          bookingPayload
-        )
-
-      if (result?.success) {
-        setIsSuccess(true)
-      } else {
-        setErrorMsg(
-          result?.error ||
-            'Gagal membuat pemesanan. Silakan coba lagi.'
-        )
-      }
+        customerNotes: notes.trim(),
+      })
+      setConfirmedOrder(order)
+      onBookingSuccess?.(order)
+      setIsSuccess(true)
     } catch (error) {
       console.error(
         'Submit booking error:',
@@ -367,6 +373,9 @@ export default function GuideBooking() {
         error?.message ||
           'Terjadi kesalahan saat membuat pemesanan.'
       )
+    } finally {
+      inFlight.current = false
+      setBookingLoading(false)
     }
   }
 
@@ -430,6 +439,7 @@ export default function GuideBooking() {
             membantu menyiapkan pemesanan
             dengan mudah.
           </p>
+          <p><strong>Simulasi — tidak ada transaksi uang atau reservasi nyata.</strong></p>
         </section>
 
         {/* =================================================
@@ -520,7 +530,7 @@ export default function GuideBooking() {
             </strong>
 
             <small>
-              / hari
+              / {guide.priceUnit === 'trip' ? 'trip' : 'hari'}
             </small>
           </div>
 
@@ -778,6 +788,13 @@ export default function GuideBooking() {
               ERROR
           =============================================== */}
 
+          <section className="booking-section">
+            <label htmlFor="demo-payment-method">Metode pembayaran (simulasi)</label>
+            <select id="demo-payment-method" value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} disabled={bookingLoading}>
+              <option value="qris">QRIS (simulasi)</option>
+              <option value="va">Virtual Account (simulasi)</option>
+            </select>
+          </section>
           {errorMsg && (
             <div
               className="booking-form-error"
@@ -837,7 +854,7 @@ export default function GuideBooking() {
               </span>
 
               <strong>
-                × {durationDays} hari
+                {guide.priceUnit === 'trip' ? '' : '× '}{durationDays} hari
               </strong>
             </div>
 
@@ -892,7 +909,7 @@ export default function GuideBooking() {
                   Memproses...
                 </>
               ) : (
-                'Konfirmasi Booking'
+                'Lanjut ke simulasi pembayaran'
               )}
             </button>
 
@@ -936,7 +953,7 @@ export default function GuideBooking() {
                 </>
               ) : (
                 <>
-                  Konfirmasi Booking
+                  Lanjut ke simulasi pembayaran
                 </>
               )}
             </button>

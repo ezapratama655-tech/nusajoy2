@@ -5,7 +5,8 @@
  * Beranda sebagai layar kerja, bukan landing page:
  *   pencarian → pintasan → trip aktif → pengalaman → pemandu
  *
- * Semua data & aksi datang dari sharedPageProps di App.jsx.
+ * Data pemandu memakai hook katalog Supabase; aksi dan pengalaman
+ * datang dari sharedPageProps di App.jsx.
  * Bentuk data dibaca lewat helper utils/format.js supaya tidak bergantung
  * pada struktur mockData tertentu.
  */
@@ -27,6 +28,8 @@ import {
 } from 'lucide-react';
 
 import PartnerStrip from '../components/PartnerStrip.jsx';
+import useTourGuides from '../hooks/useTourGuide.js';
+import { formatGuidePrice, getGuideInitials } from '../utils/guide.js';
 
 import {
   getItemImage,
@@ -263,27 +266,29 @@ function ExperienceCard({
   );
 }
 
-function GuideCard({ guide, onOpen }) {
+function GuideCard({ guide }) {
   const name = getItemTitle(guide);
-  const image = getItemImage(guide);
+  const image = guide.profile_photo || guide.image_url || guide.photo || guide.image;
+  const [imageFailed, setImageFailed] = useState(false);
   const rating = toRating(getRating(guide));
-  const specialty = guide?.specialty || guide?.category || '';
+  const specialty = guide.specialty || guide.specialties?.[0] || guide.category || '';
 
   return (
-    <button
-      type="button"
-      onClick={() => onOpen?.(guide)}
+    <Link
+      to={`/guide/${guide.id}`}
+      aria-label={`Lihat profil ${name}`}
       className={`flex min-w-[250px] items-center gap-3 rounded-[20px] border border-[#DDE2D9] bg-[#FFFDF7] p-3 text-left transition-colors hover:border-[#8FA88C] ${focusRing}`}
     >
-      <span className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-[#EEE8D2]">
-        {image && (
+      <span aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#EEE8D2] font-semibold text-[#174D36]">
+        {image && !imageFailed ? (
           <img
             src={image}
             alt=""
             loading="lazy"
+            onError={() => setImageFailed(true)}
             className="h-full w-full object-cover"
           />
-        )}
+        ) : getGuideInitials(guide)}
       </span>
 
       <span className="min-w-0 flex-1">
@@ -294,8 +299,14 @@ function GuideCard({ guide, onOpen }) {
         <span className="block truncate text-[13px] text-[#68736D]">
           {[specialty, rating && `${rating} ★`].filter(Boolean).join(' · ')}
         </span>
+        <span className="mt-1 block truncate text-[12px] text-[#68736D]">
+          {getLocationLabel(guide)}
+        </span>
+        <span className="mt-1 block text-[13px] font-semibold text-[#174D36]">
+          {guide.price > 0 ? `${formatGuidePrice(guide.price)} / ${guide.priceUnit === 'trip' ? 'trip' : 'hari'}` : 'Tarif belum tersedia'}
+        </span>
       </span>
-    </button>
+    </Link>
   );
 }
 
@@ -324,6 +335,18 @@ function DestinationCard({ destination }) {
         </span>
       </span>
     </Link>
+  );
+}
+
+function GuideSkeleton() {
+  return (
+    <div aria-hidden="true" className="flex items-center gap-3 rounded-[20px] border border-[#DDE2D9] bg-[#FFFDF7] p-3">
+      <span className="h-14 w-14 shrink-0 animate-pulse rounded-full bg-[#EEE8D2] motion-reduce:animate-none" />
+      <span className="flex-1 space-y-2">
+        <span className="block h-4 w-3/4 animate-pulse rounded bg-[#EEE8D2] motion-reduce:animate-none" />
+        <span className="block h-3 w-1/2 animate-pulse rounded bg-[#EEE8D2] motion-reduce:animate-none" />
+      </span>
+    </div>
   );
 }
 
@@ -372,9 +395,7 @@ export default function Home({
   onRetry,
 
   experiences = [],
-  guides = [],
   onSelectExperience,
-  onSelectGuide,
 
   isFavorited,
   onToggleFavorite,
@@ -391,6 +412,7 @@ export default function Home({
 }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
+  const { guides, loading: guidesLoading, error: guidesError, refetch: refetchGuides } = useTourGuides();
 
   /* ------------------------------------------------------------------------
      DATA TURUNAN
@@ -440,8 +462,6 @@ export default function Home({
 
   const tripItems = Array.isArray(activeTrip?.items) ? activeTrip.items : [];
   const tripCount = tripItems.length;
-
-  const showGuides = guides.length > 0 && uiState === 'normal';
 
   /* ------------------------------------------------------------------------
      AKSI
@@ -698,19 +718,26 @@ export default function Home({
       )}
 
       {/* PEMANDU */}
-      {showGuides && (
+      {uiState === 'normal' && (
         <section aria-label="Pemandu lokal" className="mt-10">
-          <SectionHeader title="Pemandu lokal" />
+          <SectionHeader title="Pemandu lokal" actionLabel="Lihat semua pemandu" onAction={() => onNavigateTab?.('/guides')} />
 
-          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
-            {guides.slice(0, GUIDE_LIMIT).map((guide, index) => (
+          {guidesLoading ? (
+            <div role="status" aria-label="Memuat pemandu lokal" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }, (_, index) => <GuideSkeleton key={index} />)}
+            </div>
+          ) : guidesError ? (
+            <StateMessage title="Pemandu lokal belum bisa dimuat." actionLabel="Coba muat ulang pemandu" onAction={() => void refetchGuides()} />
+          ) : guides.length === 0 ? (
+            <StateMessage title="Belum ada pemandu lokal yang dipublikasikan." />
+          ) : <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+            {guides.slice(0, GUIDE_LIMIT).map((guide) => (
               <GuideCard
-                key={guide?.id ?? index}
+                key={guide.id}
                 guide={guide}
-                onOpen={onSelectGuide}
               />
             ))}
-          </div>
+          </div>}
         </section>
       )}
     </div>

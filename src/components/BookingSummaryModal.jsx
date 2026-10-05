@@ -127,6 +127,7 @@ const getGuideName = (
 const getBookingTypeLabel = (
   bookingData,
 ) => {
+  if (bookingData?.type === 'business') return 'Layanan Bisnis Lokal';
   if (
     bookingData?.type ===
     'guide'
@@ -213,6 +214,7 @@ export default function BookingSummaryModal({
 
   const closeButtonRef =
     useRef(null);
+  const confirmInFlight = useRef(false);
 
 
   /* ------------------------------------------------------------------------
@@ -272,7 +274,9 @@ export default function BookingSummaryModal({
     setPaymentMethod,
 
     isSubmitted,
+    isSubmitting,
     confirmedOrder,
+    setConfirmedOrder,
 
     unitPrice,
     maxGuests,
@@ -401,7 +405,7 @@ export default function BookingSummaryModal({
           'Escape'
         ) {
           event.preventDefault();
-          onClose?.();
+          if (!isSubmitting) onClose?.();
         }
       };
 
@@ -425,6 +429,7 @@ export default function BookingSummaryModal({
     };
   }, [
     isOpen,
+    isSubmitting,
     onClose,
   ]);
 
@@ -475,14 +480,16 @@ export default function BookingSummaryModal({
    * membuat object order.
    */
   const handleConfirmPay =
-    (event) => {
+    async (event) => {
       event.preventDefault();
+      if (confirmInFlight.current) return;
+      confirmInFlight.current = true;
 
       setSubmitError('');
 
       try {
         const newOrder =
-          submitBooking();
+          await submitBooking();
 
         /**
          * Pengaman bila hook gagal
@@ -507,6 +514,8 @@ export default function BookingSummaryModal({
           error?.message ||
             'Reservasi belum dapat diproses. Periksa kembali data booking kamu.',
         );
+      } finally {
+        confirmInFlight.current = false;
       }
     };
 
@@ -523,7 +532,7 @@ export default function BookingSummaryModal({
         event.target ===
         event.currentTarget
       ) {
-        onClose?.();
+        if (!isSubmitting) onClose?.();
       }
     };
 
@@ -653,8 +662,9 @@ export default function BookingSummaryModal({
           my-4
           w-full
           max-w-[560px]
+          max-h-[90dvh]
 
-          overflow-hidden
+          overflow-y-auto
 
           rounded-[24px]
           border
@@ -675,6 +685,7 @@ export default function BookingSummaryModal({
 
         <header
           className="
+            sticky top-0 z-10
             flex
             items-center
             justify-between
@@ -729,7 +740,9 @@ export default function BookingSummaryModal({
             >
               <h2
                 id={titleId}
+                style={{ color: '#FFFDF7' }}
                 className="
+                  text-white
                   font-['Outfit']
                   text-[18px]
                   font-bold
@@ -748,8 +761,7 @@ export default function BookingSummaryModal({
                   text-[#BFD2C5]
                 "
               >
-                Periksa detail sebelum
-                melakukan pembayaran
+                Simulasi reservasi. Belum ada pembayaran atau booking nyata.
               </p>
             </div>
           </div>
@@ -760,6 +772,7 @@ export default function BookingSummaryModal({
               closeButtonRef
             }
             type="button"
+            disabled={isSubmitting}
             onClick={onClose}
             aria-label="
               Tutup ringkasan reservasi
@@ -814,6 +827,7 @@ export default function BookingSummaryModal({
             confirmedOrder={
               confirmedOrder
             }
+            onOrderChange={(order) => { setConfirmedOrder(order); onBookingSuccess?.(order); }}
             customerName={
               customerName ||
               'Pengguna NuSaJoy'
@@ -840,14 +854,13 @@ export default function BookingSummaryModal({
               handleConfirmPay
             }
             className="
-              max-h-[calc(100vh-100px)]
-              overflow-y-auto
 
               p-5
 
               sm:p-6
             "
           >
+            <fieldset disabled={isSubmitting} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
             {/* ==========================================================
                 ERROR BANNER
             =========================================================== */}
@@ -1102,9 +1115,7 @@ export default function BookingSummaryModal({
 
               <div>
                 <label
-                  htmlFor="
-                    booking-date
-                  "
+                  htmlFor="booking-date"
                   className="
                     mb-1.5
                     block
@@ -1371,9 +1382,7 @@ export default function BookingSummaryModal({
 
                 <div>
                   <label
-                    htmlFor="
-                      customer-name
-                    "
+                    htmlFor="customer-name"
                     className="
                       mb-1.5
                       block
@@ -1435,9 +1444,7 @@ export default function BookingSummaryModal({
 
                 <div>
                   <label
-                    htmlFor="
-                      customer-phone
-                    "
+                    htmlFor="customer-phone"
                     className="
                       mb-1.5
                       block
@@ -1516,9 +1523,7 @@ export default function BookingSummaryModal({
 
                 <div>
                   <label
-                    htmlFor="
-                      customer-notes
-                    "
+                    htmlFor="customer-notes"
                     className="
                       mb-1.5
                       block
@@ -1616,6 +1621,7 @@ export default function BookingSummaryModal({
               className="mt-5"
             >
               <PriceBreakdown
+                isTrip={bookingData?.type === 'trip'}
                 guestsCount={
                   guestsCount
                 }
@@ -1765,7 +1771,7 @@ export default function BookingSummaryModal({
                           }
                         `}
                       >
-                        QRIS instan
+                        QRIS (simulasi)
                       </span>
 
                       <span
@@ -1777,7 +1783,7 @@ export default function BookingSummaryModal({
                           text-[#68736D]
                         "
                       >
-                        Bayar melalui QR
+                        Contoh pilihan metode
                       </span>
                     </span>
                   </button>
@@ -1894,7 +1900,7 @@ export default function BookingSummaryModal({
                           text-[#68736D]
                         "
                       >
-                        Pembayaran melalui bank
+                        Virtual account (simulasi)
                       </span>
                     </span>
                   </button>
@@ -2038,7 +2044,7 @@ export default function BookingSummaryModal({
                   "
                 >
                   <span>
-                    Konfirmasi dan bayar
+                    {isSubmitting ? 'Menyimpan...' : 'Lanjut ke simulasi pembayaran'}
                   </span>
 
                   <span
@@ -2074,11 +2080,12 @@ export default function BookingSummaryModal({
                 text-[#8A948E]
               "
             >
-              Dengan melanjutkan pembayaran,
+              Dengan menyimpan simulasi,
               kamu mengonfirmasi bahwa data
               reservasi yang dimasukkan sudah
               benar.
             </p>
+            </fieldset>
           </form>
         )}
       </div>

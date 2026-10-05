@@ -98,6 +98,7 @@ const normalizeGuide = (rawGuide) => {
     avatar:
       rawGuide.avatar ||
       rawGuide.avatar_url ||
+      rawGuide.profile_photo ||
       rawGuide.image_url ||
       FALLBACK_GUIDE_IMAGE,
 
@@ -260,7 +261,7 @@ function DetailPemanduModalContent({
     addedSuccess
 
   const priceLabel =
-    formatGuidePrice(guide)
+    formatGuidePrice(getGuidePrice(guide))
 
   const price =
     getGuidePrice(guide)
@@ -304,6 +305,12 @@ function DetailPemanduModalContent({
 
   const handleBook = () => {
     onOpenBookingSummary?.({
+      id: guide.id,
+      guideId: guide.id,
+      listingId: guide.listingId,
+      providerId: guide.providerId || guide.user_id,
+      priceUnit: guide.priceUnit,
+      maxGuests: guide.priceUnit === 'trip' ? 1 : undefined,
       title:
         `Pendampingan Wisata bersama ${guide.name}`,
 

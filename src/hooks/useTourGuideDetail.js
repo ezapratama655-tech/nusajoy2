@@ -8,6 +8,7 @@ import {
 
 import { supabase } from '../utils/supabaseClient'
 import { normalizeGuide } from '../utils/guide'
+import { getPublishedListing, getListingAvailability } from '../service/partnerService.js'
 
 
 const toNumber = (value, fallback = 0) => {
@@ -184,18 +185,21 @@ export const useTourGuideDetail = (
           setError(null)
 
 
+          const partnerGuide = await getPublishedListing(guideId)
           const {
-            data: guideData,
+            data: legacyGuide,
             error: guideError,
           } = await supabase
             .from('tour_guides')
             .select('*')
             .eq('id', guideId)
             .maybeSingle()
+          const guideData = partnerGuide?.kind === 'guide' ? partnerGuide : legacyGuide?.managed_in_dashboard ? null : legacyGuide
+          const partnerSchedule = partnerGuide ? await getListingAvailability(guideId) : []
 
 
           if (
-            guideError &&
+            guideError && !partnerGuide &&
             !fallbackGuide
           ) {
             throw guideError
@@ -274,13 +278,13 @@ export const useTourGuideDetail = (
 
 
           if (
-            scheduleResult.status ===
+            partnerGuide || (scheduleResult.status ===
               'fulfilled' &&
-            !scheduleResult.value.error
+            !scheduleResult.value.error)
           ) {
             normalizedSchedules =
               (
-                scheduleResult.value.data ||
+                (partnerGuide ? partnerSchedule.map((s) => ({ ...s, schedule_date: s.available_date })) : scheduleResult.value.data) ||
                 []
               ).map(
                 normalizeSchedule
@@ -540,9 +544,13 @@ export const useTourGuideDetail = (
           )
 
 
+          const { data: { user }, error: authError } = await supabase.auth.getUser()
+          if (authError || !user) throw new Error('Silakan masuk sebelum membuat booking.')
+
           const payload = {
             ...bookingData,
             guide_id: guideId,
+            user_id: user.id,
           }
 
 
@@ -585,8 +593,9 @@ export const useTourGuideDetail = (
             success: false,
             data: null,
             error:
-              bookingError?.message ||
-              'Gagal membuat pemesanan.',
+              bookingError?.code === 'PGRST205'
+                ? 'Layanan booking belum diaktifkan. Silakan hubungi tim NuSaJoy.'
+                : bookingError?.message || 'Gagal membuat pemesanan.',
           }
 
         } finally {

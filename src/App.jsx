@@ -55,6 +55,9 @@ import {
    ========================================================================== */
 
 import Navbar from './components/Navbar.jsx';
+import useTravelData from './hooks/useTravelData.js';
+import { supabase } from './utils/supabaseClient.js';
+import { isGuideItem } from './utils/format.js';
 import Footer from './components/Footer.jsx';
 import DetailPengalamanModal from './components/DetailPengalamanModal.jsx';
 import DetailPemanduModal from './components/DetailPemanduModal.jsx';
@@ -95,16 +98,15 @@ import './styles/Favorite.css';
 
 import {
   EXPERIENCES_DATA,
-  GUIDES_DATA,
   INITIAL_TRIP,
-  INITIAL_ORDERS,
-  INITIAL_NOTIFICATIONS,
 } from './data/mockData.js';
 
 import {
   getFavorites,
   toggleFavorite,
   isFavorite,
+  subscribeToFavorites,
+  addFavorite,
 } from './utils/favorites.js';
 
 import { UI_STATES, isValidUIState } from './constants/navigation.js';
@@ -128,6 +130,7 @@ const DestinationDetail = lazy(() => import('./pages/DestinationDetail.jsx'));
 const Favorite = lazy(() => import('./pages/Favorite.jsx'));
 const Account = lazy(() => import('./pages/Account.jsx'));
 const Login = lazy(() => import('./pages/Login.jsx'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword.jsx'));
 const LocalBusiness = lazy(() => import('./pages/LocalBusiness.jsx'));
 const TourGuide = lazy(() => import('./pages/TourGuide.jsx'));
 const TourGuideDetail = lazy(() => import('./pages/TourGuideDetail.jsx'));
@@ -478,10 +481,7 @@ const createInitialTrip = () => {
 };
 
 /** Item termasuk pemandu? Mendukung data guide asli maupun item My Trip. */
-const isGuideLike = (item) =>
-  item?.type === 'guide' ||
-  item?.sourceType === 'guide' ||
-  item?.isGuide === true;
+const isGuideLike = isGuideItem;
 
 /* ==========================================================================
    SHARED PAGE PROPS
@@ -513,6 +513,7 @@ function getSharedPageProps({
   openBookingSummary,
   openFavorites,
   openQuickTripGate,
+  handleBookingSuccess,
 
   showToast,
 }) {
@@ -526,7 +527,7 @@ function getSharedPageProps({
      * Sengaja dibungkus: jangan memberikan navigateToTab langsung ke onClick
      * karena MouseEvent bisa masuk sebagai argumen.
      */
-    onNavigateExplore: () => navigateToTab('jelajah'),
+    onNavigateExplore: (target = 'jelajah') => navigateToTab(target),
 
     /* UI state */
     uiState,
@@ -538,7 +539,6 @@ function getSharedPageProps({
     onSelectExperience: openExperience,
 
     /* Guide */
-    guides: GUIDES_DATA,
     onSelectGuide: openGuide,
 
     /* Favorite */
@@ -565,6 +565,7 @@ function getSharedPageProps({
     /* Booking */
     bookingData: bookingModalData,
     onOpenBookingSummary: openBookingSummary,
+    onBookingSuccess: handleBookingSuccess,
 
     /* Selected data */
     selectedExperience,
@@ -636,9 +637,7 @@ export default function App() {
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [brandConcept, setBrandConcept] = useState(1);
 
-  const [activeTrip, setActiveTrip] = useState(createInitialTrip);
-  const [orders, setOrders] = useState(INITIAL_ORDERS);
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+  const { owner: travelOwner, activeTrip, setActiveTrip, orders, setOrders, notifications, setNotifications } = useTravelData(createInitialTrip);
 
   const [favoritesList, setFavoritesList] = useState(() => {
     try {
@@ -714,33 +713,23 @@ export default function App() {
       }
     };
 
-    const handleStorage = (event) => {
-      if (event.key !== 'nusajoy:favorites') {
-        return;
-      }
-
-      try {
-        setFavoritesList(getFavorites());
-      } catch {
-        setFavoritesList([]);
-      }
-    };
-
-    window.addEventListener('nusajoy:favorites_updated', handleFavoriteUpdated);
-    window.addEventListener('storage', handleStorage);
-
-    return () => {
-      window.removeEventListener(
-        'nusajoy:favorites_updated',
-        handleFavoriteUpdated,
-      );
-      window.removeEventListener('storage', handleStorage);
-    };
+    return subscribeToFavorites(handleFavoriteUpdated);
   }, [showToast]);
 
   /* ------------------------------------------------------------------------
      MODAL OPENERS — hanya satu modal konten aktif
   ------------------------------------------------------------------------ */
+
+  useEffect(() => {
+    const ids = favoritesList.filter((item) => item.unresolved).map((item) => item.id);
+    if (!ids.length) return;
+    let active = true;
+    supabase.from('destinations').select('*').in('id', ids).then(({ data, error }) => {
+      if (!active || error) return;
+      for (const row of data || []) addFavorite({ ...row, type: 'destination' });
+    });
+    return () => { active = false; };
+  }, [favoritesList]);
 
   const openExperience = useCallback((experience) => {
     if (!experience) {
@@ -751,13 +740,19 @@ export default function App() {
     setBookingModalData(null);
     setIsFavoritesOpen(false);
     setQuickTripGateData(null);
-    setSelectedExperience(experience);
+    if (experience.type === 'destination') {
+      setSelectedExperience(null);
+      navigate(`/destination/${experience.id}`);
+    } else {
+      setSelectedExperience(experience);
+    }
   }, [
     setBookingModalData,
     setIsFavoritesOpen,
     setQuickTripGateData,
     setSelectedExperience,
     setSelectedGuide,
+    navigate,
   ]);
 
   const openGuide = useCallback((guide) => {
@@ -866,6 +861,8 @@ const tripItems = useMemo(
 
       const itemPrice = Number(
         item.price ??
+          item.price_per_trip ??
+          item.price_per_day ??
           item.pricePerPerson ??
           item.pricePerDay ??
           item.startingPrice ??
@@ -886,8 +883,8 @@ const tripItems = useMemo(
           item.specialty ||
           (guideItem ? 'Pemandu Lokal' : 'Wisata Budaya'),
         location: item.location || item.address || item.city || '',
-        price: itemPrice > 0 ? itemPrice : 95000,
-        image: item.image || item.imageUrl || item.thumbnail || '',
+        price: Number.isFinite(itemPrice) && itemPrice >= 0 ? itemPrice : 0,
+        image: item.image || item.image_url || item.imageUrl || item.thumbnail || item.avatar || '',
         guideName:
           item.guide?.name ||
           item.guideName ||
@@ -1005,35 +1002,35 @@ const tripItems = useMemo(
 
   const handleBookingSuccess = useCallback(
     (newOrder) => {
-      if (!newOrder) {
+      if (!newOrder || (newOrder.owner && newOrder.owner !== travelOwner)) {
         return;
       }
 
       setOrders((previous) => [
         newOrder,
-        ...(Array.isArray(previous) ? previous : []),
-      ]);
+        ...(Array.isArray(previous) ? previous.filter((order) => order.id !== newOrder.id) : []),
+      ], newOrder.owner);
 
       setNotifications((previous) => [
         {
           id: `notif-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-          title: `Reservasi ${newOrder.id || ''} Terkonfirmasi`.replace(
+          title: `${newOrder.isDemo ? 'Simulasi' : 'Permintaan reservasi'} ${newOrder.id || ''} tersimpan`.replace(
             /\s+/g,
             ' ',
           ),
-          message: `Pembayaran ${
-            newOrder.title || 'Reservasi NuSaJoy'
-          } telah sukses diproses.`,
+          message: newOrder.isDemo
+            ? `${newOrder.status}. Simulasi tersimpan ${newOrder.owner === 'guest' ? 'di browser' : 'di akun'}. Tidak ada transaksi uang.`
+            : 'Permintaan booking tersimpan. Menunggu konfirmasi pemandu.',
           time: 'Baru saja',
           read: false,
           type: 'booking',
         },
         ...(Array.isArray(previous) ? previous : []),
-      ]);
+      ], newOrder.owner);
 
-      showToast('Reservasi berhasil dikonfirmasi.');
+      showToast(newOrder.isDemo ? 'Simulasi reservasi tersimpan.' : 'Permintaan booking tersimpan.');
     },
-    [showToast],
+    [showToast, setOrders, setNotifications, travelOwner],
   );
 
   /* ------------------------------------------------------------------------
@@ -1132,6 +1129,7 @@ const tripItems = useMemo(
     openBookingSummary,
     openFavorites,
     openQuickTripGate,
+    handleBookingSuccess,
 
     showToast,
   });
@@ -1142,10 +1140,12 @@ const tripItems = useMemo(
      VIEW ELEMENTS (dipakai ulang oleh route modern & /classic/*)
   ------------------------------------------------------------------------ */
 
-  const goExplore = () => navigateToTab('jelajah');
+  const goExplore = (target = 'jelajah') => navigateToTab(target);
 
   const myTripElement = (
     <MyTripView
+      orders={orders}
+      onBookingSuccess={handleBookingSuccess}
       trip={activeTrip}
       onRemoveTripItem={handleRemoveTripItem}
       onOpenBookingSummary={openBookingSummary}
@@ -1251,7 +1251,7 @@ const tripItems = useMemo(
         )}
 
         {/* MAIN */}
-        <main className="main-content flex w-full flex-1 flex-col pt-20">
+        <main className="main-content flex w-full flex-1 flex-col">
           <ScrollToTop />
 
           <ErrorBoundary key={location.pathname}>
@@ -1293,6 +1293,7 @@ const tripItems = useMemo(
                 {/* Others */}
                 <Route path="/local-business" element={page(LocalBusiness)} />
                 <Route path="/login" element={page(Login)} />
+                <Route path="/reset-password" element={page(ResetPassword)} />
                 <Route path="/account" element={page(Account)} />
                 <Route
                   path="/akun"
@@ -1433,12 +1434,12 @@ const tripItems = useMemo(
         </SectionBoundary>
 
         {/* UI STATE SIMULATOR */}
-        <SectionBoundary name="StateSimulatorDrawer">
+        {import.meta.env.DEV && <SectionBoundary name="StateSimulatorDrawer">
           <StateSimulatorDrawer
             currentState={uiState}
             onStateChange={handleStateChange}
           />
-        </SectionBoundary>
+        </SectionBoundary>}
 
         {/* BRAND IDENTITY */}
         <SectionBoundary name="BrandIdentityModal">

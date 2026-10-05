@@ -1,288 +1,94 @@
-// =====================================================
-// NUSAJOY FAVORITES UTILITY
-// =====================================================
+import { EXPERIENCES_DATA, GUIDES_DATA } from '../data/mockData.js';
 
-const STORAGE_KEY = "nusajoy_favorites";
+export const FAVORITES_STORAGE_KEY = 'nusajoy_favorites';
+export const FAVORITES_UPDATED_EVENT = 'nusajoy-favorites-updated';
 
+export function getFavoriteId(item) {
+  const id = typeof item === 'object' && item !== null ? item.id ?? item.slug : item;
+  return id === null || id === undefined ? null : String(id);
+}
 
-// =====================================================
-// GET ALL FAVORITES
-// =====================================================
-
-export function getFavorites() {
-
+function readList(key) {
   try {
-
-    const storedFavorites =
-      localStorage.getItem(STORAGE_KEY);
-
-    if (!storedFavorites) {
-      return [];
-    }
-
-    const parsedFavorites =
-      JSON.parse(storedFavorites);
-
-    return Array.isArray(parsedFavorites)
-      ? parsedFavorites
-      : [];
-
-  } catch (error) {
-
-    console.error(
-      "Gagal membaca data favorit:",
-      error
-    );
-
+    const value = JSON.parse(localStorage.getItem(key) || '[]');
+    return Array.isArray(value) ? value : [];
+  } catch {
     return [];
   }
 }
 
-
-// =====================================================
-// SAVE FAVORITES
-// =====================================================
-
-function saveFavorites(favorites) {
-
-  try {
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(favorites)
-    );
-
-    // Mengirim event agar halaman lain
-    // dapat memperbarui state favorit
-    window.dispatchEvent(
-      new CustomEvent(
-        "nusajoy-favorites-updated",
-        {
-          detail: favorites,
-        }
-      )
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Gagal menyimpan data favorit:",
-      error
-    );
+export function getFavorites() {
+  const favorites = readList(FAVORITES_STORAGE_KEY);
+  const legacy = [...readList('nusaJoyFavorites'), ...readList('nusajoy:favorites')];
+  for (const item of legacy) {
+    if (!favorites.some((favorite) => getFavoriteId(favorite) === getFavoriteId(item))) favorites.push(item);
   }
-}
-
-
-// =====================================================
-// GET ITEM ID
-// =====================================================
-
-function getItemId(item) {
-
-  if (
-    item === null ||
-    item === undefined
-  ) {
-    return null;
-  }
-
-  // Jika langsung berupa ID
-  if (
-    typeof item === "string" ||
-    typeof item === "number"
-  ) {
-    return String(item);
-  }
-
-  // Jika berupa object
-  if (typeof item === "object") {
-
-    if (item.id !== undefined) {
-      return String(item.id);
-    }
-
-    if (item.slug !== undefined) {
-      return String(item.slug);
+  if (legacy.length) {
+    try {
+      localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
+      localStorage.removeItem('nusaJoyFavorites');
+      localStorage.removeItem('nusajoy:favorites');
+    } catch {
+      // Preserve the old data when migration cannot be saved.
     }
   }
-
-  return null;
+  return favorites.map((item) => {
+    if (typeof item === 'object' && item !== null) return item;
+    return [...EXPERIENCES_DATA, ...GUIDES_DATA].find((row) => String(row.id) === String(item))
+      || { id: item, type: 'destination', title: 'Destinasi tersimpan', unresolved: true };
+  });
 }
 
+function saveFavorites(items) {
+  localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(items));
+  window.dispatchEvent(new CustomEvent(FAVORITES_UPDATED_EVENT, { detail: items }));
+}
 
-// =====================================================
-// CHECK FAVORITE
-// =====================================================
+export function subscribeToFavorites(callback) {
+  const onStorage = (event) => {
+    if (event.key === FAVORITES_STORAGE_KEY || event.key === null) callback();
+  };
+  window.addEventListener(FAVORITES_UPDATED_EVENT, callback);
+  window.addEventListener('storage', onStorage);
+  return () => {
+    window.removeEventListener(FAVORITES_UPDATED_EVENT, callback);
+    window.removeEventListener('storage', onStorage);
+  };
+}
 
 export function isFavorite(item) {
-
-  const itemId =
-    getItemId(item);
-
-  if (!itemId) {
-    return false;
-  }
-
-  const favorites =
-    getFavorites();
-
-  return favorites.some(
-    (favorite) => {
-
-      const favoriteId =
-        getItemId(favorite);
-
-      return favoriteId === itemId;
-
-    }
-  );
+  const id = getFavoriteId(item);
+  return id !== null && getFavorites().some((favorite) => getFavoriteId(favorite) === id);
 }
-
-
-// =====================================================
-// ADD FAVORITE
-// =====================================================
 
 export function addFavorite(item) {
-
-  const itemId =
-    getItemId(item);
-
-  if (!itemId) {
-
-    console.warn(
-      "Item favorit tidak memiliki ID."
-    );
-
-    return getFavorites();
-  }
-
-  const favorites =
-    getFavorites();
-
-  const alreadyExists =
-    favorites.some(
-      (favorite) =>
-        getItemId(favorite) === itemId
-    );
-
-  if (alreadyExists) {
-    return favorites;
-  }
-
-  const updatedFavorites = [
-    ...favorites,
-    item,
-  ];
-
-  saveFavorites(
-    updatedFavorites
-  );
-
-  return updatedFavorites;
+  const id = getFavoriteId(item);
+  const items = getFavorites();
+  if (id === null) return items;
+  const existing = items.findIndex((favorite) => getFavoriteId(favorite) === id);
+  if (existing < 0) items.push(item);
+  else if (typeof item === 'object') items[existing] = item;
+  saveFavorites(items);
+  return items;
 }
-
-
-// =====================================================
-// REMOVE FAVORITE
-// =====================================================
 
 export function removeFavorite(item) {
-
-  const itemId =
-    getItemId(item);
-
-  if (!itemId) {
-    return getFavorites();
-  }
-
-  const favorites =
-    getFavorites();
-
-  const updatedFavorites =
-    favorites.filter(
-      (favorite) =>
-        getItemId(favorite) !== itemId
-    );
-
-  saveFavorites(
-    updatedFavorites
-  );
-
-  return updatedFavorites;
+  const items = getFavorites().filter((favorite) => getFavoriteId(favorite) !== getFavoriteId(item));
+  saveFavorites(items);
+  return items;
 }
-
-
-// =====================================================
-// TOGGLE FAVORITE
-// =====================================================
 
 export function toggleFavorite(item) {
-
-  if (!item) {
-    return false;
-  }
-
-  const currentlyFavorite =
-    isFavorite(item);
-
-  if (currentlyFavorite) {
-
+  if (getFavoriteId(item) === null) return false;
+  if (isFavorite(item)) {
     removeFavorite(item);
-
     return false;
-
-  } else {
-
-    addFavorite(item);
-
-    return true;
   }
+  addFavorite(item);
+  return true;
 }
 
+export function clearFavorites() { saveFavorites([]); }
+export function getFavoriteCount() { return getFavorites().length; }
 
-// =====================================================
-// CLEAR ALL FAVORITES
-// =====================================================
-
-export function clearFavorites() {
-
-  saveFavorites([]);
-
-}
-
-
-// =====================================================
-// FAVORITE COUNT
-// =====================================================
-
-export function getFavoriteCount() {
-
-  return getFavorites().length;
-
-}
-
-
-// =====================================================
-// DEFAULT EXPORT
-// =====================================================
-
-const favorites = {
-
-  getFavorites,
-
-  addFavorite,
-
-  removeFavorite,
-
-  toggleFavorite,
-
-  isFavorite,
-
-  clearFavorites,
-
-  getFavoriteCount,
-
-};
-
-export default favorites;
+export default { getFavorites, addFavorite, removeFavorite, toggleFavorite, isFavorite, clearFavorites, getFavoriteCount };

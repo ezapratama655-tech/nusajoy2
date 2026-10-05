@@ -1,0 +1,11 @@
+.simulated-payment { margin: 18px 0; padding: 18px; border: 1px solid #dbc791; border-radius: 16px; background: #fff9e8; color: #263d31; text-align: left; }
+.simulated-payment > strong { display: block; font-size: 14px; }
+.simulated-payment p { margin: 9px 0; font-size: 13px; line-height: 1.6; }
+.simulated-payment-status { font-weight: 600; }
+.simulated-payment small { display: block; line-height: 1.5; }
+.simulated-payment-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.simulated-payment-actions button { padding: 10px 14px; border: 1px solid #174d36; border-radius: 10px; background: #174d36; color: white; cursor: pointer; font-size: 13px; font-weight: 600; }
+.simulated-payment-actions button + button { background: white; color: #174d36; }
+.simulated-payment-actions button:disabled { cursor: wait; opacity: .6; }
+.simulated-payment-actions button:focus-visible { outline: 3px solid #c69a3a; outline-offset: 3px; }
+.simulated-payment .simulated-payment-error { color: #a12c27; }

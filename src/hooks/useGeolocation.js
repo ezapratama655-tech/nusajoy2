@@ -74,34 +74,25 @@ export const formatDistance = (km) => {
 // GEOLOCATION HOOK
 // =====================================================
 
-export const useGeolocation = (options = {}) => {
+export const useGeolocation = ({ enableHighAccuracy = true, timeout = 10000, maximumAge = 0 } = {}) => {
+  const supported = typeof navigator !== 'undefined' && !!navigator.geolocation
   const [location, setLocation] = useState({
     lat: null,
     lng: null,
   })
 
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(supported ? null : 'Geolokasi tidak didukung oleh browser Anda')
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(supported)
 
   useEffect(() => {
     let mounted = true
 
-    // Browser tidak mendukung geolocation
-    if (!navigator.geolocation) {
-      if (mounted) {
-        setError(
-          'Geolokasi tidak didukung oleh browser Anda'
-        )
+    if (!supported) return
 
-        setLoading(false)
-      }
-
-      return
-    }
-
-    setLoading(true)
-    setError(null)
+    queueMicrotask(() => {
+      if (mounted) { setLoading(true); setError(null) }
+    })
 
     const handleSuccess = (position) => {
       if (!mounted) return
@@ -118,8 +109,7 @@ export const useGeolocation = (options = {}) => {
     const handleError = (err) => {
       if (!mounted) return
 
-      let message =
-        'Gagal mendapatkan lokasi'
+      let message
 
       switch (err.code) {
         case 1:
@@ -151,17 +141,16 @@ export const useGeolocation = (options = {}) => {
       handleSuccess,
       handleError,
       {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-        ...options,
+        enableHighAccuracy,
+        timeout,
+        maximumAge,
       }
     )
 
     return () => {
       mounted = false
     }
-  }, [])
+  }, [supported, enableHighAccuracy, timeout, maximumAge])
 
   return {
     location,

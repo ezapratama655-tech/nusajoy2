@@ -258,7 +258,7 @@ export default function GuidePreviewCard({
             </strong>
 
             <small>
-              /hari
+              /{guide.priceUnit === 'trip' ? 'trip' : 'hari'}
             </small>
           </div>
 

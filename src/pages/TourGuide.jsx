@@ -35,10 +35,7 @@ import {
   getRecommendedGuides,
 } from '../utils/recommendation'
 
-import {
-  isFavorite,
-  toggleFavorite,
-} from '../utils/favorites'
+import useFavorites from '../hooks/useFavorites.js'
 
 import '../styles/TourGuide.css'
 
@@ -81,10 +78,7 @@ export default function TourGuide() {
     setSortBy,
   ] = useState('recommended')
 
-  const [
-    ,
-    setTick,
-  ] = useState(0)
+  const { isFavorite, toggleFavorite } = useFavorites()
 
   /* ===================================================
      LOCATION
@@ -267,8 +261,9 @@ export default function TourGuide() {
 
   const handleToggleFavorite = (
     event,
-    guideId
+    guide
   ) => {
+    const guideId = guide?.id
     event.preventDefault()
     event.stopPropagation()
 
@@ -280,12 +275,7 @@ export default function TourGuide() {
     }
 
     try {
-      toggleFavorite(guideId)
-
-      setTick(
-        (previous) =>
-          previous + 1
-      )
+      toggleFavorite({ ...guide, type: 'guide' })
     } catch (
       favoriteError
     ) {
@@ -1005,7 +995,7 @@ export default function TourGuide() {
                           ) =>
                             handleToggleFavorite(
                               event,
-                              guideId
+                              guide
                             )
                           }
                           aria-label={
@@ -1205,7 +1195,7 @@ export default function TourGuide() {
                               )}
 
                               <small>
-                                /hari
+                                /{guide.priceUnit === 'trip' ? 'trip' : 'hari'}
                               </small>
                             </strong>
                           </div>

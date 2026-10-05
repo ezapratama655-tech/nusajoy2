@@ -32,7 +32,7 @@ import {
 import { supabase } from '../utils/supabaseClient'
 import '../styles/Explore.css'
 
-const FAVORITES_KEY = 'nusaJoyFavorites'
+import { getFavorites, getFavoriteId, toggleFavorite as toggleStoredFavorite, subscribeToFavorites } from '../utils/favorites.js'
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80'
@@ -233,15 +233,7 @@ function Explore({ uiState = 'normal', onRetry }) {
   const [showMobileTools, setShowMobileTools] = useState(false)
   const [selectedDestination, setSelectedDestination] = useState(null)
 
-  const [favorites, setFavorites] = useState(() => {
-    try {
-      const saved = localStorage.getItem(FAVORITES_KEY)
-      const parsed = saved ? JSON.parse(saved) : []
-      return Array.isArray(parsed) ? parsed : []
-    } catch {
-      return []
-    }
-  })
+  const [favorites, setFavorites] = useState(getFavorites)
 
   const [visibleCount, setVisibleCount] = useState(12)
   const [shareMessage, setShareMessage] = useState('')
@@ -278,13 +270,7 @@ function Explore({ uiState = 'normal', onRetry }) {
     }
   }, [])
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
-    } catch {
-      // Ignore storage failures so Explore remains usable.
-    }
-  }, [favorites])
+  useEffect(() => subscribeToFavorites(() => setFavorites(getFavorites())), [])
 
   useEffect(() => {
     function handleEscape(event) {
@@ -485,20 +471,12 @@ function Explore({ uiState = 'normal', onRetry }) {
     return matchesCategory(dest, categoryId)
   }
 
-  function toggleFavorite(id) {
-    setFavorites((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id]
-    )
-  }
-
   function isFavorite(id) {
-    return favorites.includes(id)
+    return favorites.some((item) => getFavoriteId(item) === String(id))
   }
 
   function handleSave(dest) {
-    toggleFavorite(dest.id)
+    toggleStoredFavorite({ ...dest, type: 'destination' })
 
     setSavedFeedbackMap((current) => ({
       ...current,
@@ -915,7 +893,7 @@ function Explore({ uiState = 'normal', onRetry }) {
 
         <section className="search-section">
           <div className="search-box">
-            <Search size={19} className="search-icon" />
+            <span className="search-icon" aria-hidden="true"><Search size={19} /></span>
 
             <input
               type="search"
@@ -1028,6 +1006,7 @@ function Explore({ uiState = 'normal', onRetry }) {
                     className={`category-chip ${
                       active ? 'active' : ''
                     }`}
+                    aria-pressed={active}
                     onClick={() => {
                       setCategory(item.id)
                       setShowHiddenGem(false)
@@ -1044,6 +1023,7 @@ function Explore({ uiState = 'normal', onRetry }) {
                 className={`category-chip hidden-gem-chip ${
                   showHiddenGem ? 'active' : ''
                 }`}
+                aria-pressed={showHiddenGem}
                 onClick={() => {
                   setShowHiddenGem(true)
                   setCategory('all')
@@ -1063,6 +1043,7 @@ function Explore({ uiState = 'normal', onRetry }) {
                     type="button"
                     key={item}
                     className={city === item ? 'active' : ''}
+                    aria-pressed={city === item}
                     onClick={() => setCity(item)}
                   >
                     {item}
@@ -1505,23 +1486,6 @@ function Explore({ uiState = 'normal', onRetry }) {
             <ArrowRight size={14} />
           </Link>
         </section>
-      </div>
-
-      <div className="mobile-bottom-nav">
-        <Link to="/explore" className="bottom-nav-item active">
-          <Compass size={17} />
-          <span>Jelajah</span>
-        </Link>
-
-        <Link to="/rekomendasi" className="bottom-nav-item">
-          <Sparkles size={17} />
-          <span>Rekomendasi</span>
-        </Link>
-
-        <Link to="/favorit" className="bottom-nav-item">
-          <Heart size={17} />
-          <span>Favorit</span>
-        </Link>
       </div>
 
       {shareMessage && (

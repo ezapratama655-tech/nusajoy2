@@ -14,8 +14,11 @@
 
 import { useState } from 'react';
 import { STAYS_DATA, TRANSPORTS_DATA } from '../data/mockData.js';
+import DemoOrdersPanel from '../components/booking/DemoOrdersPanel.jsx';
 
 export default function MyTripView({
+  orders,
+  onBookingSuccess,
   trip,
   onRemoveTripItem,
   onOpenBookingSummary,
@@ -160,7 +163,9 @@ export default function MyTripView({
                 onOpenBookingSummary({
                   title: trip.title,
                   location: trip.city,
-                  price: grandTotal,
+                  price: totalExperienceCost + stayCost + transportCost,
+                  conservationFund,
+                  maxGuests: 1,
                   guestsCount: 1,
                   type: 'trip',
                 });
@@ -266,6 +271,7 @@ export default function MyTripView({
                           </span>
                         )}
                         <button
+                          aria-label={`Hapus ${item.title} dari My Trip`}
                           onClick={() => onRemoveTripItem(item.id)}
                           className="p-1 rounded-lg text-[#68736D] hover:text-[#BA1A1A] hover:bg-[#FFDAD6]/40 transition-colors cursor-pointer"
                           title="Hapus dari Rencana"
@@ -420,7 +426,9 @@ export default function MyTripView({
                   onOpenBookingSummary({
                     title: trip.title,
                     location: trip.city,
-                    price: grandTotal,
+                    price: totalExperienceCost + stayCost + transportCost,
+                  conservationFund,
+                  maxGuests: 1,
                     guestsCount: 1,
                     type: 'trip',
                   });
@@ -463,6 +471,7 @@ export default function MyTripView({
 
         </div>
 
+        <DemoOrdersPanel orders={orders} onOrderChange={onBookingSuccess} />
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import {
 
 import { supabase } from '../utils/supabaseClient'
 import { normalizeGuide } from '../utils/guide'
+import { getPublishedListings } from '../service/partnerService.js'
 
 /* =====================================================
    CONSTANTS
@@ -114,6 +115,7 @@ export default function useTourGuides({
       let query = supabase
         .from('tour_guides')
         .select('*')
+        .eq('is_active', true)
         .order('rating', {
           ascending: false,
         })
@@ -136,10 +138,10 @@ export default function useTourGuides({
          EXECUTE
       =============================================== */
 
-      const {
-        data,
-        error: queryError,
-      } = await query
+      const [{ data, error: queryError }, partnerGuides] = await Promise.all([
+        query,
+        getPublishedListings('guide'),
+      ])
 
       /*
        * Abaikan request lama.
@@ -164,7 +166,7 @@ export default function useTourGuides({
 
       const normalized =
         Array.isArray(data)
-          ? data
+          ? [...data.filter((g) => !g.managed_in_dashboard), ...partnerGuides.filter((g) => !category || category === 'Semua' || g.category === category)]
               .map(normalizeGuide)
               .filter(Boolean)
           : []
@@ -259,6 +261,7 @@ export default function useTourGuides({
 
     return () => {
       isMounted = false
+      requestIdRef.current += 1
     }
   }, [
     loadGuides,

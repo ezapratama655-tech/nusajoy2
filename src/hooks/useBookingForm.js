@@ -1,3 +1,5 @@
+import { calculateBookingCosts } from '../utils/pricing.js';
+import { demoPaymentService } from '../service/demoPaymentService.js';
 /**
  * @file src/hooks/useBookingForm.js
  * NuSaJoy — Booking Form Hook
@@ -20,6 +22,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -51,7 +54,7 @@ const DEFAULT_UNIT_PRICE = 95000;
 /**
  * Dana konservasi budaya NuSaJoy.
  */
-const CONSERVATION_RATE = 0.025;
+
 
 
 /* ==========================================================================
@@ -120,12 +123,13 @@ const getBookingUnitPrice = (
   for (
     const candidate of candidates
   ) {
+    if (candidate === undefined || candidate === null || candidate === '') continue;
     const value =
-      toSafeNumber(candidate);
+      Number(candidate);
 
     if (
       Number.isFinite(value) &&
-      value > 0
+      value >= 0
     ) {
       return value;
     }
@@ -141,6 +145,7 @@ const getBookingUnitPrice = (
 const getBookingMaxGuests = (
   bookingData,
 ) => {
+  if (bookingData?.type === 'guide' && bookingData?.priceUnit === 'trip') return 1;
   if (
     !bookingData ||
     typeof bookingData !== 'object'
@@ -470,6 +475,9 @@ export function useBookingForm(
   bookingData,
   isOpen = false,
 ) {
+  const submissionRef = useRef(null);
+  const pendingOrderRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   /* ------------------------------------------------------------------------
      DERIVED BOOKING CONFIG
   ------------------------------------------------------------------------ */
@@ -628,6 +636,7 @@ export function useBookingForm(
           setConfirmedOrder(
             null,
           );
+          pendingOrderRef.current = null;
         },
         0,
       );
@@ -648,46 +657,10 @@ export function useBookingForm(
      PRICE CALCULATIONS
   ------------------------------------------------------------------------ */
 
-  const baseCost =
-    useMemo(
-      () =>
-        unitPrice *
-        guestsCount,
-      [
-        unitPrice,
-        guestsCount,
-      ],
-    );
-
-  const conservationFund =
-    useMemo(
-      () =>
-        Math.round(
-          baseCost *
-            CONSERVATION_RATE,
-        ),
-      [baseCost],
-    );
-
-  /**
-   * NuSaJoy tidak mengambil
-   * biaya platform dalam rancangan
-   * booking yang sekarang.
-   */
-  const serviceFee = 0;
-
-  const totalAmount =
-    useMemo(
-      () =>
-        baseCost +
-        conservationFund +
-        serviceFee,
-      [
-        baseCost,
-        conservationFund,
-        serviceFee,
-      ],
-    );
+  const { baseCost, conservationFund, serviceFee, totalAmount } = useMemo(
+    () => calculateBookingCosts({ ...bookingData, price: unitPrice }, guestsCount),
+    [bookingData, unitPrice, guestsCount],
+  );
 
 
   /* ------------------------------------------------------------------------
@@ -974,7 +947,8 @@ export function useBookingForm(
   ------------------------------------------------------------------------ */
 
   const submitBooking =
-    useCallback(() => {
+    useCallback(async () => {
+      if (submissionRef.current) return submissionRef.current;
       const validation =
         validateBooking();
 
@@ -994,7 +968,10 @@ export function useBookingForm(
 
       const order = {
         id:
-          createOrderId(),
+          pendingOrderRef.current?.id || createOrderId(),
+        listingId: bookingData.listingId,
+        providerId: bookingData.providerId,
+        guideId: bookingData.type === 'guide' ? bookingData.guideId || bookingData.id : undefined,
 
         /* --------------------------------------------------------------
            BOOKING DATA
@@ -1082,7 +1059,9 @@ export function useBookingForm(
           paymentMethod,
 
         status:
-          'Terkonfirmasi',
+          'Menunggu pembayaran',
+
+        isDemo: true,
 
         createdAt:
           new Date().toISOString(),
@@ -1121,15 +1100,19 @@ export function useBookingForm(
       };
 
 
-      setConfirmedOrder(
-        order,
-      );
-
-      setIsSubmitted(
-        true,
-      );
-
-      return order;
+      pendingOrderRef.current = order;
+      setIsSubmitting(true);
+      const request = demoPaymentService.createOrder(order);
+      submissionRef.current = request;
+      try {
+        const saved = await request;
+        setConfirmedOrder(saved);
+        setIsSubmitted(true);
+        return saved;
+      } finally {
+        submissionRef.current = null;
+        setIsSubmitting(false);
+      }
     }, [
       validateBooking,
       bookingData,
@@ -1262,6 +1245,8 @@ export function useBookingForm(
     ---------------------------------------------------------------------- */
 
     isSubmitted,
+    isSubmitting,
+    setConfirmedOrder,
 
     confirmedOrder,
 

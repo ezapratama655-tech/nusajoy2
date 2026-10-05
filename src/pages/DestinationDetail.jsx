@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { supabase } from '../utils/supabaseClient'
-import { isFavorite, toggleFavorite } from '../utils/favorites'
+import { isFavorite, toggleFavorite, subscribeToFavorites } from '../utils/favorites'
 import '../styles/DestinationDetail.css'
 
 // =====================================
@@ -300,10 +300,12 @@ function DestinationDetail() {
   // FAVORITE
   // =====================================
 
+  useEffect(() => subscribeToFavorites(() => setFav(isFavorite(id))), [id])
+
   function handleToggleFavorite() {
     if (!dest) return
 
-    toggleFavorite(dest.id)
+    toggleFavorite({ ...dest, type: 'destination' })
 
     const nextFavorite = isFavorite(dest.id)
     setFav(nextFavorite)

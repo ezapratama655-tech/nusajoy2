@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 
 import { supabase } from "../utils/supabaseClient";
+import { getPublishedListings } from '../service/partnerService.js';
 
 import "../styles/LocalBusiness.css";
 
@@ -1209,6 +1210,7 @@ function useBusinessToast() {
 ========================================================= */
 
 function LocalBusiness({
+  onOpenBookingSummary,
   businesses: providedBusinesses = null,
   onRetry,
 }) {
@@ -1392,10 +1394,11 @@ function LocalBusiness({
           if (queryError) {
             throw queryError;
           }
+          const partnerBusinesses = await getPublishedListings('business');
 
           const normalized =
             Array.isArray(data)
-              ? data
+              ? [...data, ...partnerBusinesses]
                   .map(
                     (
                       item,
@@ -1998,6 +2001,11 @@ function LocalBusiness({
   const handleBooking =
     useCallback(
       (business) => {
+        if (business.listingId && onOpenBookingSummary) {
+          setSelectedBusiness(null);
+          onOpenBookingSummary({ ...business, type: 'business', title: business.name, image: business.image_url, price: Number(business.price), maxGuests: 100 });
+          return;
+        }
         if (
           business.bookingUrl
         ) {
@@ -2026,6 +2034,7 @@ function LocalBusiness({
       },
       [
         handleWhatsApp,
+        onOpenBookingSummary,
         showToast,
       ]
     );
@@ -3540,7 +3549,7 @@ function BusinessDetailModal({
 
               {icons.calendar}
 
-              {business.bookingUrl
+              {business.listingId ? 'Coba reservasi simulasi' : business.bookingUrl
                 ? "Reservasi sekarang"
                 : "Tanya ketersediaan"}
 

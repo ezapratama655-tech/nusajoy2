@@ -16,11 +16,13 @@ import {
 } from 'lucide-react'
 
 import { supabase } from '../utils/supabaseClient'
-import { getFavorites } from '../utils/favorites'
+import { getFavorites, getFavoriteId, subscribeToFavorites } from '../utils/favorites'
+import { EXPERIENCES_DATA, GUIDES_DATA } from '../data/mockData.js'
+import { isGuideItem } from '../utils/format.js'
 
 import '../styles/Favorite.css'
 
-function Favorite() {
+function Favorite({ onSelectExperience, onSelectGuide }) {
   const [destinations, setDestinations] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -34,75 +36,43 @@ function Favorite() {
   ========================================= */
 
   useEffect(() => {
-    let isMounted = true
-
+    let mounted = true
+    let revision = 0
     async function fetchFavorites() {
+      const request = ++revision
+      const saved = getFavorites()
+      const objects = []
+      const ids = []
+      for (const item of saved) {
+        const known = typeof item === 'object' && !item.unresolved ? item
+          : [...EXPERIENCES_DATA, ...GUIDES_DATA].find((row) => String(row.id) === getFavoriteId(item))
+        if (known) objects.push({ ...known, name: known.name || known.title, image_url: known.image_url || known.image || known.avatar })
+        else if (getFavoriteId(item) !== null) ids.push(getFavoriteId(item))
+      }
       try {
-        if (isMounted) {
-          setLoading(true)
+        let rows = []
+        if (ids.length) {
+          const { data, error } = await supabase.from('destinations').select('*').in('id', ids)
+          if (error) throw error
+          rows = data || []
+        }
+        if (mounted && revision === request) {
+          setDestinations([...objects, ...rows])
           setError(null)
         }
-
-        const favIds = getFavorites()
-
-        /*
-         * Tidak ada favorit
-         */
-        if (
-          !Array.isArray(favIds) ||
-          favIds.length === 0
-        ) {
-          if (isMounted) {
-            setDestinations([])
-            setLoading(false)
-          }
-
-          return
-        }
-
-        /*
-         * Ambil destinasi berdasarkan ID favorit
-         */
-        const { data, error: supabaseError } =
-          await supabase
-            .from('destinations')
-            .select('*')
-            .in('id', favIds)
-
-        if (supabaseError) {
-          throw supabaseError
-        }
-
-        if (isMounted) {
-          setDestinations(
-            Array.isArray(data) ? data : []
-          )
-        }
-      } catch (err) {
-        console.error(
-          'Failed to fetch favorites:',
-          err
-        )
-
-        if (isMounted) {
-          setError(
-            'Destinasi favorit gagal dimuat.'
-          )
-
-          setDestinations([])
+      } catch (error) {
+        if (mounted && revision === request) {
+          setDestinations(objects)
+          setError('Sebagian destinasi favorit gagal dimuat. Favorit lainnya tetap tersedia.')
+          console.error('Gagal memuat sebagian favorit:', error)
         }
       } finally {
-        if (isMounted) {
-          setLoading(false)
-        }
+        if (mounted && revision === request) setLoading(false)
       }
     }
-
     fetchFavorites()
-
-    return () => {
-      isMounted = false
-    }
+    const unsubscribe = subscribeToFavorites(fetchFavorites)
+    return () => { mounted = false; unsubscribe() }
   }, [])
 
   /* =========================================
@@ -574,6 +544,8 @@ function Favorite() {
                   key={destination.id}
                   destination={destination}
                   index={index}
+                  onSelectExperience={onSelectExperience}
+                  onSelectGuide={onSelectGuide}
                 />
               )
             )}
@@ -635,6 +607,8 @@ function Favorite() {
 function FavoriteCard({
   destination,
   index,
+  onSelectExperience,
+  onSelectGuide,
 }) {
   const rating = Number(
     destination.rating || 0
@@ -652,9 +626,16 @@ function FavoriteCard({
     destination.image_url ||
     'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=900&auto=format&fit=crop&q=80'
 
+  const guide = isGuideItem(destination)
+  const experience = String(destination.id).startsWith('exp-') || destination.type === 'experience'
+  const openModal = guide ? onSelectGuide : experience ? onSelectExperience : null
+  const Card = openModal ? 'button' : Link
+  const cardProps = openModal
+    ? { type: 'button', onClick: () => openModal(destination) }
+    : { to: guide ? `/guide/${destination.id}` : `/destination/${destination.id}` }
   return (
-    <Link
-      to={`/destination/${destination.id}`}
+    <Card
+      {...cardProps}
       className="favorite-card"
       style={{
         '--delay': `${index * 70}ms`,
@@ -777,7 +758,7 @@ function FavoriteCard({
 
       </div>
 
-    </Link>
+    </Card>
   )
 }
 

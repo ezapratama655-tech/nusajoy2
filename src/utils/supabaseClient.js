@@ -21,7 +21,7 @@ const supabaseUrl =
   import.meta.env.VITE_SUPABASE_URL
 
 const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY
 
 // =========================================================
 // CHECK ENVIRONMENT VARIABLES
@@ -29,7 +29,7 @@ const supabaseAnonKey =
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
-    '[Supabase] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY belum di-set di .env.local'
+    '[Supabase] Isi VITE_SUPABASE_URL dan VITE_SUPABASE_PUBLISHABLE_KEY di .env.local pada root project'
   )
 }
 

@@ -70,6 +70,7 @@ const safeNumber = (
 
 export default function PriceBreakdown({
   guestsCount = 1,
+  isTrip = false,
   unitPrice = 0,
   baseCost = 0,
   conservationFund = 0,
@@ -359,7 +360,7 @@ export default function PriceBreakdown({
                   text-[#8A948E]
                 "
               >
-                2,5% dari biaya kegiatan
+                {conservationFund <= 0 ? 'Tidak ada tambahan dana konservasi' : isTrip ? '2,5% dari pengalaman dan penginapan' : '2,5% dari biaya kegiatan'}
               </span>
             </div>
           </div>
@@ -528,10 +529,9 @@ export default function PriceBreakdown({
             text-[#68736D]
           "
         >
-          Sebagian biaya dialokasikan
-          sebagai dana konservasi budaya
-          untuk mendukung keberlanjutan
-          komunitas dan pengalaman lokal.
+          Rincian biaya ini adalah simulasi.
+          Belum ada pembayaran atau penyaluran
+          dana konservasi yang dilakukan.
         </p>
       </div>
     </div>

@@ -23,6 +23,7 @@ import {
 
 import { STAYS_DATA, TRANSPORTS_DATA } from "../data/mockData.js";
 import "../styles/MyTrip.css";
+import DemoOrdersPanel from '../components/booking/DemoOrdersPanel.jsx';
 
 const DEFAULT_TRIP = {
   title: "Petualangan Yogyakarta",
@@ -105,6 +106,8 @@ function formatCurrency(value = 0) {
 }
 
 export default function MyTrip({
+  orders,
+  onBookingSuccess,
   trip = DEFAULT_TRIP,
   onRemoveTripItem,
   onOpenBookingSummary,
@@ -120,7 +123,7 @@ export default function MyTrip({
   const selectedStay = STAYS_DATA?.[0] || FALLBACK_STAY;
   const selectedTransport = TRANSPORTS_DATA?.[0] || FALLBACK_TRANSPORT;
 
-  const itemsList = trip?.items || [];
+  const itemsList = useMemo(() => trip?.items || [], [trip?.items]);
 
   const sortedItems = useMemo(() => {
     return [...itemsList].sort((a, b) => {
@@ -159,7 +162,9 @@ export default function MyTrip({
     onOpenBookingSummary?.({
       title: trip?.title,
       location: trip?.city,
-      price: grandTotal,
+      price: totalExperienceCost + stayCost + transportCost,
+                  conservationFund,
+                  maxGuests: 1,
       guestsCount: 1,
       type: "trip",
     });
@@ -636,6 +641,7 @@ export default function MyTrip({
             </section>
           </aside>
         </div>
+        <DemoOrdersPanel orders={orders} onOrderChange={onBookingSuccess} />
       </div>
     </section>
   );

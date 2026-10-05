@@ -233,29 +233,12 @@ export const isGuideItem = (
     return true;
   }
 
-  /* Guide object */
-
-  if (
-    item.guide &&
-    typeof item.guide ===
-      'object'
-  ) {
-    return true;
-  }
-
-  /* Guide-specific fields */
-
-  if (
-    item.guideId ||
-    item.guideName ||
-    item.guidePhone ||
-    item.guideProfile ||
-    item.meetingPoint
-  ) {
-    return true;
-  }
-
-  return false;
+  return Boolean(
+    String(item.id || '').startsWith('guide-') ||
+    item.price_per_day !== undefined || item.pricePerDay !== undefined ||
+    item.price_per_trip !== undefined || item.price_per_hour !== undefined ||
+    (item.full_name && item.specialties)
+  );
 };
 
 

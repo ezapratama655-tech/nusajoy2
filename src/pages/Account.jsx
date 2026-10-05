@@ -18,6 +18,9 @@ import {
 } from "../data/mockData.js";
 
 import ProfilePhotoPicker from "../components/ProfilePhotoPicker.jsx";
+import SimulatedPayment from "../components/booking/SimulatedPayment.jsx";
+import PartnerDashboard from "../components/partner/PartnerDashboard.jsx";
+import { getAccountRole } from "../utils/partner.js";
 
 /* =========================================================
    1. KONFIGURASI GLOBAL & DATA STATIS
@@ -171,52 +174,6 @@ const PARTNER_BENEFITS = [
 
 const getValidSubTab = (value) =>
   VALID_SUB_TABS.includes(value) ? value : "profile";
-
-const normalizeAccountRole = (value) =>
-  String(value || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[\s-]+/g, "_");
-
-const getAccountRole = (user) => {
-  const metadata = user?.user_metadata || {};
-  const appMetadata = user?.app_metadata || {};
-
-  const rawRole =
-    appMetadata.role ||
-    metadata.role ||
-    metadata.user_role ||
-    metadata.account_type ||
-    "wisatawan";
-
-  const role = normalizeAccountRole(rawRole);
-
-  if (
-    [
-      "local_guide",
-      "guide",
-      "pemandu",
-      "pemandu_lokal",
-      "tour_guide",
-    ].includes(role)
-  ) {
-    return "local_guide";
-  }
-
-  if (
-    [
-      "local_business",
-      "business",
-      "bisnis",
-      "bisnis_lokal",
-      "umkm",
-    ].includes(role)
-  ) {
-    return "local_business";
-  }
-
-  return "wisatawan";
-};
 
 const getOrderStatus = (order) =>
   String(order?.status || "").toLowerCase();
@@ -1052,6 +1009,7 @@ function useOverlayBehavior(isOpen, onClose) {
 ========================================================= */
 
 export default function Account({
+  onBookingSuccess,
   orders = INITIAL_ORDERS,
   notifications: initialNotifications =
     INITIAL_NOTIFICATIONS,
@@ -1926,6 +1884,7 @@ export default function Account({
             "Gagal keluar dari akun.",
           "error"
         );
+        return error;
       }
     }, [
       loggingOut,
@@ -2117,6 +2076,10 @@ export default function Account({
     );
   }
 
+  if (user && ['local_guide', 'local_business'].includes(accountRole)) {
+    return <PartnerDashboard key={`${user.id}:${accountRole}`} user={user} role={accountRole} onLogout={handleLogout} loggingOut={loggingOut} />;
+  }
+
   return (
     <div
       className="account-page"
@@ -2300,6 +2263,7 @@ export default function Account({
             activeSubTab ===
               "reservasi") && (
             <OrdersPanel
+              onOrderChange={onBookingSuccess}
               role={
                 accountRole
               }
@@ -3563,6 +3527,7 @@ function RoleMetricCard({
 /* ---------- order / reservation ---------- */
 
 function OrdersPanel({
+  onOrderChange,
   role,
   orders,
   onExplore,
@@ -3580,7 +3545,7 @@ function OrdersPanel({
 
   const description =
     isTourist
-      ? "Semua reservasi terkonfirmasi langsung terhubung dengan pemandu lokal."
+      ? "Periksa riwayat pesanan dan lanjutkan simulasi pembayaran. Pesanan simulasi tidak melakukan transaksi uang."
       : role ===
           "local_guide"
         ? "Periksa jadwal, titik temu, peserta, dan informasi kontak wisatawan yang memesan pengalamanmu."
@@ -3785,6 +3750,7 @@ function OrdersPanel({
                     ) : null}
                   </div>
                 </div>
+                <SimulatedPayment order={order} onOrderChange={onOrderChange} />
               </article>
             )
           )}

@@ -35,8 +35,8 @@ const ROLE_STORAGE_KEY = 'nusajoy:selected-role';
 
 const ROLE_REDIRECTS = {
   wisatawan: '/',
-  pemandu: '/guide',
-  pemilik_bisnis: '/local-business',
+  pemandu: '/account',
+  pemilik_bisnis: '/account',
 };
 
 const ROLE_CONFIG = {
@@ -500,11 +500,11 @@ function Login() {
   const redirectTarget = useMemo(() => {
     const from = location.state?.from;
 
-    if (typeof from === 'string' && from.startsWith('/')) {
+    if (typeof from === 'string' && from.startsWith('/') && !from.startsWith('//')) {
       return from;
     }
 
-    if (from?.pathname && typeof from.pathname === 'string') {
+    if (typeof from?.pathname === 'string' && from.pathname.startsWith('/') && !from.pathname.startsWith('//')) {
       return `${from.pathname}${from.search || ''}${from.hash || ''}`;
     }
 
@@ -566,7 +566,8 @@ function Login() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
+      (event, newSession) => {
+        if (event === 'PASSWORD_RECOVERY') { navigate('/reset-password', { replace: true }); }
         if (!mounted) return;
 
         setSession(newSession || null);
@@ -590,7 +591,7 @@ function Login() {
       mounted = false;
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   /* =====================================================
      ROLE
@@ -938,7 +939,7 @@ function Login() {
           normalizedEmail,
           {
             redirectTo:
-              `${window.location.origin}/login`,
+              `${window.location.origin}/reset-password`,
           },
         );
 
