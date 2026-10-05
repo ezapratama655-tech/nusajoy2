@@ -1498,9 +1498,7 @@ export default function BookingSummaryModal({
                       focus:ring-2
                       focus:ring-[#174D36]/10
                     "
-                    placeholder="
-                      0812xxxxxxxx
-                    "
+                    placeholder="0812xxxxxxxx"
                     required
                   />
 
@@ -1558,6 +1556,7 @@ export default function BookingSummaryModal({
                     rows={3}
                     maxLength={500}
                     className="
+                      block
                       w-full
                       resize-none
 
@@ -1584,12 +1583,7 @@ export default function BookingSummaryModal({
                       focus:ring-2
                       focus:ring-[#174D36]/10
                     "
-                    placeholder="
-                      Contoh: vegetarian,
-                      alergi makanan, kebutuhan
-                      mobilitas, atau kebutuhan
-                      lainnya.
-                    "
+                    placeholder="Contoh: vegetarian, alergi makanan, kebutuhan mobilitas, atau kebutuhan lainnya."
                   />
 
                   <div

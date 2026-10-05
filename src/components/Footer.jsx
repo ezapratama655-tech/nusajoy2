@@ -43,8 +43,6 @@ const FOOTER_COLUMNS = [
   },
 ];
 
-const SOCIALS = ['Instagram', 'YouTube', 'Spotify Narasi Budaya'];
-
 export default function Footer({ onNavigateSection, brandConcept = 1, onOpenBrandModal }) {
   return (
     <footer className="w-full bg-[#FFFDF7] border-t border-[#DDE2D9] mt-auto pb-20 lg:pb-0">
@@ -105,11 +103,14 @@ export default function Footer({ onNavigateSection, brandConcept = 1, onOpenBran
         <div className="pt-6 border-t border-[#DDE2D9] flex flex-col sm:flex-row items-center justify-between gap-4 text-[#68736D] text-[13px]">
           <p>© {new Date().getFullYear()} NuSaJoy Indonesia. Hak cipta dilindungi undang-undang.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            {SOCIALS.map((name) => (
-              <span key={name} title="Segera hadir" className="cursor-default">
-                {name}
-              </span>
-            ))}
+            <a
+              href="https://www.instagram.com/nusajoy.id?stkn=MWd6cW44MHhzNGM5dA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#174D36] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174D36]"
+            >
+              Instagram
+            </a>
           </div>
         </div>
       </div>

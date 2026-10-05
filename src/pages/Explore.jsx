@@ -925,7 +925,7 @@ function Explore({ uiState = 'normal', onRetry }) {
               Kurasi lokal Indonesia
             </span>
 
-            <Link to="/rekomendasi" className="recommend-link">
+            <Link to="/recommendation" className="recommend-link">
               Bingung memilih?
               <ArrowRight size={13} />
             </Link>

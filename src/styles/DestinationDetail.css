@@ -668,6 +668,13 @@ body.destination-viewer-open {
   background:
     var(--dj-gold-soft);
   font-size: 13px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.hero-rating-star svg {
+  width: 1em;
+  height: 1em;
 }
 
 .hero-rating div,

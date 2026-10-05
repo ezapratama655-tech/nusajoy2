@@ -108,7 +108,7 @@
   letter-spacing: -1px;
 }
 
-.hero-meta {
+.mytrip-page .hero-meta {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -118,21 +118,21 @@
   font-size: 13px;
 }
 
-.hero-meta span {
+.mytrip-page .hero-meta span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-.hero-meta svg {
+.mytrip-page .hero-meta svg {
   color: var(--mytrip-green);
 }
 
-.hero-meta strong {
+.mytrip-page .hero-meta strong {
   color: var(--mytrip-green);
 }
 
-.hero-meta__separator {
+.mytrip-page .hero-meta__separator {
   color: #a8b0ac;
 }
 
@@ -1280,12 +1280,12 @@
     letter-spacing: -0.8px;
   }
 
-  .hero-meta {
+  .mytrip-page .hero-meta {
     gap: 7px;
     line-height: 1.4;
   }
 
-  .hero-meta__separator {
+  .mytrip-page .hero-meta__separator {
     display: none;
   }
 

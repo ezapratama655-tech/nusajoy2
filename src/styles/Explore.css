@@ -496,8 +496,8 @@
     );
 }
 
-.explore-page .intro-side strong,
-.explore-page .intro-side span {
+.explore-page .intro-side > div > strong,
+.explore-page .intro-side > div > span {
 
   display:
     block;
@@ -519,7 +519,7 @@
     800;
 }
 
-.explore-page .intro-side span {
+.explore-page .intro-side > div > span {
 
   margin-top:
     3px;

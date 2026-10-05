@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { Star } from 'lucide-react'
 import { supabase } from '../utils/supabaseClient'
 import { isFavorite, toggleFavorite, subscribeToFavorites } from '../utils/favorites'
 import '../styles/DestinationDetail.css'
@@ -657,7 +658,9 @@ function DestinationDetail() {
 
             <div className="hero-meta">
               <div className="hero-rating">
-                <span className="hero-rating-star">★</span>
+                <span className="hero-rating-star" aria-hidden="true">
+                  <Star fill="currentColor" strokeWidth={0} />
+                </span>
 
                 <div>
                   <strong>{ratingText}</strong>
